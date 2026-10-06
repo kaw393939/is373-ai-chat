@@ -46,6 +46,7 @@ services:
       traefik.enable: "true"
       traefik.docker.network: ${TRAEFIK_NETWORK:-web}
       traefik.http.routers.chat.rule: Host(`${APP_HOST:?Set hostname}`)
+      traefik.http.routers.chat.priority: "100"
       traefik.http.routers.chat.entrypoints: websecure
       traefik.http.routers.chat.service: chat
       traefik.http.services.chat.loadbalancer.server.port: "8000"

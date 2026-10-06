@@ -2,7 +2,7 @@
 
 For a fresh DigitalOcean Ubuntu 24.04 droplet, follow the [observed-host recreation](../docs/recreate-observed-host.md) for SSH, firewall, Docker, DNS, Traefik and HTTPS. Adapt hostnames and enable dashboard protection for a long-lived host. Do not copy private certificate state into Git.
 
-For the existing classroom host, reuse `/opt/webserver` and Docker network `web`. The chat project is separate and publishes no application/database host ports. Its unique Host rule routes chat.mywebclass.org through the existing HTTPS entrypoint. The calculator remains independent.
+For the existing classroom host, reuse `/opt/webserver` and Docker network `web`. The chat project is separate and publishes no application/database host ports. Its unique Host rule routes firehose360.com through the existing HTTPS entrypoint. The calculator remains independent.
 
 An operator installs root-owned `deploy/chat-deploy` and `deploy/chat-ssh`, grants only the fixed deployment entrypoint passwordless sudo, and adds the dedicated public deployment key as a restricted forced-command authorized key. Confirm host fingerprints through an existing trusted session before creating DEPLOY_KNOWN_HOSTS. Never disable host-key checking.
 
@@ -13,3 +13,5 @@ Install the host-metrics service/timer and read-only metrics directory. After fi
 Capacity is deliberately small: one app process, bounded DB pool, four globally admitted streams and two bounded containers on the audited 2 GB host. Load-test before increasing concurrency. No zero-downtime or high-availability claim is made.
 
 **Exercise:** install on a disposable host and record the exact steps/evidence. Only that rehearsal validates the written guide.
+
+On the observed host, the apex firehose360.com previously served an Apache teaching page. The chat router has explicit priority 100 so it takes that hostname while the original static content/container remains available for rollback. Other domain routers keep their routes.

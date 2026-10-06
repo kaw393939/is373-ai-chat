@@ -15,3 +15,5 @@ Automatic app recovery restores the previous image/config only when the schema r
 **Exercise:** trace one release through workflow URL, Git SHA, registry digest, schema revision and public health. Explain why a successful push to a registry is insufficient evidence of deployment.
 
 The vulnerability report includes all detected severities. The release gate blocks HIGH and CRITICAL findings with available fixes; unfixed findings remain in the report for operator review. An SBOM lists components and is not a substitute for that report.
+
+The stricter scan caught vulnerable vendored libraries in the base image's pip installer. Runtime never installs packages, so the Dockerfile removes pip; dependency installation stays in the build stage. This removes unnecessary runtime code instead of suppressing the findings.

@@ -14,7 +14,7 @@ Python Playwright drives actual UI journeys: registration/approval, chat streami
 
 For a local browser fixture, use a disposable DATABASE_URL, migrate it, run `ADMIN_PASSWORD=browser-workshop-admin-1234 uv run python -m app.cli admin`, then start Uvicorn with BASE_URL=http://localhost:9001 on port 9001. Install Chromium and run `uv run pytest tests/e2e -v`. The password is a public test fixture, never a production default.
 
-Image scanning blocks fixed CRITICAL findings; unfixed/lower-severity findings still require review. An SBOM records components. Scan success does not establish absence of vulnerabilities.
+Image scanning blocks fixable HIGH and CRITICAL findings; unfixed/lower-severity findings still require review. An SBOM records components. Scan success does not establish absence of vulnerabilities.
 
 **Exercise:** remove an ownership check and identify which test catches it. Explain why a 100% report alone would not make that change safe.
 
