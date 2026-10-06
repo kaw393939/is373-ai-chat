@@ -1,0 +1,84 @@
+{
+  "name": "Scoped work item",
+  "description": "Propose one observable outcome linked to the project baseline.",
+  "body": [
+    {
+      "type": "markdown",
+      "attributes": {
+        "value": "Start with the [baseline](https://github.com/kaw393939/is373-ai-chat/blob/main/docs/project/baseline.md) and [working agreement](https://github.com/kaw393939/is373-ai-chat/blob/main/docs/project/working-agreement.md). Do not include credentials, private logs or recovery tokens."
+      }
+    },
+    {
+      "type": "input",
+      "id": "baseline",
+      "attributes": {
+        "label": "Canonical requirement and lesson",
+        "placeholder": "REQ-CHAT; URL to baseline anchor and relevant lesson"
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "outcome",
+      "attributes": {
+        "label": "Outcome and business value",
+        "description": "Describe one independently reviewable result."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "dropdown",
+      "id": "evidence_kind",
+      "attributes": {
+        "label": "Evidence classification",
+        "options": [
+          "Reproduced failure",
+          "Code finding \u2014 reproduction needed",
+          "Unverified operational gap",
+          "Product or educational improvement"
+        ]
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "evidence",
+      "attributes": {
+        "label": "Evidence and scope",
+        "description": "Link code/release evidence; provide safe reproduction steps and boundaries."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "acceptance",
+      "attributes": {
+        "label": "Acceptance criteria",
+        "description": "Observable checkboxes. Describe behavior, not just implementation tasks.",
+        "value": "- [ ] Given \u2026 when \u2026 then \u2026\n- [ ] Relevant failure path is verified.\n- [ ] Canonical lesson and evidence are updated."
+      },
+      "validations": {
+        "required": true
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "validation",
+      "attributes": {
+        "label": "Validation and dependencies",
+        "description": "Tests/operational proof, prerequisite issues and any access needed."
+      },
+      "validations": {
+        "required": true
+      }
+    }
+  ]
+}
