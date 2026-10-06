@@ -4,6 +4,10 @@ A small, complete system you can run, test, deploy, and explain: React + TypeScr
 
 Production: [firehose360.com](https://firehose360.com). Registration requires administrator approval.
 
+## Project visibility
+
+[Project hub](docs/project/README.md) links the educational baseline, live GitHub backlog, acceptance criteria and atomic delivery agreement. Follow a requirement through an issue, commits, tests and release evidence.
+
 ## Start locally
 
 Install Docker, Python 3.14.7 with [uv](https://docs.astral.sh/uv/), and Node 24 for the optional source workflow. Docker supplies build runtimes when using Compose.

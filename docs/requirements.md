@@ -1,6 +1,6 @@
 # Requirements and implementation acceptance
 
-This checklist began as the design scope. The implemented core and executed checks are recorded in [implementation evidence](implementation-evidence.md). Email automation, advanced features and independent fresh-droplet verification remain follow-up work.
+This checklist began as the design scope. The implemented core and executed checks are recorded in [implementation evidence](implementation-evidence.md). Email delivery activation, advanced features and independent fresh-droplet verification remain follow-up work. The [project baseline](project/baseline.md) owns scope and stable capability IDs; [GitHub issues](https://github.com/kaw393939/is373-ai-chat/issues) own live acceptance criteria and status.
 
 ## Twelve-factor mapping
 
@@ -35,7 +35,7 @@ Mapping adapted to this proposed app from [The Twelve-Factor App](https://12fact
 | State machine | Generation lifecycle with legal transitions and terminal states |
 | Policy | Server-enforced roles, ownership, budgets, and model eligibility |
 
-Avoid one class per trivial operation and unnecessary microservices. Add outbox/queue patterns if durable asynchronous delivery becomes necessary. Architecture review should assess actual responsibilities and change costs, not pattern counts.
+Avoid one class per trivial operation and unnecessary microservices. The transactional email outbox now provides durable asynchronous delivery; add a separate queue only for a demonstrated additional need. Architecture review should assess actual responsibilities and change costs, not pattern counts.
 
 ## Milestones
 
