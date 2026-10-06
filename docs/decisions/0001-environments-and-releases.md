@@ -1,6 +1,6 @@
 # ADR 0001: Environment isolation and versioned promotion
 
-Status: Proposed; backlog implementation is not complete. October 6, 2026.
+Status: Hostnames and initial shared-host topology accepted by the owner; automated promotion and version policy remain proposed. October 6, 2026.
 
 Implementation: [environment promotion #24](https://github.com/kaw393939/is373-ai-chat/issues/24) and [semantic releases #25](https://github.com/kaw393939/is373-ai-chat/issues/25).
 
@@ -12,13 +12,14 @@ Current CI publishes/deploys main directly to production after image tests. The 
 
 | Environment | Purpose | Isolation |
 |---|---|---|
-| Development | Local Compose/source reload; optional disposable branch previews later | Disposable database, mock LLM/email and local secrets |
-| QA | Persistent production-like image/migration/browser/failure validation | Own hostname, database, volumes, network/project, secrets and synthetic accounts; external email/payment-like effects disabled or restricted |
+| Local | Compose/source reload | Disposable database, mock LLM/email and local secrets |
+| Development | Public preview at dev.firehose360.com | Own database, volume, JWT/database secrets and Docker project; mock LLM and disabled email |
+| QA | Persistent validation at qa.firehose360.com | Own hostname, database, volumes, network/project, secrets and synthetic accounts; external email/payment-like effects disabled or restricted |
 | Production | Real users at firehose360.com | Protected config/data and an explicitly selected tested digest |
 
 Use short-lived branches and one main integration line, rather than maintaining long-lived dev/qa/prod branches. A commit does not automatically mean a production release. Build once with the intended release version and source identity, test the digest in QA, then promote that digest to production without rebuilding or changing image contents. Label the environment separately from the application version.
 
-Start development locally. Prefer a separately isolated QA host if an approved budget allows it. Co-locating QA with production is a cost alternative only after measuring memory/CPU/storage and proving network, credential, database and resource isolation; it does not isolate host failure. No new paid host is authorized by this proposal.
+Keep local development available. The owner selected public dev and QA hostnames. Initial installation uses the existing 1-vCPU/2-GiB host, with each preview capped at 256 MiB for the app and 128 MiB for PostgreSQL. The pre-install snapshot had about 1.1 GiB available memory and 43 GiB free disk. This is a low-traffic starting point, not a load-test capacity claim. Separate projects, private database networks, volumes and credentials isolate application data; the shared ingress network, kernel, CPU and host failure remain common. Prefer a separate QA host when an approved budget allows it. No new paid host is authorized. See the [environment runbook](../environments.md) and [DNS audit](../audit/2026-10-06-dns.md).
 
 Use GitHub deployment environments for environment-scoped configuration and deployment history. Verify which protection features are available on this private repository's plan. If required reviewers are unavailable, implement a restricted explicit promotion workflow rather than claiming a gate exists. Parallel QA activity must not cancel production migration/promotion.
 

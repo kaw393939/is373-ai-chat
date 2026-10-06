@@ -77,3 +77,5 @@ This is a single-server teaching deployment. It does not claim high availability
 [Browser review and security notes](docs/review-and-security.md) records findings, fixes and follow-up ideas.
 
 [Low-cost email options](docs/email-options.md) explains Google aliases, a free transactional sender and the Google-only API alternative.
+
+Public dev/QA hosting: [environment runbook](docs/environments.md) and [DNS audit](docs/audit/2026-10-06-dns.md).
