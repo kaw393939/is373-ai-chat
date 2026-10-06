@@ -47,6 +47,8 @@ Resolve the time-critical credential dependency and real email access first. In 
 
 ## Baseline and teaching scope
 
+The owner's subsequent textbook expansion is tracked in [#26](https://github.com/kaw393939/is373-ai-chat/issues/26), with the canonical [book/lab map](../../book/README.md). The initial ordering above remains historical; GitHub owns its current priority and progress.
+
 Existing released behavior is recorded in [implementation evidence](../implementation-evidence.md), not recreated as falsely completed issues. Refactoring suggestions remain proposals until tests demonstrate behavior. Advanced attachments/RAG/tools/voice/billing remain discovery scope in the [baseline](baseline.md#scope-boundaries).
 
 This planning setup is tracked by [#1](https://github.com/kaw393939/is373-ai-chat/issues/1). Its completion establishes the backlog, not completion of the application work above.

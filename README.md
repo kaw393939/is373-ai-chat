@@ -35,7 +35,9 @@ For source development, `uv sync --frozen`, `npm --prefix frontend ci`, `npm --p
 - Reviewed migrations, unit/integration tests, Python Playwright journeys, measured 100% line/branch coverage, image vulnerability gate, SBOM, digest deployment and public release verification.
 - Protected production configuration, a restricted deployment key, pre-deploy/daily PostgreSQL dumps, and explicit recovery rules.
 
-## Read the short textbook
+## Read the textbook
+
+Start with [From Request to Release](book/README.md): historical context, engineering contributors, code-reading guidance, laboratory map and assessment. The technical chapters below are the working-system spine; comprehensive chapter/lab expansion is ongoing.
 
 | Lesson | Follow the working code |
 |---|---|

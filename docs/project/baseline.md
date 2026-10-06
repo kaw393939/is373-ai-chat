@@ -22,7 +22,7 @@ Issue bodies reference these anchors and own the detailed acceptance criteria. K
 | <a id="req-quality"></a>REQ-QUALITY | 46 PostgreSQL tests and three image browser journeys passed; measured Python line/branch coverage is 100% with documented exclusions. This is targeted validation, not exhaustive security assurance. | [Testing](../../book/07-testing.md), [review](../review-and-security.md) |
 | <a id="req-architecture"></a>REQ-ARCHITECTURE | Provider adapters, injected construction, database-backed state and outbox exist. Frontend lifecycle ownership, transport boundaries, transaction contracts and stronger types need refinement. | [Whole system](../../book/01-system.md), [models/migrations](../../book/03-data.md) |
 | <a id="req-privacy"></a>REQ-PRIVACY | Private ownership and protected configuration are enforced; remote Markdown images are omitted. Retention/export/account deletion policy is not yet specified. | [Auth](../../book/04-auth.md), [review](../review-and-security.md) |
-| <a id="req-learning"></a>REQ-LEARNING | Teach T-shaped engineering: depth in one layer, enough breadth to explain a request across UI/API/database/provider/deployment. Learners must explain, test, diagnose and modify AI-generated work. Fresh-reader and fresh-server assessments remain open. | [Local setup](../../book/02-local.md), [lesson index](../../README.md#read-the-short-textbook) |
+| <a id="req-learning"></a>REQ-LEARNING | Teach T-shaped engineering: depth in one layer, enough breadth to explain a request across UI/API/database/provider/deployment. Learners must explain, test, diagnose and modify AI-generated work. Fresh-reader and fresh-server assessments remain open. | [Local setup](../../book/02-local.md), [lesson index](../../README.md#read-the-textbook) |
 
 ## Architecture and twelve-factor evidence
 
@@ -39,3 +39,7 @@ Attachments, retrieval/RAG, tools, voice, sharing and billing are discovery topi
 For an issue, the learner must (1) explain its business consequence, (2) trace the relevant request/data flow, (3) reproduce the failure safely, (4) implement the smallest justified change, and (5) demonstrate acceptance with tests or operational evidence. One exercise should require diagnosing a failed deployment or integration rather than merely producing a screen.
 
 Use [working agreement](working-agreement.md) for delivery mechanics and the issue for the current acceptance criteria. Correct explanations in the relevant lesson when implementation changes.
+
+## Comprehensive book direction
+
+[From Request to Release](../../book/README.md) defines the educational structure: readable annotated code, historical alternatives, the people behind the ideas, full labs and judgment-focused assessment. Include the twelve factors, Agile Manifesto and all original signatories, Fowler/Martin and other engineering contributors, Guido van Rossum and Python, Torvalds and Linux/Git, Fielding and REST/HATEOAS, and containerization. Connect each story to design criteria and the current case study; do not claim every principle is fully implemented. Use revised Bloom objectives to assess remembering/understanding/applying/analyzing/evaluating/creating, with AI-assisted implementation subject to human explanation, verification and strategy. Authored material and independent learner validation are distinct evidence.

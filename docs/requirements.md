@@ -32,7 +32,7 @@ Mapping adapted to this proposed app from [The Twelve-Factor App](https://12fact
 | Dependency inversion | Services receive provider and persistence boundaries through injection |
 | Adapter and strategy | Normalize provider APIs and select models from validated configuration |
 | Unit of work | Short explicit database transactions; clear commit/rollback ownership |
-| State machine | Generation lifecycle with legal transitions and terminal states |
+| State machine | Generation statuses exist; centralized transition enforcement and complete provider terminal-event contracts remain follow-up work (#12/#17/#18), not a fully proved pattern |
 | Policy | Server-enforced roles, ownership, budgets, and model eligibility |
 
 Avoid one class per trivial operation and unnecessary microservices. The transactional email outbox now provides durable asynchronous delivery; add a separate queue only for a demonstrated additional need. Architecture review should assess actual responsibilities and change costs, not pattern counts.
