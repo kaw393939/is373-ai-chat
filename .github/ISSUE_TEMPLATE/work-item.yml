@@ -80,5 +80,9 @@
         "required": true
       }
     }
+  ],
+  "labels": [
+    "status:backlog",
+    "priority:P2"
   ]
 }

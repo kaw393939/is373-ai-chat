@@ -6,7 +6,7 @@ Describe the concrete trigger and resulting behavior.
 
 Refs #ISSUE
 
-Requirement: REQ-… ([canonical baseline](../docs/project/baseline.md))
+Requirement: REQ-… ([canonical baseline](https://github.com/kaw393939/is373-ai-chat/blob/main/docs/project/baseline.md))
 
 Lesson/decision changed: link here. Acceptance criteria remain in the issue.
 Use `Closes #ISSUE` only when its full Definition of Done is satisfied; otherwise close after deployment evidence.
