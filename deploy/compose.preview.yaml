@@ -1,0 +1,67 @@
+# Public dev/QA use HTTPS security settings with synthetic data only.
+# Separate root directories and .env files are required; never copy production secrets.
+name: is373-ai-chat-${DEPLOY_ENV:?Set dev or qa}
+services:
+  db:
+    image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    environment:
+      POSTGRES_USER: chat
+      POSTGRES_DB: chat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
+    volumes: ["database:/var/lib/postgresql/data"]
+    networks: [private]
+    mem_limit: 128m
+    cpus: 0.20
+    pids_limit: 128
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U chat -d chat"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: &logging
+      driver: json-file
+      options: {max-size: 10m, max-file: "3"}
+  app:
+    image: ${APP_IMAGE:?Deploy a tested digest}
+    env_file: .env
+    environment:
+      APP_ENV: production
+      PROVIDER: mock
+      EMAIL_PROVIDER: disabled
+      OPENAI_API_KEY: ""
+      RESEND_API_KEY: ""
+      GLOBAL_CONCURRENCY: "1"
+      DATABASE_URL: postgresql+asyncpg://chat:${POSTGRES_PASSWORD}@db:5432/chat
+      METRICS_PATH: /metrics/host.json
+      STATIC_DIR: /app/frontend/dist
+    networks: [private, web]
+    depends_on:
+      db: {condition: service_healthy}
+    volumes: ["/var/lib/chat-metrics:/metrics:ro"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    user: "10001:10001"
+    tmpfs: ["/tmp:rw,noexec,nosuid,nodev,size=64m"]
+    mem_limit: 256m
+    cpus: 0.30
+    pids_limit: 128
+    restart: unless-stopped
+    logging: *logging
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=${TRAEFIK_NETWORK:-web}"
+      - "traefik.http.routers.chat-${DEPLOY_ENV}.rule=Host(`${APP_HOST:?Set hostname}`)"
+      - "traefik.http.routers.chat-${DEPLOY_ENV}.priority=100"
+      - "traefik.http.routers.chat-${DEPLOY_ENV}.entrypoints=websecure"
+      - "traefik.http.routers.chat-${DEPLOY_ENV}.service=chat-${DEPLOY_ENV}"
+      - "traefik.http.services.chat-${DEPLOY_ENV}.loadbalancer.server.port=8000"
+      - "wud.watch=false"
+networks:
+  private:
+  web:
+    external: true
+    name: ${TRAEFIK_NETWORK:-web}
+volumes:
+  database:
