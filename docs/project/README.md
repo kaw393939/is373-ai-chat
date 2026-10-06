@@ -15,3 +15,5 @@ Build an understandable, secure AI chat system that solves a useful business pro
 Docs define durable intent and explanation. Issues own item-specific acceptance criteria and live progress. Commits/PRs own changes. Tests and release records own evidence. Link between these; do not copy mutable progress into another spreadsheet or document.
 
 Start at the [baseline](baseline.md), then take the highest-priority unblocked issue in the [live ready queue](https://github.com/kaw393939/is373-ai-chat/issues?q=is%3Aissue%20is%3Aopen%20label%3Astatus%3Aready). The initial backlog is an ordered proposal, not a time-boxed sprint commitment. No GitHub Projects board is required to read or maintain it.
+
+[ADR 0001](../decisions/0001-environments-and-releases.md) proposes isolated dev/QA/prod and semantic releases. Issues own implementation and acceptance; these environments are not yet deployed.
