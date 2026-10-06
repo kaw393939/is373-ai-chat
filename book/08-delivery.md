@@ -13,3 +13,5 @@ Under a host lock, deployment starts/checks PostgreSQL, saves a pre-migration du
 Automatic app recovery restores the previous image/config only when the schema revision did not change. Otherwise deployment fails visibly and preserves a dump for an operator decision. No destructive automatic schema downgrade is attempted.
 
 **Exercise:** trace one release through workflow URL, Git SHA, registry digest, schema revision and public health. Explain why a successful push to a registry is insufficient evidence of deployment.
+
+The vulnerability report includes all detected severities. The release gate blocks HIGH and CRITICAL findings with available fixes; unfixed findings remain in the report for operator review. An SBOM lists components and is not a substitute for that report.

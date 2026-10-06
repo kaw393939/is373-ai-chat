@@ -55,7 +55,8 @@ jobs:
       - name: Vulnerability gate and SBOM
         run: |
           sh scripts/install-trivy.sh
-          .tools/trivy/trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed chat:ci
+          .tools/trivy/trivy image --format json --output artifacts/vulnerabilities.json chat:ci
+          .tools/trivy/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed chat:ci
           .tools/trivy/trivy image --format cyclonedx --output artifacts/sbom.json chat:ci
       - name: Save tested artifact
         run: |
