@@ -2,6 +2,8 @@
 
 A small, complete system you can run, test, deploy, and explain: React + TypeScript, FastAPI, PostgreSQL, SQLAlchemy, Alembic, Docker Compose, and GitHub Actions. Follow a request from browser login to a streamed model response, then follow the same code into a tested production image.
 
+Production: [firehose360.com](https://firehose360.com). Registration requires administrator approval.
+
 ## Start locally
 
 Install Docker, Python 3.14.7 with [uv](https://docs.astral.sh/uv/), and Node 24 for the optional source workflow. Docker supplies build runtimes when using Compose.
@@ -66,3 +68,5 @@ Tests clear application tables in TEST_DATABASE_URL. Use a dedicated disposable 
 [Original server audit](docs/system-audit.md), [recreation of the prior classroom host](docs/recreate-observed-host.md), and [research decisions](docs/references-and-decisions.md) preserve how the project started. They describe the earlier server state; current application behavior is explained in the textbook and code.
 
 This is a single-server teaching deployment. It does not claim high availability, independently verified account-side backups, unrestricted provider feature parity, attachment/RAG/tool execution, or exact dollar billing. Admin-issued recovery replaces automated email enrollment/recovery in the initial system. Provider configuration is controlled by the operator, not exposed to browser users. Temporary credentials require replacement when their lease expires.
+
+[Low-cost email options](docs/email-options.md) explains Google aliases, a free transactional sender and the Google-only API alternative.

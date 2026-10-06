@@ -1,5 +1,8 @@
 # Primary references and discussion decisions
 
+> Initial research record. See the [textbook](../README.md) and [implementation evidence](implementation-evidence.md) for current behavior.
+
+
 Documentation reviewed October 6, 2026. Exact versions, pricing, provider capabilities, and platform restrictions must be rechecked when implementation begins.
 
 ## Sources
