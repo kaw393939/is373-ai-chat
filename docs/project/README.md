@@ -11,6 +11,7 @@ Build an understandable, secure AI chat system that solves a useful business pro
 | What actually passed or shipped? | [Implementation evidence](../implementation-evidence.md), linked CI runs and release identities |
 | Why did we choose this architecture? | [Architecture](../architecture.md), [research decisions](../references-and-decisions.md) and issue-linked ADRs for new consequential decisions |
 | How do I learn the tools? | [Book and laboratory map](../../book/README.md) |
+| How ready is the textbook for publication? | [Dated editorial review](../editorial/2026-10-06-publisher-review.md): findings, reader promise and revision priorities |
 
 Docs define durable intent and explanation. Issues own item-specific acceptance criteria and live progress. Commits/PRs own changes. Tests and release records own evidence. Link between these; do not copy mutable progress into another spreadsheet or document.
 

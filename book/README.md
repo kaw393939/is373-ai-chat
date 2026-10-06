@@ -6,6 +6,8 @@ This book studies how people build useful software that survives change. The cha
 
 Start with [how to read the code](00-reading-code.md), [the historical foundations](12-history.md) and [the people and ideas](13-engineering-ideas.md). Continue with [Agile and its seventeen signatories](14-agile-and-community.md), [Fielding/REST/HATEOAS and twelve-factor design](15-architecture-and-twelve-factors.md), and [human judgment, Bloom's taxonomy and AI](16-human-judgment-and-ai.md). Then follow the eleven technical chapters listed in the [repository index](../README.md#read-the-textbook). Readers who need a working installation first can start with [local development](02-local.md) and return to the historical material afterward.
 
+The [October 6 publisher-style review](../docs/editorial/2026-10-06-publisher-review.md) assesses the manuscript's strengths, publication gaps and next revision tranche against a fixed source snapshot. Issues continue to own live progress.
+
 ## Four connected parts
 
 | Part | Questions | Chapters and practice |
