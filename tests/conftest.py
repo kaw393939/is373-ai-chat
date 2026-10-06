@@ -14,6 +14,14 @@ from app.security import hash_password
 PASSWORD = "correct-horse-workshop-123"
 
 
+@pytest.fixture(autouse=True)
+def isolated_configuration(monkeypatch):
+    # Local credentials/provider choices must never influence mock test fixtures.
+    monkeypatch.setitem(Settings.model_config, "env_file", None)
+    for field in Settings.model_fields:
+        monkeypatch.delenv(field.upper(), raising=False)
+
+
 @pytest.fixture
 async def application(tmp_path):
     url = os.environ.get("TEST_DATABASE_URL", f"sqlite+aiosqlite:///{tmp_path}/test.db")
