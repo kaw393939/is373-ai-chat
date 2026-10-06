@@ -2,6 +2,8 @@ import json
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+from time import perf_counter
+from uuid import uuid4
 
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import FileResponse, StreamingResponse
@@ -41,7 +43,7 @@ from app.services import (
     user_view,
 )
 
-log = logging.getLogger("chat")
+log = logging.getLogger("uvicorn.error")
 
 
 def create_app(config=None, provider=None):
@@ -109,7 +111,22 @@ def create_app(config=None, provider=None):
 
     @app.middleware("http")
     async def security_headers(request, call_next):
+        started = perf_counter()
+        request_id = uuid4().hex
         response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        log.info(
+            json.dumps(
+                {
+                    "event": "response_started",
+                    "request_id": request_id,
+                    "method": request.method,
+                    "path": request.url.path,
+                    "status": response.status_code,
+                    "response_start_ms": round((perf_counter() - started) * 1000, 2),
+                }
+            )
+        )
         response.headers.update(
             {
                 "X-Content-Type-Options": "nosniff",

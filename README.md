@@ -4,7 +4,7 @@ A small, complete system you can run, test, deploy, and explain: React + TypeScr
 
 ## Start locally
 
-Install Docker, Python 3.12+ with [uv](https://docs.astral.sh/uv/), and Node 24 for the optional source workflow. Docker supplies build runtimes when using Compose.
+Install Docker, Python 3.14.7 with [uv](https://docs.astral.sh/uv/), and Node 24 for the optional source workflow. Docker supplies build runtimes when using Compose.
 
 ```sh
 cp .env.example .env

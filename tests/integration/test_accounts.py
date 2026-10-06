@@ -25,6 +25,7 @@ async def test_registration_login_logout_and_headers(client):
     assert r.status_code == 204 and "httponly" in r.headers["set-cookie"].lower()
     assert (await client.get("/api/auth/me")).status_code == 401
     assert (await client.post("/api/auth/logout")).status_code == 204
+    assert len(r.headers["x-request-id"]) == 32
     assert "frame-ancestors 'none'" in r.headers["content-security-policy"]
 
 

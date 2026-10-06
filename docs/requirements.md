@@ -1,6 +1,6 @@
 # Requirements and implementation acceptance
 
-Requirements below describe intended behavior, not currently implemented functionality.
+This checklist began as the design scope. The implemented core and executed checks are recorded in [implementation evidence](implementation-evidence.md). Email automation, advanced features and independent fresh-droplet verification remain follow-up work.
 
 ## Twelve-factor mapping
 
@@ -9,14 +9,14 @@ Requirements below describe intended behavior, not currently implemented functio
 | Codebase | One app repository, multiple independently configured deployments | Commit identity in deployed release |
 | Dependencies | Declare and lock backend/frontend dependencies; isolated builds | Frozen dependency installs |
 | Config | Validated deploy-specific runtime config; ignored local .env | Same image runs with separate configs |
-| Backing services | Database, email, storage, and LLM providers through configuration/interfaces | Substitute test services/adapters |
+| Backing services | Database and LLM providers through configuration/interfaces | Substitute test services/adapters |
 | Build/release/run | Build once; release combines digest/config; run consumes it | Tested digest equals deployed digest |
 | Processes | Stateless app workers; durable sessions/chat in database | Restart preserves account/chat state |
 | Port binding | HTTP service on a declared internal port | Works locally and behind existing proxy |
 | Concurrency | Bounded async generation; separate app/worker processes where needed | Concurrent-user tests and shared limits |
 | Disposability | Fast readiness and graceful shutdown with interrupted-run handling | Controlled stop during streaming |
 | Dev/prod parity | PostgreSQL and same application contracts across environments | Container integration tests |
-| Logs | Structured stdout/stderr with correlation IDs and secret redaction | Operational logs without credentials |
+| Logs | JSON response-start records with generated request IDs; exclude bodies, headers and query values | Operational logs without credentials |
 | Admin processes | Migrations, first-admin bootstrap, backups as one-off tasks | Reproducible documented commands |
 
 Mapping adapted to this proposed app from [The Twelve-Factor App](https://12factor.net/). This table is a design checklist, not a compliance certification.
@@ -29,7 +29,7 @@ Mapping adapted to this proposed app from [The Twelve-Factor App](https://12fact
 | Open/closed | Add a provider adapter without changing chat orchestration |
 | Liskov substitution | Adapter contract tests verify consistent streaming/cancellation/error semantics |
 | Interface segregation | Separate chat streaming capabilities from embeddings/tool/image capabilities |
-| Dependency inversion | Services receive provider, mail, and persistence boundaries through injection |
+| Dependency inversion | Services receive provider and persistence boundaries through injection |
 | Adapter and strategy | Normalize provider APIs and select models from validated configuration |
 | Unit of work | Short explicit database transactions; clear commit/rollback ownership |
 | State machine | Generation lifecycle with legal transitions and terminal states |
@@ -50,7 +50,7 @@ Avoid one class per trivial operation and unnecessary microservices. Add outbox/
 ## Core acceptance criteria
 
 - ACC-01: A fresh local checkout starts using the guide with PostgreSQL and mock streaming, without a paid provider key.
-- ACC-02: An anonymous user can register and verify an account; recovery, logout, and session revocation behave as specified.
+- ACC-02: An anonymous user can register and receive administrator approval; recovery, logout, and session revocation behave as specified.
 - ACC-03: Invalid/expired JWTs fail; refresh reuse revokes the affected session family; users cannot self-promote.
 - ACC-04: Users cannot access another user's conversations by guessed IDs; admin privileges are enforced by the API.
 - ACC-05: Chat streams incrementally through production HTTPS, survives arbitrary chunk boundaries, and reports completion/errors/cancellation correctly.
