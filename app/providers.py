@@ -9,6 +9,8 @@ import httpx
 
 
 class Provider(Protocol):
+    # Structural typing describes the boundary without requiring inheritance.
+    # Full terminal-event semantics remain work in #12/#18, not a proven contract.
     def stream(self, messages, max_output): ...
 
 
@@ -84,4 +86,6 @@ class HTTPProvider:
 
 
 def make_provider(config):
+    # Choose the adapter once at application construction; chat policies do not
+    # need to know the selected vendor's payload shape. See book/13-engineering-ideas.md.
     return MockProvider() if config.provider == "mock" else HTTPProvider(config)

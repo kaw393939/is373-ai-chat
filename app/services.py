@@ -105,6 +105,8 @@ async def revoke_all(session, user_id):
 
 
 async def owned(session, conversation_id, user_id):
+    # Existence and ownership share a 404 response so this lookup does not tell
+    # an unrelated account which conversation identifiers exist.
     item = await session.get(Conversation, conversation_id, with_for_update=True)
     if not item or item.user_id != user_id:
         raise HTTPException(404, "Conversation not found")
@@ -194,6 +196,8 @@ async def prepare_run(session, user, conversation_id, prompt, config):
     session.add(run)
     if conversation.title == "New conversation":
         conversation.title = prompt.content[:60]
+    # Persist admission before external I/O: another worker must see the reserved
+    # capacity, and a slow model must not hold these database locks for its stream.
     await session.commit()
     return run, messages, budget.max_output
 

@@ -1,9 +1,12 @@
+// Access claims stay in tab memory; the HttpOnly refresh cookie restores a session.
+// See book/04-auth.md. Neither storage choice replaces server authorization.
 let token = "";
 let rotation: Promise<boolean> | null = null;
 export function setToken(value: string) {
   token = value;
 }
 export async function refresh(): Promise<boolean> {
+  // Share one rotation within this tab. Cross-tab/logout coordination remains #10.
   if (rotation) return rotation;
   rotation = (async () => {
     const response = await fetch("/api/auth/refresh", { method: "POST" });
@@ -51,6 +54,8 @@ export async function consume(
   onEvent: (kind: string, data: any) => void,
 ) {
   const reader = response.body!.getReader();
+  // A network chunk may split a UTF-8 character or an SSE frame. Decode incrementally,
+  // then buffer until the protocol delimiter arrives; see book/05-streaming.md.
   const decoder = new TextDecoder();
   let buffer = "";
   try {
