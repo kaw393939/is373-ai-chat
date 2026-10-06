@@ -74,4 +74,4 @@ Preserve build-once/test/publish discipline, immutable digest selection, visible
 
 ## Remaining evidence to collect during installation
 
-DigitalOcean cloud firewall, backup and monitoring status; detailed runtime restart/resource policy inspection and exact image digest verification; chosen hostname/TLS behavior; resource limits under streaming load; permitted registry pulls; database backup destination and restore exercise; dedicated deployment identity. No DigitalOcean control-plane access was available in this investigation.
+The follow-up [full system audit](system-audit.md) now records runtime restart/resource policies, host-reported image digests, scheduled maintenance and reconstruction artifacts. Remaining evidence: DigitalOcean cloud firewall, backup and monitoring status; chosen hostname/TLS behavior; resource limits under streaming load; permitted registry pulls; database backup destination and restore exercise; dedicated deployment identity. No DigitalOcean control-plane access was available in this investigation.

@@ -1,0 +1,139 @@
+{
+  "checks": {
+    "fail2ban_status": {
+      "exit_code": 0,
+      "output": "Status\n|- Number of jail:\t1\n`- Jail list:\tsshd",
+      "error": ""
+    },
+    "fail2ban_sshd": {
+      "exit_code": 0,
+      "output": "Status for the jail: sshd\n|- Filter\n|  |- Currently failed:\t1\n|  |- Total failed:\t908\n|  `- Journal matches:\t_SYSTEMD_UNIT=sshd.service + _COMM=sshd\n`- Actions\n   |- Currently banned:\t16\n   |- Total banned:\t50\n   `- Banned IP list:\t92.118.39.49 45.148.10.240 151.252.135.190 101.33.78.144 45.238.235.2 2.57.122.238 100.62.0.220 80.94.92.179 43.164.133.44 94.154.43.63 159.223.59.82 218.23.170.184 103.170.215.118 92.118.39.77 129.121.96.133 103.159.2.113",
+      "error": ""
+    },
+    "fail2ban_bantime": {
+      "exit_code": 0,
+      "output": "86400",
+      "error": ""
+    },
+    "fail2ban_findtime": {
+      "exit_code": 0,
+      "output": "600",
+      "error": ""
+    },
+    "fail2ban_maxretry": {
+      "exit_code": 0,
+      "output": "3",
+      "error": ""
+    },
+    "apt_timer_units": {
+      "exit_code": 0,
+      "output": "# /usr/lib/systemd/system/apt-daily.timer\n[Unit]\nDescription=Daily apt download activities\n\n[Timer]\nOnCalendar=*-*-* 6,18:00\nRandomizedDelaySec=12h\nPersistent=true\n\n[Install]\nWantedBy=timers.target\n\n# /etc/systemd/system/apt-daily.timer.d/schedule.conf\n[Timer]\nOnCalendar=\nOnCalendar=*-*-* 01:45:00 America/New_York\nRandomizedDelaySec=0\nAccuracySec=1s\nPersistent=false\n\n# /usr/lib/systemd/system/apt-daily-upgrade.timer\n[Unit]\nDescription=Daily apt upgrade and clean activities\nAfter=apt-daily.timer\n\n[Timer]\nOnCalendar=*-*-* 6:00\nRandomizedDelaySec=60m\nPersistent=true\n\n[Install]\nWantedBy=timers.target\n\n# /etc/systemd/system/apt-daily-upgrade.timer.d/schedule.conf\n[Timer]\nOnCalendar=\nOnCalendar=*-*-* 02:00:00 America/New_York\nRandomizedDelaySec=0\nAccuracySec=1s\nPersistent=false",
+      "error": ""
+    },
+    "apt_policy": {
+      "exit_code": 0,
+      "output": "APT::Periodic \"\";\nAPT::Periodic::Update-Package-Lists \"1\";\nAPT::Periodic::Download-Upgradeable-Packages \"0\";\nAPT::Periodic::AutocleanInterval \"0\";\nAPT::Periodic::Unattended-Upgrade \"1\";\nUnattended-Upgrade \"\";\nUnattended-Upgrade::Allowed-Origins \"\";\nUnattended-Upgrade::Allowed-Origins:: \"${distro_id}:${distro_codename}\";\nUnattended-Upgrade::Allowed-Origins:: \"${distro_id}:${distro_codename}-security\";\nUnattended-Upgrade::Allowed-Origins:: \"${distro_id}ESMApps:${distro_codename}-apps-security\";\nUnattended-Upgrade::Allowed-Origins:: \"${distro_id}ESM:${distro_codename}-infra-security\";\nUnattended-Upgrade::DevRelease \"auto\";\nUnattended-Upgrade::Automatic-Reboot \"false\";\nUnattended-Upgrade::InstallOnShutdown \"false\";",
+      "error": ""
+    },
+    "routes": {
+      "exit_code": 0,
+      "output": "default via 159.203.176.1 dev eth0 proto static \n10.10.0.0/16 dev eth0 proto kernel scope link src 10.10.0.5 \n10.116.0.0/20 dev eth1 proto kernel scope link src 10.116.0.2 \n159.203.176.0/20 dev eth0 proto kernel scope link src 159.203.182.71 \n172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 linkdown \n172.18.0.0/16 dev br-e35615794475 proto kernel scope link src 172.18.0.1 \n172.19.0.0/16 dev br-3c5a1ad596ca proto kernel scope link src 172.19.0.1",
+      "error": ""
+    },
+    "ipv6_routes": {
+      "exit_code": 0,
+      "output": "fe80::/64 dev eth0 proto kernel metric 256 pref medium\nfe80::/64 dev eth1 proto kernel metric 256 pref medium\nfe80::/64 dev vethcfb39c0 proto kernel metric 256 pref medium\nfe80::/64 dev br-e35615794475 proto kernel metric 256 pref medium\nfe80::/64 dev veth7a54e8b proto kernel metric 256 pref medium\nfe80::/64 dev veth4eb798e proto kernel metric 256 pref medium\nfe80::/64 dev vethf59c710 proto kernel metric 256 pref medium\nfe80::/64 dev veth5be160d proto kernel metric 256 pref medium\nfe80::/64 dev vethb0efe7c proto kernel metric 256 pref medium\nfe80::/64 dev br-3c5a1ad596ca proto kernel metric 256 pref medium\nfe80::/64 dev vethc4bbdfc proto kernel metric 256 pref medium\nfe80::/64 dev vetha67dd83 proto kernel metric 256 pref medium\nfe80::/64 dev vethc53f1a7 proto kernel metric 256 pref medium",
+      "error": ""
+    },
+    "timezone": {
+      "exit_code": 0,
+      "output": "Local time: Tue 2026-10-06 19:36:06 UTC\n           Universal time: Tue 2026-10-06 19:36:06 UTC\n                 RTC time: Tue 2026-10-06 19:36:06\n                Time zone: Etc/UTC (UTC, +0000)\nSystem clock synchronized: yes\n              NTP service: active\n          RTC in local TZ: no",
+      "error": ""
+    },
+    "opt_inventory": {
+      "exit_code": 0,
+      "output": "/opt\n/opt/is373_ci_cd\n/opt/is373_ci_cd/.git\n/opt/is373_ci_cd/.github\n/opt/is373_ci_cd/app\n/opt/is373_ci_cd/tests\n/opt/is373_ci_cd/docs\n/opt/is373_ci_cd/scripts\n/opt/is373_ci_cd/.state\n/opt/containerd\n/opt/containerd/lib\n/opt/containerd/bin\n/opt/digitalocean\n/opt/digitalocean/droplet-agent\n/opt/digitalocean/bin\n/opt/webserver\n/opt/webserver/letsencrypt\n/opt/webserver/secrets\n/opt/webserver/sites\n/opt/373_hosting\n/opt/373_hosting/.git\n/opt/373_hosting/.github\n/opt/373_hosting/book\n/opt/373_hosting/tests\n/opt/373_hosting/scripts\n/opt/373_hosting/examples",
+      "error": ""
+    },
+    "custom_binaries": {
+      "exit_code": 0,
+      "output": "",
+      "error": ""
+    },
+    "last_boots": {
+      "exit_code": 0,
+      "output": "reboot   system boot  6.8.0-142-generi Tue Sep 29 17:17   still running\n\nwtmp begins Tue Sep 29 17:17:55 2026",
+      "error": ""
+    },
+    "storage_sizes": {
+      "exit_code": 0,
+      "output": "1.1G\t/var/lib/docker\n248K\t/opt/webserver\n1.0M\t/opt/is373_ci_cd\n81M\t/var/log",
+      "error": ""
+    }
+  },
+  "public_files": {
+    "/opt/webserver/sites/mywebclass.org/index.html": "<!doctype html>\n<html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Welcome | mywebclass.org</title>\n<style>body{margin:0;background:#101827;color:#f4f7fc;font:18px system-ui,sans-serif;min-height:100vh;display:grid;place-items:center}main{max-width:850px;padding:48px}small{color:#64dfb4;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(36px,6vw,70px);overflow-wrap:anywhere;line-height:1.1}p{color:#bac7da;line-height:1.7}code{color:#64dfb4}footer{margin-top:48px;font-size:14px;color:#92a4bd}</style>\n<main><small>Web server test \u2022 online</small><h1>Welcome to<br>mywebclass.org</h1>\n<p>This custom welcome page is served by Apache HTTP Server in Docker, routed through Traefik, and secured with a Let's Encrypt certificate.</p>\n<p>Hostname: <code>mywebclass.org</code><br>Service: <code>site-4</code></p>\n<footer>Your server is ready for application deployment.</footer></main></html>",
+    "/opt/webserver/sites/firehose360.com/index.html": "<!doctype html>\n<html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Welcome | firehose360.com</title>\n<style>body{margin:0;background:#101827;color:#f4f7fc;font:18px system-ui,sans-serif;min-height:100vh;display:grid;place-items:center}main{max-width:850px;padding:48px}small{color:#64dfb4;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(36px,6vw,70px);overflow-wrap:anywhere;line-height:1.1}p{color:#bac7da;line-height:1.7}code{color:#64dfb4}footer{margin-top:48px;font-size:14px;color:#92a4bd}</style>\n<main><small>Web server test \u2022 online</small><h1>Welcome to<br>firehose360.com</h1>\n<p>This custom welcome page is served by Apache HTTP Server in Docker, routed through Traefik, and secured with a Let's Encrypt certificate.</p>\n<p>Hostname: <code>firehose360.com</code><br>Service: <code>site-1</code></p>\n<footer>Your server is ready for application deployment.</footer></main></html>",
+    "/opt/webserver/sites/www.firehose360.com/index.html": "<!doctype html>\n<html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Welcome | www.firehose360.com</title>\n<style>body{margin:0;background:#101827;color:#f4f7fc;font:18px system-ui,sans-serif;min-height:100vh;display:grid;place-items:center}main{max-width:850px;padding:48px}small{color:#64dfb4;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(36px,6vw,70px);overflow-wrap:anywhere;line-height:1.1}p{color:#bac7da;line-height:1.7}code{color:#64dfb4}footer{margin-top:48px;font-size:14px;color:#92a4bd}</style>\n<main><small>Web server test \u2022 online</small><h1>Welcome to<br>www.firehose360.com</h1>\n<p>This custom welcome page is served by Apache HTTP Server in Docker, routed through Traefik, and secured with a Let's Encrypt certificate.</p>\n<p>Hostname: <code>www.firehose360.com</code><br>Service: <code>site-2</code></p>\n<footer>Your server is ready for application deployment.</footer></main></html>",
+    "/opt/webserver/sites/www.mywebclass.org/index.html": "<!doctype html>\n<html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Welcome | www.mywebclass.org</title>\n<style>body{margin:0;background:#101827;color:#f4f7fc;font:18px system-ui,sans-serif;min-height:100vh;display:grid;place-items:center}main{max-width:850px;padding:48px}small{color:#64dfb4;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(36px,6vw,70px);overflow-wrap:anywhere;line-height:1.1}p{color:#bac7da;line-height:1.7}code{color:#64dfb4}footer{margin-top:48px;font-size:14px;color:#92a4bd}</style>\n<main><small>Web server test \u2022 online</small><h1>Welcome to<br>www.mywebclass.org</h1>\n<p>This custom welcome page is served by Apache HTTP Server in Docker, routed through Traefik, and secured with a Let's Encrypt certificate.</p>\n<p>Hostname: <code>www.mywebclass.org</code><br>Service: <code>site-5</code></p>\n<footer>Your server is ready for application deployment.</footer></main></html>",
+    "/opt/webserver/sites/dev.firehose360.com/index.html": "<!doctype html>\n<html lang=\"en\"><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Welcome | dev.firehose360.com</title>\n<style>body{margin:0;background:#101827;color:#f4f7fc;font:18px system-ui,sans-serif;min-height:100vh;display:grid;place-items:center}main{max-width:850px;padding:48px}small{color:#64dfb4;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(36px,6vw,70px);overflow-wrap:anywhere;line-height:1.1}p{color:#bac7da;line-height:1.7}code{color:#64dfb4}footer{margin-top:48px;font-size:14px;color:#92a4bd}</style>\n<main><small>Web server test \u2022 online</small><h1>Welcome to<br>dev.firehose360.com</h1>\n<p>This custom welcome page is served by Apache HTTP Server in Docker, routed through Traefik, and secured with a Let's Encrypt certificate.</p>\n<p>Hostname: <code>dev.firehose360.com</code><br>Service: <code>site-3</code></p>\n<footer>Your server is ready for application deployment.</footer></main></html>",
+    "/opt/webserver/compose.yaml": "{\n  \"name\": \"public-web\",\n  \"services\": {\n    \"traefik\": {\n      \"image\": \"traefik:v3.7.13\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"command\": [\n        \"--api.dashboard=true\",\n        \"--api.insecure=false\",\n        \"--providers.docker=true\",\n        \"--providers.docker.exposedbydefault=false\",\n        \"--providers.docker.network=web\",\n        \"--entrypoints.web.address=:80\",\n        \"--entrypoints.web.http.redirections.entrypoint.to=websecure\",\n        \"--entrypoints.web.http.redirections.entrypoint.scheme=https\",\n        \"--entrypoints.websecure.address=:443\",\n        \"--entrypoints.websecure.http.tls.certresolver=letsencrypt\",\n        \"--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json\",\n        \"--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web\",\n        \"--ping=true\",\n        \"--log.level=INFO\",\n        \"--accesslog=true\",\n        \"--certificatesresolvers.letsencrypt.acme.email=keith@firehose360.com\"\n      ],\n      \"ports\": [\n        \"80:80\",\n        \"443:443\"\n      ],\n      \"volumes\": [\n        \"/var/run/docker.sock:/var/run/docker.sock:ro\",\n        \"./letsencrypt:/letsencrypt\",\n        \"./secrets/dashboard.htpasswd:/run/secrets/dashboard.htpasswd:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"healthcheck\": {\n        \"test\": [\n          \"CMD\",\n          \"traefik\",\n          \"healthcheck\",\n          \"--ping\"\n        ],\n        \"interval\": \"30s\",\n        \"timeout\": \"5s\",\n        \"retries\": 3\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.dashboard.rule\": \"Host(`traefik.firehose360.com`)\",\n        \"traefik.http.routers.dashboard.entrypoints\": \"websecure\",\n        \"traefik.http.routers.dashboard.service\": \"api@internal\"\n      }\n    },\n    \"site-1\": {\n      \"image\": \"httpd:2.4-alpine\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"volumes\": [\n        \"./sites/firehose360.com:/usr/local/apache2/htdocs:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.site-1.rule\": \"Host(`firehose360.com`)\",\n        \"traefik.http.routers.site-1.entrypoints\": \"websecure\",\n        \"traefik.http.services.site-1.loadbalancer.server.port\": \"80\"\n      }\n    },\n    \"site-2\": {\n      \"image\": \"httpd:2.4-alpine\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"volumes\": [\n        \"./sites/www.firehose360.com:/usr/local/apache2/htdocs:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.site-2.rule\": \"Host(`www.firehose360.com`)\",\n        \"traefik.http.routers.site-2.entrypoints\": \"websecure\",\n        \"traefik.http.services.site-2.loadbalancer.server.port\": \"80\"\n      }\n    },\n    \"site-3\": {\n      \"image\": \"httpd:2.4-alpine\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"volumes\": [\n        \"./sites/dev.firehose360.com:/usr/local/apache2/htdocs:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.site-3.rule\": \"Host(`dev.firehose360.com`)\",\n        \"traefik.http.routers.site-3.entrypoints\": \"websecure\",\n        \"traefik.http.services.site-3.loadbalancer.server.port\": \"80\"\n      }\n    },\n    \"site-4\": {\n      \"image\": \"httpd:2.4-alpine\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"volumes\": [\n        \"./sites/mywebclass.org:/usr/local/apache2/htdocs:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.site-4.rule\": \"Host(`mywebclass.org`)\",\n        \"traefik.http.routers.site-4.entrypoints\": \"websecure\",\n        \"traefik.http.services.site-4.loadbalancer.server.port\": \"80\"\n      }\n    },\n    \"site-5\": {\n      \"image\": \"httpd:2.4-alpine\",\n      \"restart\": \"unless-stopped\",\n      \"security_opt\": [\n        \"no-new-privileges:true\"\n      ],\n      \"volumes\": [\n        \"./sites/www.mywebclass.org:/usr/local/apache2/htdocs:ro\"\n      ],\n      \"networks\": [\n        \"web\"\n      ],\n      \"logging\": {\n        \"driver\": \"json-file\",\n        \"options\": {\n          \"max-size\": \"10m\",\n          \"max-file\": \"3\"\n        }\n      },\n      \"labels\": {\n        \"traefik.enable\": \"true\",\n        \"traefik.http.routers.site-5.rule\": \"Host(`www.mywebclass.org`)\",\n        \"traefik.http.routers.site-5.entrypoints\": \"websecure\",\n        \"traefik.http.services.site-5.loadbalancer.server.port\": \"80\"\n      }\n    }\n  },\n  \"networks\": {\n    \"web\": {\n      \"name\": \"web\"\n    }\n  }\n}\n",
+    "/opt/is373_ci_cd/compose.override.yaml": "# Copy into the APPLICATION checkout as ignored compose.override.yaml.\n# The application Make commands include that local file on every operation.\n# This file adds routing to an existing proxy; it never starts another Traefik.\nservices:\n  prod:\n    networks:\n      - default\n      - hosting\n    labels:\n      traefik.enable: 'true'\n      traefik.docker.network: ${TRAEFIK_NETWORK:-hosting-web}\n      traefik.http.routers.calculator.rule: Host(`${APP_HOST:?Set APP_HOST in the application .env}`)\n      traefik.http.routers.calculator.entrypoints: websecure\n      # Inherit entry-point TLS + certificate resolver; tls=true overrides that default.\n      traefik.http.routers.calculator.service: calculator\n      traefik.http.services.calculator.loadbalancer.server.port: '8000'\n\nnetworks:\n  hosting:\n    external: true\n    name: ${TRAEFIK_NETWORK:-hosting-web}\n",
+    "/etc/cron.d/sysstat": "# The first element of the path is a directory where the debian-sa1\n# script is located\nPATH=/usr/lib/sysstat:/usr/sbin:/usr/sbin:/usr/bin:/sbin:/bin\n\n# Activity reports every 10 minutes everyday\n5-55/10 * * * * root command -v debian-sa1 > /dev/null && debian-sa1 1 1\n\n# Additional run at 23:59 to rotate the statistics file\n59 23 * * * root command -v debian-sa1 > /dev/null && debian-sa1 60 2\n",
+    "/etc/cron.d/e2scrub_all": "30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=1 /usr/lib/x86_64-linux-gnu/e2fsprogs/e2scrub_all_cron\n10 3 * * * root test -e /run/systemd/system || SERVICE_MODE=1 /sbin/e2scrub_all -A -r\n"
+  },
+  "apt_history": [
+    {
+      "path": "/var/log/apt/history.log.1.gz",
+      "events": [
+        "Start-Date: 2026-09-29  17:18:35",
+        "Install: apt-transport-https:amd64 (2.8.3)",
+        "End-Date: 2026-09-29  17:18:35",
+        "Start-Date: 2026-09-29  17:19:01",
+        "Install: droplet-agent-keyring:amd64 (2.0.0), droplet-agent:amd64 (1.4.3)",
+        "End-Date: 2026-09-29  17:19:04",
+        "Start-Date: 2026-09-29  18:01:43",
+        "Install: libaprutil1t64:amd64 (1.6.3-1.1ubuntu7.1, automatic), apache2-utils:amd64 (2.4.58-1ubuntu8.15), libapr1t64:amd64 (1.7.2-3.1ubuntu0.1, automatic)",
+        "End-Date: 2026-09-29  18:01:49",
+        "Start-Date: 2026-09-29  18:02:01",
+        "Install: containerd.io:amd64 (2.3.6-1~ubuntu.24.04~noble), docker-compose-plugin:amd64 (5.5.1-1~ubuntu.24.04~noble), docker-ce-cli:amd64 (5:29.8.1-1~ubuntu.24.04~noble), pigz:amd64 (2.8-1, automatic), docker-buildx-plugin:amd64 (0.37.1-1~ubuntu.24.04~noble), docker-ce:amd64 (5:29.8.1-1~ubuntu.24.04~noble), docker-ce-rootless-extras:amd64 (5:29.8.1-1~ubuntu.24.04~noble, automatic)",
+        "End-Date: 2026-09-29  18:02:23",
+        "Start-Date: 2026-09-29  19:29:31",
+        "Install: make:amd64 (4.3-4.1build2)",
+        "End-Date: 2026-09-29  19:29:32",
+        "Start-Date: 2026-09-30  06:55:05",
+        "Upgrade: libheif1:amd64 (1.17.6-1ubuntu4.8, 1.17.6-1ubuntu4.9), libheif-plugin-aomdec:amd64 (1.17.6-1ubuntu4.8, 1.17.6-1ubuntu4.9), libheif-plugin-aomenc:amd64 (1.17.6-1ubuntu4.8, 1.17.6-1ubuntu4.9)",
+        "End-Date: 2026-09-30  06:55:07",
+        "Start-Date: 2026-09-30  06:55:14",
+        "Upgrade: dracut-install:amd64 (060+5-1ubuntu3.3, 060+5-1ubuntu3.4)",
+        "End-Date: 2026-09-30  06:55:15",
+        "Start-Date: 2026-09-30  06:55:22",
+        "Upgrade: python3-requests:amd64 (2.31.0+dfsg-1ubuntu1.1, 2.31.0+dfsg-1ubuntu1.2)",
+        "End-Date: 2026-09-30  06:55:24",
+        "Start-Date: 2026-09-30  06:55:31",
+        "Upgrade: python3-jwt:amd64 (2.7.0-1ubuntu0.1, 2.7.0-1ubuntu0.2)",
+        "End-Date: 2026-09-30  06:55:31",
+        "Start-Date: 2026-09-30  06:55:38",
+        "Upgrade: libevent-core-2.1-7t64:amd64 (2.1.12-stable-9ubuntu2.1, 2.1.12-stable-9ubuntu2.2)",
+        "End-Date: 2026-09-30  06:55:39"
+      ]
+    },
+    {
+      "path": "/var/log/apt/history.log",
+      "events": [
+        "Start-Date: 2026-10-01  06:27:41",
+        "Upgrade: libssl3t64:amd64 (3.0.13-0ubuntu3.15, 3.0.13-0ubuntu3.16), openssl:amd64 (3.0.13-0ubuntu3.15, 3.0.13-0ubuntu3.16)",
+        "End-Date: 2026-10-01  06:27:44",
+        "Start-Date: 2026-10-01  17:21:22",
+        "Install: python3-pyasyncore:amd64 (1.0.2-2, automatic), fail2ban:amd64 (1.0.2-3ubuntu0.1), python3-pyinotify:amd64 (0.9.6-2ubuntu1, automatic), whois:amd64 (5.5.22, automatic)",
+        "End-Date: 2026-10-01  17:21:31",
+        "Start-Date: 2026-10-01  17:23:45",
+        "Upgrade: libxpm4:amd64 (1:3.5.17-1ubuntu0.24.04.1, 1:3.5.17-1ubuntu0.24.04.2)",
+        "End-Date: 2026-10-01  17:23:45",
+        "Start-Date: 2026-10-02  06:00:11",
+        "Upgrade: libxpm4:amd64 (1:3.5.17-1ubuntu0.24.04.1, 1:3.5.17-1ubuntu0.24.04.2)",
+        "End-Date: 2026-10-02  06:00:12"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3155 @@
+{
+  "observed_at_utc": "2026-10-06T19:35:10.200008+00:00",
+  "effective_uid": 0,
+  "system": {
+    "os": {
+      "exit_code": 0,
+      "output": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo",
+      "error": ""
+    },
+    "kernel": {
+      "exit_code": 0,
+      "output": "Linux ubuntu-s-1vcpu-2gb-nyc1 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:24:27 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux",
+      "error": ""
+    },
+    "cpu": {
+      "exit_code": 0,
+      "output": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           40 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  1\nOn-line CPU(s) list:                     0\nVendor ID:                               GenuineIntel\nBIOS Vendor ID:                          QEMU\nModel name:                              DO-Regular\nBIOS Model name:                         pc-i440fx-6.1  CPU @ 2.0GHz\nBIOS CPU family:                         1\nCPU family:                              6\nModel:                                   79\nThread(s) per core:                      1\nCore(s) per socket:                      1\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4589.21\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx rdtscp lm constant_tsc rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq vmx ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch cpuid_fault pti ssbd ibrs ibpb tpr_shadow flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap xsaveopt arat vnmi md_clear\nVirtualization:                          VT-x\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               32 KiB (1 instance)\nL1i cache:                               32 KiB (1 instance)\nL2 cache:                                4 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0\nVulnerability Gather data sampling:      Not affected\nVulnerability Indirect target selection: Mitigation; Aligned branch/return thunks\nVulnerability Itlb multihit:             KVM: Mitigation: VMX disabled\nVulnerability L1tf:                      Mitigation; PTE Inversion; VMX conditional cache flushes, SMT disabled\nVulnerability Mds:                       Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Meltdown:                  Mitigation; PTI\nVulnerability Mmio stale data:           Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Retpoline\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+      "error": ""
+    },
+    "memory": {
+      "exit_code": 0,
+      "output": "total        used        free      shared  buff/cache   available\nMem:           1.9Gi       717Mi       206Mi       6.4Mi       1.2Gi       1.2Gi\nSwap:             0B          0B          0B",
+      "error": ""
+    },
+    "disk": {
+      "exit_code": 0,
+      "output": "Filesystem     Type     Size  Used Avail Use% Mounted on\ntmpfs          tmpfs    197M  1.8M  196M   1% /run\n/dev/vda1      ext4      48G  3.7G   44G   8% /\ntmpfs          tmpfs    984M     0  984M   0% /dev/shm\ntmpfs          tmpfs    5.0M     0  5.0M   0% /run/lock\n/dev/vda16     ext4     881M   64M  756M   8% /boot\n/dev/vda15     vfat     105M  6.2M   99M   6% /boot/efi\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/1f13e5096bc6bb664055a883a9b2459a5414bcfbfa8533d840c4608c49673988\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/89f01c81cba258f300a41dcacba964d4fc2fe5180a0bb61856b1dbed3b5d2206\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/61d5d6617456d3d6bb8afdf0ad5ae06d9b809dda001351dfa51a6dcc77bc4e04\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/47abf4f166d6b00f7b415cb68a5dd57ef4df9b8c90f235f9d05f68359dc03a5f\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/ea41af970f348fcf5cef72c3a5598de55253c6ed85f40332ba4c395c7c7e8ad4\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/661ca145447ab109bd4f59e245e2e8af1f80c05831eb2a3e9a8f5a7ad68c24ea\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/e4b5267fdb906ef03cf3aa723966cf742ec2e180b97a5435f122be522912655b\noverlay        overlay   48G  3.7G   44G   8% /var/lib/docker/rootfs/overlayfs/278a072568373a10662ca84958a33744f50c3eab3d467fcbfa238be295efad00\ntmpfs          tmpfs    197M   12K  197M   1% /run/user/1000",
+      "error": ""
+    },
+    "block_devices": {
+      "exit_code": 0,
+      "output": "NAME     SIZE FSTYPE  MOUNTPOINTS\nvda       50G         \n\u251c\u2500vda1    49G ext4    /\n\u251c\u2500vda14    4M         \n\u251c\u2500vda15  106M vfat    /boot/efi\n\u2514\u2500vda16  913M ext4    /boot\nvdb      488K iso9660",
+      "error": ""
+    },
+    "uptime": {
+      "exit_code": 0,
+      "output": "19:35:10 up 7 days,  2:17,  1 user,  load average: 0.11, 0.14, 0.13",
+      "error": ""
+    },
+    "docker_version": {
+      "exit_code": 0,
+      "output": "{\"Client\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.8.1\",\"ApiVersion\":\"1.56\",\"DefaultAPIVersion\":\"1.56\",\"GitCommit\":\"4a63305\",\"GoVersion\":\"go1.26.8\",\"Os\":\"linux\",\"Arch\":\"amd64\",\"BuildTime\":\"Tue Sep 15 16:26:01 2026\",\"Context\":\"default\"},\"Server\":{\"Platform\":{\"Name\":\"Docker Engine - Community\"},\"Version\":\"29.8.1\",\"ApiVersion\":\"1.56\",\"MinAPIVersion\":\"1.40\",\"Os\":\"linux\",\"Arch\":\"amd64\",\"Components\":[{\"Name\":\"Engine\",\"Version\":\"29.8.1\",\"Details\":{\"ApiVersion\":\"1.56\",\"Arch\":\"amd64\",\"BuildTime\":\"Tue Sep 15 16:26:01 2026\",\"Experimental\":\"false\",\"GitCommit\":\"464cd50\",\"GoVersion\":\"go1.26.8\",\"KernelVersion\":\"6.8.0-142-generic\",\"MinAPIVersion\":\"1.40\",\"Module\":\"github.com/moby/moby/v2\",\"ModuleVersion\":\"v2.0.0+unknown\",\"Os\":\"linux\"}},{\"Name\":\"containerd\",\"Version\":\"v2.3.6\",\"Details\":{\"GitCommit\":\"ee2735368117d2eb259779949d5e75cdafec9761\"}},{\"Name\":\"runc\",\"Version\":\"1.5.1\",\"Details\":{\"GitCommit\":\"v1.5.1-0-g8f2685a4\"}},{\"Name\":\"docker-init\",\"Version\":\"0.19.0\",\"Details\":{\"GitCommit\":\"de40ad0\"}}],\"GitCommit\":\"464cd50\",\"GoVersion\":\"go1.26.8\",\"KernelVersion\":\"6.8.0-142-generic\",\"BuildTime\":\"2026-09-15T16:26:01.000000000+00:00\"}}",
+      "error": ""
+    },
+    "compose_version": {
+      "exit_code": 0,
+      "output": "Docker Compose version v5.5.1",
+      "error": ""
+    },
+    "enabled_units": {
+      "exit_code": 0,
+      "output": "UNIT FILE                              STATE   PRESET\napport-autoreport.path                 enabled enabled\ntpm-udev.path                          enabled enabled\napparmor.service                       enabled enabled\napport.service                         enabled enabled\nblk-availability.service               enabled enabled\ncloud-config.service                   enabled enabled\ncloud-final.service                    enabled enabled\ncloud-init-local.service               enabled enabled\ncloud-init.service                     enabled enabled\nconsole-setup.service                  enabled enabled\ncontainerd.service                     enabled enabled\ncron.service                           enabled enabled\ndmesg.service                          enabled enabled\ndocker.service                         enabled enabled\ndroplet-agent.service                  enabled enabled\ne2scrub_reap.service                   enabled enabled\nfail2ban.service                       enabled enabled\nfinalrd.service                        enabled enabled\ngetty@.service                         enabled enabled\ngrub-common.service                    enabled enabled\ngrub-initrd-fallback.service           enabled enabled\nkeyboard-setup.service                 enabled enabled\nlvm2-monitor.service                   enabled enabled\nModemManager.service                   enabled enabled\nmultipathd.service                     enabled enabled\nnetworkd-dispatcher.service            enabled enabled\nopen-iscsi.service                     enabled enabled\nopen-vm-tools.service                  enabled enabled\npollinate.service                      enabled enabled\nrsyslog.service                        enabled enabled\nsecureboot-db.service                  enabled enabled\nsetvtrgb.service                       enabled enabled\nsnapd.apparmor.service                 enabled enabled\nsnapd.autoimport.service               enabled enabled\nsnapd.core-fixup.service               enabled enabled\nsnapd.recovery-chooser-trigger.service enabled enabled\nsnapd.seeded.service                   enabled enabled\nsnapd.service                          enabled enabled\nsnapd.system-shutdown.service          enabled enabled\nsysstat.service                        enabled enabled\nsystemd-networkd-wait-online.service   enabled enabled\nsystemd-networkd.service               enabled enabled\nsystemd-pstore.service                 enabled enabled\nsystemd-resolved.service               enabled enabled\nsystemd-timesyncd.service              enabled enabled\nua-reboot-cmds.service                 enabled enabled\nubuntu-advantage.service               enabled enabled\nudisks2.service                        enabled enabled\nufw.service                            enabled enabled\nunattended-upgrades.service            enabled enabled\nvgauth.service                         enabled enabled\nvpc-peering.service                    enabled enabled\napport-forward.socket                  enabled enabled\ncloud-init-hotplugd.socket             enabled enabled\ndm-event.socket                        enabled enabled\ndocker.socket                          enabled enabled\niscsid.socket                          enabled enabled\nlvm2-lvmpolld.socket                   enabled enabled\nlxd-installer.socket                   enabled enabled\nmultipathd.socket                      enabled enabled\nsnapd.socket                           enabled enabled\nssh.socket                             enabled enabled\nsystemd-networkd.socket                enabled enabled\nuuidd.socket                           enabled enabled\nremote-fs.target                       enabled enabled\napport-autoreport.timer                enabled enabled\napt-daily-upgrade.timer                enabled enabled\napt-daily.timer                        enabled enabled\ndpkg-db-backup.timer                   enabled enabled\ndroplet-agent-update.timer             enabled enabled\ne2scrub_all.timer                      enabled enabled\nfstrim.timer                           enabled enabled\nfwupd-refresh.timer                    enabled enabled\nlogrotate.timer                        enabled enabled\nman-db.timer                           enabled enabled\nmdcheck_continue.timer                 enabled enabled\nmdcheck_start.timer                    enabled enabled\nmdmonitor-oneshot.timer                enabled enabled\nmotd-news.timer                        enabled enabled\nsnapd.snap-repair.timer                enabled enabled\nsysstat-collect.timer                  enabled enabled\nsysstat-summary.timer                  enabled enabled\nua-timer.timer                         enabled enabled\nupdate-notifier-download.timer         enabled enabled\nupdate-notifier-motd.timer             enabled enabled\n\n85 unit files listed.",
+      "error": ""
+    },
+    "running_services": {
+      "exit_code": 0,
+      "output": "UNIT                        LOAD   ACTIVE SUB     DESCRIPTION\n  containerd.service          loaded active running containerd container runtime\n  cron.service                loaded active running Regular background program processing daemon\n  dbus.service                loaded active running D-Bus System Message Bus\n  docker.service              loaded active running Docker Application Container Engine\n  droplet-agent.service       loaded active running The DigitalOcean Droplet Agent\n  fail2ban.service            loaded active running Fail2Ban Service\n  fwupd.service               loaded active running Firmware update daemon\n  getty@tty1.service          loaded active running Getty on tty1\n  ModemManager.service        loaded active running Modem Manager\n  multipathd.service          loaded active running Device-Mapper Multipath Device Controller\n  polkit.service              loaded active running Authorization Manager\n  rsyslog.service             loaded active running System Logging Service\n  serial-getty@ttyS0.service  loaded active running Serial Getty on ttyS0\n  ssh.service                 loaded active running OpenBSD Secure Shell server\n  systemd-journald.service    loaded active running Journal Service\n  systemd-logind.service      loaded active running User Login Management\n  systemd-networkd.service    loaded active running Network Configuration\n  systemd-resolved.service    loaded active running Network Name Resolution\n  systemd-timesyncd.service   loaded active running Network Time Synchronization\n  systemd-udevd.service       loaded active running Rule-based Manager for Device Events and Files\n  udisks2.service             loaded active running Disk Manager\n  unattended-upgrades.service loaded active running Unattended Upgrades Shutdown\n  user@1000.service           loaded active running User Manager for UID 1000\n\nLegend: LOAD   \u2192 Reflects whether the unit definition was properly loaded.\n        ACTIVE \u2192 The high-level unit activation state, i.e. generalization of SUB.\n        SUB    \u2192 The low-level unit activation state, values depend on unit type.\n\n23 loaded units listed.",
+      "error": ""
+    },
+    "failed_units": {
+      "exit_code": 0,
+      "output": "UNIT LOAD ACTIVE SUB DESCRIPTION\n\n0 loaded units listed.",
+      "error": ""
+    },
+    "timers": {
+      "exit_code": 0,
+      "output": "NEXT                            LEFT LAST                               PASSED UNIT                           ACTIVATES\nTue 2026-10-06 19:40:00 UTC 4min 48s Tue 2026-10-06 19:30:01 UTC      5min ago sysstat-collect.timer          sysstat-collect.service\nTue 2026-10-06 20:00:39 UTC    25min Tue 2026-10-06 19:04:01 UTC     31min ago droplet-agent-update.timer     droplet-agent-update.service\nTue 2026-10-06 20:17:05 UTC    41min Tue 2026-10-06 19:15:13 UTC     19min ago fwupd-refresh.timer            fwupd-refresh.service\nTue 2026-10-06 23:51:30 UTC 4h 16min -                                       - update-notifier-motd.timer     update-notifier-motd.service\nWed 2026-10-07 00:00:00 UTC 4h 24min Tue 2026-10-06 00:00:00 UTC       19h ago dpkg-db-backup.timer           dpkg-db-backup.service\nWed 2026-10-07 00:00:00 UTC 4h 24min Tue 2026-10-06 00:00:00 UTC       19h ago logrotate.timer                logrotate.service\nWed 2026-10-07 00:07:00 UTC 4h 31min Tue 2026-10-06 00:07:01 UTC       19h ago sysstat-summary.timer          sysstat-summary.service\nWed 2026-10-07 04:05:09 UTC       8h Tue 2026-10-06 06:45:00 UTC       12h ago man-db.timer                   man-db.service\nWed 2026-10-07 05:28:57 UTC       9h Tue 2026-10-06 18:07:33 UTC  1h 27min ago motd-news.timer                motd-news.service\nWed 2026-10-07 05:45:00 UTC      10h Tue 2026-10-06 05:45:00 UTC       13h ago apt-daily.timer                apt-daily.service\nWed 2026-10-07 06:00:00 UTC      10h Tue 2026-10-06 06:00:00 UTC       13h ago apt-daily-upgrade.timer        apt-daily-upgrade.service\nWed 2026-10-07 17:24:53 UTC      21h Tue 2026-10-06 17:24:53 UTC  2h 10min ago update-notifier-download.timer update-notifier-download.service\nWed 2026-10-07 17:35:03 UTC      21h Tue 2026-10-06 17:35:03 UTC   2h 0min ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service\nSun 2026-10-11 03:10:04 UTC   4 days Sun 2026-10-04 03:11:01 UTC    2 days ago e2scrub_all.timer              e2scrub_all.service\nMon 2026-10-12 00:03:24 UTC   5 days Mon 2026-10-05 01:05:33 UTC 1 day 18h ago fstrim.timer                   fstrim.service\n-                                  - -                                       - apport-autoreport.timer        apport-autoreport.service\n-                                  - -                                       - snapd.snap-repair.timer        snapd.snap-repair.service\n-                                  - -                                       - ua-timer.timer                 ua-timer.service\n\n18 timers listed.",
+      "error": ""
+    },
+    "docker_unit": {
+      "exit_code": 0,
+      "output": "# /usr/lib/systemd/system/docker.service\n[Unit]\nDescription=Docker Application Container Engine\nDocumentation=https://docs.docker.com\nAfter=network-online.target nss-lookup.target docker.socket firewalld.service containerd.service time-set.target\nWants=network-online.target containerd.service\nRequires=docker.socket\nStartLimitBurst=3\nStartLimitIntervalSec=60\n\n[Service]\nType=notify\n# the default is not to use systemd for cgroups because the delegate issues still\n# exists and systemd currently does not support the cgroup feature set required\n# for containers run by docker\nExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock\nExecReload=/bin/kill -s HUP $MAINPID\nTimeoutStartSec=0\nRestartSec=2\nRestart=always\n\n# Having non-zero Limit*s causes performance problems due to accounting overhead\n# in the kernel. We recommend using cgroups to do container-local accounting.\nLimitNPROC=infinity\nLimitCORE=infinity\n\n# Comment TasksMax if your systemd version does not support it.\n# Only systemd 226 and above support this option.\nTasksMax=infinity\n\n# set delegate yes so that systemd does not reset the cgroups of docker containers\nDelegate=yes\n\n# kill only the docker process, not all processes in the cgroup\nKillMode=process\nOOMScoreAdjust=-500\n\n[Install]\nWantedBy=multi-user.target",
+      "error": ""
+    },
+    "containerd_unit": {
+      "exit_code": 0,
+      "output": "# /usr/lib/systemd/system/containerd.service\n# Copyright The containerd Authors.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#     http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n\n[Unit]\nDescription=containerd container runtime\nDocumentation=https://containerd.io\nAfter=network.target dbus.service\n\n[Service]\nExecStartPre=-/sbin/modprobe overlay\nExecStart=/usr/bin/containerd\n\nType=notify\nDelegate=yes\nKillMode=process\nRestart=always\nRestartSec=5\n\n# Having non-zero Limit*s causes performance problems due to accounting overhead\n# in the kernel. We recommend using cgroups to do container-local accounting.\nLimitNPROC=infinity\nLimitCORE=infinity\n\n# Comment TasksMax if your systemd version does not supports it.\n# Only systemd 226 and above support this version.\nTasksMax=infinity\nOOMScoreAdjust=-999\n\n[Install]\nWantedBy=multi-user.target",
+      "error": ""
+    },
+    "ssh_effective": {
+      "exit_code": 0,
+      "output": "port 22\naddressfamily any\nlistenaddress [::]:22\nlistenaddress 0.0.0.0:22\nusepam yes\nlogingracetime 120\nx11displayoffset 10\nmaxauthtries 6\nmaxsessions 10\nclientaliveinterval 0\nclientalivecountmax 3\nrequiredrsasize 1024\nstreamlocalbindmask 0177\nunusedconnectiontimeout none\npermitrootlogin no\nignorerhosts yes\nignoreuserknownhosts no\nhostbasedauthentication no\nhostbasedusesnamefrompacketonly no\npubkeyauthentication yes\nkerberosauthentication no\nkerberosorlocalpasswd yes\nkerberosticketcleanup yes\ngssapiauthentication no\ngssapicleanupcredentials yes\ngssapikeyexchange no\ngssapistrictacceptorcheck yes\ngssapistorecredentialsonrekey no\ngssapikexalgorithms gss-group14-sha256-,gss-group16-sha512-,gss-nistp256-sha256-,gss-curve25519-sha256-,gss-group14-sha1-,gss-gex-sha1-\npasswordauthentication no\nkbdinteractiveauthentication no\nprintmotd no\nprintlastlog yes\nx11forwarding yes\nx11uselocalhost yes\npermittty yes\npermituserrc yes\nstrictmodes yes\ntcpkeepalive yes\npermitemptypasswords no\ncompression yes\ngatewayports no\nusedns no\nallowtcpforwarding yes\nallowagentforwarding yes\ndisableforwarding no\nallowstreamlocalforwarding yes\nstreamlocalbindunlink no\nfingerprinthash SHA256\nexposeauthinfo no\ndebianbanner yes\npidfile /run/sshd.pid\nmodulifile /etc/ssh/moduli\nxauthlocation /usr/bin/xauth\nciphers chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,aes256-gcm@openssh.com\nmacs umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1\nbanner none\nforcecommand none\nchrootdirectory none\ntrustedusercakeys none\nrevokedkeys none\nsecuritykeyprovider internal\nauthorizedprincipalsfile none\nversionaddendum none\nauthorizedkeyscommand none\nauthorizedkeyscommanduser none\nauthorizedprincipalscommand none\nauthorizedprincipalscommanduser none\nhostkeyagent none\nkexalgorithms sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256\ncasignaturealgorithms ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256\nhostbasedacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256\nhostkeyalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256\npubkeyacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256\nloglevel INFO\nsyslogfacility AUTH\nauthorizedkeysfile .ssh/authorized_keys .ssh/authorized_keys2\nhostkey /etc/ssh/ssh_host_rsa_key\nhostkey /etc/ssh/ssh_host_ecdsa_key\nhostkey /etc/ssh/ssh_host_ed25519_key\nacceptenv LANG\nacceptenv LC_*\nauthenticationmethods any\nchanneltimeout none\nsubsystem sftp /usr/lib/openssh/sftp-server \nmaxstartups 10:30:100\npersourcemaxstartups none\npersourcenetblocksize 32:128\npermittunnel no\nipqos lowdelay throughput\nrekeylimit 0 0\npermitopen any\npermitlisten any\npermituserenvironment no\npubkeyauthoptions none",
+      "error": ""
+    },
+    "sudo_policy": {
+      "exit_code": 0,
+      "output": "Matching Defaults entries for kwilliams on ubuntu-s-1vcpu-2gb-nyc1:\n    env_reset, mail_badpass, secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin\\:/snap/bin, use_pty\n\nUser kwilliams may run the following commands on ubuntu-s-1vcpu-2gb-nyc1:\n    (ALL : ALL) ALL",
+      "error": ""
+    },
+    "listeners": {
+      "exit_code": 0,
+      "output": "Netid State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess                                                   \nudp   UNCONN 0      0         127.0.0.54:53        0.0.0.0:*    users:((\"systemd-resolve\",pid=579071,fd=16))             \nudp   UNCONN 0      0      127.0.0.53%lo:53        0.0.0.0:*    users:((\"systemd-resolve\",pid=579071,fd=14))             \ntcp   LISTEN 0      4096      127.0.0.54:53        0.0.0.0:*    users:((\"systemd-resolve\",pid=579071,fd=17))             \ntcp   LISTEN 0      4096       127.0.0.1:8091      0.0.0.0:*    users:((\"docker-proxy\",pid=11119,fd=8))                  \ntcp   LISTEN 0      4096       127.0.0.1:8090      0.0.0.0:*    users:((\"docker-proxy\",pid=772657,fd=8))                 \ntcp   LISTEN 0      4096         0.0.0.0:443       0.0.0.0:*    users:((\"docker-proxy\",pid=6946,fd=8))                   \ntcp   LISTEN 0      4096   127.0.0.53%lo:53        0.0.0.0:*    users:((\"systemd-resolve\",pid=579071,fd=15))             \ntcp   LISTEN 0      4096         0.0.0.0:22        0.0.0.0:*    users:((\"sshd\",pid=579076,fd=3),(\"systemd\",pid=1,fd=136))\ntcp   LISTEN 0      4096         0.0.0.0:80        0.0.0.0:*    users:((\"docker-proxy\",pid=6928,fd=8))                   \ntcp   LISTEN 0      4096            [::]:443          [::]:*    users:((\"docker-proxy\",pid=6950,fd=8))                   \ntcp   LISTEN 0      4096            [::]:22           [::]:*    users:((\"sshd\",pid=579076,fd=4),(\"systemd\",pid=1,fd=137))\ntcp   LISTEN 0      4096            [::]:80           [::]:*    users:((\"docker-proxy\",pid=6933,fd=8))",
+      "error": ""
+    },
+    "ufw": {
+      "exit_code": 0,
+      "output": "Status: active\nLogging: on (low)\nDefault: deny (incoming), allow (outgoing), deny (routed)\nNew profiles: skip\n\nTo                         Action      From\n--                         ------      ----\n22/tcp (OpenSSH)           ALLOW IN    Anywhere                  \n80/tcp                     ALLOW IN    Anywhere                  \n443/tcp                    ALLOW IN    Anywhere                  \n22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)             \n80/tcp (v6)                ALLOW IN    Anywhere (v6)             \n443/tcp (v6)               ALLOW IN    Anywhere (v6)",
+      "error": ""
+    },
+    "iptables_filter": {
+      "exit_code": 0,
+      "output": "-P INPUT DROP\n-P FORWARD DROP\n-P OUTPUT ACCEPT\n-N DOCKER\n-N DOCKER-BRIDGE\n-N DOCKER-CT\n-N DOCKER-FORWARD\n-N DOCKER-INTERNAL\n-N DOCKER-USER\n-N ufw-after-forward\n-N ufw-after-input\n-N ufw-after-logging-forward\n-N ufw-after-logging-input\n-N ufw-after-logging-output\n-N ufw-after-output\n-N ufw-before-forward\n-N ufw-before-input\n-N ufw-before-logging-forward\n-N ufw-before-logging-input\n-N ufw-before-logging-output\n-N ufw-before-output\n-N ufw-logging-allow\n-N ufw-logging-deny\n-N ufw-not-local\n-N ufw-reject-forward\n-N ufw-reject-input\n-N ufw-reject-output\n-N ufw-skip-to-policy-forward\n-N ufw-skip-to-policy-input\n-N ufw-skip-to-policy-output\n-N ufw-track-forward\n-N ufw-track-input\n-N ufw-track-output\n-N ufw-user-forward\n-N ufw-user-input\n-N ufw-user-limit\n-N ufw-user-limit-accept\n-N ufw-user-logging-forward\n-N ufw-user-logging-input\n-N ufw-user-logging-output\n-N ufw-user-output\n-A INPUT -j ufw-before-logging-input\n-A INPUT -j ufw-before-input\n-A INPUT -j ufw-after-input\n-A INPUT -j ufw-after-logging-input\n-A INPUT -j ufw-reject-input\n-A INPUT -j ufw-track-input\n-A FORWARD -j DOCKER-USER\n-A FORWARD -j DOCKER-FORWARD\n-A FORWARD -j ufw-before-logging-forward\n-A FORWARD -j ufw-before-forward\n-A FORWARD -j ufw-after-forward\n-A FORWARD -j ufw-after-logging-forward\n-A FORWARD -j ufw-reject-forward\n-A FORWARD -j ufw-track-forward\n-A OUTPUT -j ufw-before-logging-output\n-A OUTPUT -j ufw-before-output\n-A OUTPUT -j ufw-after-output\n-A OUTPUT -j ufw-after-logging-output\n-A OUTPUT -j ufw-reject-output\n-A OUTPUT -j ufw-track-output\n-A DOCKER -d 172.19.0.2/32 ! -i br-3c5a1ad596ca -o br-3c5a1ad596ca -p tcp -m tcp --dport 8000 -j ACCEPT\n-A DOCKER -d 172.19.0.3/32 ! -i br-3c5a1ad596ca -o br-3c5a1ad596ca -p tcp -m tcp --dport 3000 -j ACCEPT\n-A DOCKER -d 172.18.0.7/32 ! -i br-e35615794475 -o br-e35615794475 -p tcp -m tcp --dport 443 -j ACCEPT\n-A DOCKER -d 172.18.0.7/32 ! -i br-e35615794475 -o br-e35615794475 -p tcp -m tcp --dport 80 -j ACCEPT\n-A DOCKER ! -i docker0 -o docker0 -j DROP\n-A DOCKER ! -i br-e35615794475 -o br-e35615794475 -j DROP\n-A DOCKER ! -i br-3c5a1ad596ca -o br-3c5a1ad596ca -j DROP\n-A DOCKER-BRIDGE -o docker0 -j DOCKER\n-A DOCKER-BRIDGE -o br-e35615794475 -j DOCKER\n-A DOCKER-BRIDGE -o br-3c5a1ad596ca -j DOCKER\n-A DOCKER-CT -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A DOCKER-CT -o br-e35615794475 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A DOCKER-CT -o br-3c5a1ad596ca -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A DOCKER-FORWARD -j DOCKER-CT\n-A DOCKER-FORWARD -j DOCKER-INTERNAL\n-A DOCKER-FORWARD -j DOCKER-BRIDGE\n-A DOCKER-FORWARD -i docker0 -j ACCEPT\n-A DOCKER-FORWARD -i br-e35615794475 -j ACCEPT\n-A DOCKER-FORWARD -i br-3c5a1ad596ca -j ACCEPT\n-A ufw-after-input -p udp -m udp --dport 137 -j ufw-skip-to-policy-input\n-A ufw-after-input -p udp -m udp --dport 138 -j ufw-skip-to-policy-input\n-A ufw-after-input -p tcp -m tcp --dport 139 -j ufw-skip-to-policy-input\n-A ufw-after-input -p tcp -m tcp --dport 445 -j ufw-skip-to-policy-input\n-A ufw-after-input -p udp -m udp --dport 67 -j ufw-skip-to-policy-input\n-A ufw-after-input -p udp -m udp --dport 68 -j ufw-skip-to-policy-input\n-A ufw-after-input -m addrtype --dst-type BROADCAST -j ufw-skip-to-policy-input\n-A ufw-after-logging-forward -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw-after-logging-input -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw-before-forward -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw-before-forward -p icmp -m icmp --icmp-type 3 -j ACCEPT\n-A ufw-before-forward -p icmp -m icmp --icmp-type 11 -j ACCEPT\n-A ufw-before-forward -p icmp -m icmp --icmp-type 12 -j ACCEPT\n-A ufw-before-forward -p icmp -m icmp --icmp-type 8 -j ACCEPT\n-A ufw-before-forward -j ufw-user-forward\n-A ufw-before-input -i lo -j ACCEPT\n-A ufw-before-input -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw-before-input -m conntrack --ctstate INVALID -j ufw-logging-deny\n-A ufw-before-input -m conntrack --ctstate INVALID -j DROP\n-A ufw-before-input -p icmp -m icmp --icmp-type 3 -j ACCEPT\n-A ufw-before-input -p icmp -m icmp --icmp-type 11 -j ACCEPT\n-A ufw-before-input -p icmp -m icmp --icmp-type 12 -j ACCEPT\n-A ufw-before-input -p icmp -m icmp --icmp-type 8 -j ACCEPT\n-A ufw-before-input -p udp -m udp --sport 67 --dport 68 -j ACCEPT\n-A ufw-before-input -j ufw-not-local\n-A ufw-before-input -d 224.0.0.251/32 -p udp -m udp --dport 5353 -j ACCEPT\n-A ufw-before-input -d 239.255.255.250/32 -p udp -m udp --dport 1900 -j ACCEPT\n-A ufw-before-input -j ufw-user-input\n-A ufw-before-output -o lo -j ACCEPT\n-A ufw-before-output -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw-before-output -j ufw-user-output\n-A ufw-logging-allow -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW ALLOW] \"\n-A ufw-logging-deny -m conntrack --ctstate INVALID -m limit --limit 3/min --limit-burst 10 -j RETURN\n-A ufw-logging-deny -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw-not-local -m addrtype --dst-type LOCAL -j RETURN\n-A ufw-not-local -m addrtype --dst-type MULTICAST -j RETURN\n-A ufw-not-local -m addrtype --dst-type BROADCAST -j RETURN\n-A ufw-not-local -m limit --limit 3/min --limit-burst 10 -j ufw-logging-deny\n-A ufw-not-local -j DROP\n-A ufw-skip-to-policy-forward -j DROP\n-A ufw-skip-to-policy-input -j DROP\n-A ufw-skip-to-policy-output -j ACCEPT\n-A ufw-track-output -p tcp -m conntrack --ctstate NEW -j ACCEPT\n-A ufw-track-output -p udp -m conntrack --ctstate NEW -j ACCEPT\n-A ufw-user-input -p tcp -m tcp --dport 22 -m comment --comment \"\\'dapp_OpenSSH\\'\" -j ACCEPT\n-A ufw-user-input -p tcp -m tcp --dport 80 -j ACCEPT\n-A ufw-user-input -p tcp -m tcp --dport 443 -j ACCEPT\n-A ufw-user-limit -m limit --limit 3/min -j LOG --log-prefix \"[UFW LIMIT BLOCK] \"\n-A ufw-user-limit -j REJECT --reject-with icmp-port-unreachable\n-A ufw-user-limit-accept -j ACCEPT",
+      "error": ""
+    },
+    "iptables_nat": {
+      "exit_code": 0,
+      "output": "-P PREROUTING ACCEPT\n-P INPUT ACCEPT\n-P OUTPUT ACCEPT\n-P POSTROUTING ACCEPT\n-N DOCKER\n-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER\n-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER\n-A POSTROUTING -s 172.19.0.0/16 ! -o br-3c5a1ad596ca -j MASQUERADE\n-A POSTROUTING -s 172.18.0.0/16 ! -o br-e35615794475 -j MASQUERADE\n-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE\n-A DOCKER ! -i br-e35615794475 -p tcp -m tcp --dport 80 -j DNAT --to-destination 172.18.0.7:80\n-A DOCKER ! -i br-e35615794475 -p tcp -m tcp --dport 443 -j DNAT --to-destination 172.18.0.7:443\n-A DOCKER -d 127.0.0.1/32 ! -i br-3c5a1ad596ca -p tcp -m tcp --dport 8091 -j DNAT --to-destination 172.19.0.3:3000\n-A DOCKER -d 127.0.0.1/32 ! -i br-3c5a1ad596ca -p tcp -m tcp --dport 8090 -j DNAT --to-destination 172.19.0.2:8000",
+      "error": ""
+    },
+    "ipv6_filter": {
+      "exit_code": 0,
+      "output": "-P INPUT DROP\n-P FORWARD DROP\n-P OUTPUT ACCEPT\n-N DOCKER\n-N DOCKER-BRIDGE\n-N DOCKER-CT\n-N DOCKER-FORWARD\n-N DOCKER-INTERNAL\n-N DOCKER-USER\n-N ufw6-after-forward\n-N ufw6-after-input\n-N ufw6-after-logging-forward\n-N ufw6-after-logging-input\n-N ufw6-after-logging-output\n-N ufw6-after-output\n-N ufw6-before-forward\n-N ufw6-before-input\n-N ufw6-before-logging-forward\n-N ufw6-before-logging-input\n-N ufw6-before-logging-output\n-N ufw6-before-output\n-N ufw6-logging-allow\n-N ufw6-logging-deny\n-N ufw6-reject-forward\n-N ufw6-reject-input\n-N ufw6-reject-output\n-N ufw6-skip-to-policy-forward\n-N ufw6-skip-to-policy-input\n-N ufw6-skip-to-policy-output\n-N ufw6-track-forward\n-N ufw6-track-input\n-N ufw6-track-output\n-N ufw6-user-forward\n-N ufw6-user-input\n-N ufw6-user-limit\n-N ufw6-user-limit-accept\n-N ufw6-user-logging-forward\n-N ufw6-user-logging-input\n-N ufw6-user-logging-output\n-N ufw6-user-output\n-A INPUT -j ufw6-before-logging-input\n-A INPUT -j ufw6-before-input\n-A INPUT -j ufw6-after-input\n-A INPUT -j ufw6-after-logging-input\n-A INPUT -j ufw6-reject-input\n-A INPUT -j ufw6-track-input\n-A FORWARD -j DOCKER-USER\n-A FORWARD -j DOCKER-FORWARD\n-A FORWARD -j ufw6-before-logging-forward\n-A FORWARD -j ufw6-before-forward\n-A FORWARD -j ufw6-after-forward\n-A FORWARD -j ufw6-after-logging-forward\n-A FORWARD -j ufw6-reject-forward\n-A FORWARD -j ufw6-track-forward\n-A OUTPUT -j ufw6-before-logging-output\n-A OUTPUT -j ufw6-before-output\n-A OUTPUT -j ufw6-after-output\n-A OUTPUT -j ufw6-after-logging-output\n-A OUTPUT -j ufw6-reject-output\n-A OUTPUT -j ufw6-track-output\n-A DOCKER-FORWARD -j DOCKER-CT\n-A DOCKER-FORWARD -j DOCKER-INTERNAL\n-A DOCKER-FORWARD -j DOCKER-BRIDGE\n-A ufw6-after-input -p udp -m udp --dport 137 -j ufw6-skip-to-policy-input\n-A ufw6-after-input -p udp -m udp --dport 138 -j ufw6-skip-to-policy-input\n-A ufw6-after-input -p tcp -m tcp --dport 139 -j ufw6-skip-to-policy-input\n-A ufw6-after-input -p tcp -m tcp --dport 445 -j ufw6-skip-to-policy-input\n-A ufw6-after-input -p udp -m udp --dport 546 -j ufw6-skip-to-policy-input\n-A ufw6-after-input -p udp -m udp --dport 547 -j ufw6-skip-to-policy-input\n-A ufw6-after-logging-forward -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw6-after-logging-input -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw6-before-forward -m rt --rt-type 0 -j DROP\n-A ufw6-before-forward -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 1 -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 2 -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 3 -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 4 -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 128 -j ACCEPT\n-A ufw6-before-forward -p ipv6-icmp -m icmp6 --icmpv6-type 129 -j ACCEPT\n-A ufw6-before-forward -j ufw6-user-forward\n-A ufw6-before-input -i lo -j ACCEPT\n-A ufw6-before-input -m rt --rt-type 0 -j DROP\n-A ufw6-before-input -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 129 -j ACCEPT\n-A ufw6-before-input -m conntrack --ctstate INVALID -j ufw6-logging-deny\n-A ufw6-before-input -m conntrack --ctstate INVALID -j DROP\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 1 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 2 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 3 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 4 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 128 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 133 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 134 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 135 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 136 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 141 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 142 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 130 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 131 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 132 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 143 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 148 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 149 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 151 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 152 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 153 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 144 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 145 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 146 -j ACCEPT\n-A ufw6-before-input -p ipv6-icmp -m icmp6 --icmpv6-type 147 -j ACCEPT\n-A ufw6-before-input -s fe80::/10 -d fe80::/10 -p udp -m udp --sport 547 --dport 546 -j ACCEPT\n-A ufw6-before-input -d ff02::fb/128 -p udp -m udp --dport 5353 -j ACCEPT\n-A ufw6-before-input -d ff02::f/128 -p udp -m udp --dport 1900 -j ACCEPT\n-A ufw6-before-input -j ufw6-user-input\n-A ufw6-before-output -o lo -j ACCEPT\n-A ufw6-before-output -m rt --rt-type 0 -j DROP\n-A ufw6-before-output -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 1 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 2 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 3 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 4 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 128 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 129 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 133 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 136 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 135 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 134 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 141 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 142 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 130 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 131 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 132 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 143 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 148 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -p ipv6-icmp -m icmp6 --icmpv6-type 149 -m hl --hl-eq 255 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 151 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 152 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-output -s fe80::/10 -p ipv6-icmp -m icmp6 --icmpv6-type 153 -m hl --hl-eq 1 -j ACCEPT\n-A ufw6-before-output -j ufw6-user-output\n-A ufw6-logging-allow -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW ALLOW] \"\n-A ufw6-logging-deny -m conntrack --ctstate INVALID -m limit --limit 3/min --limit-burst 10 -j RETURN\n-A ufw6-logging-deny -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix \"[UFW BLOCK] \"\n-A ufw6-skip-to-policy-forward -j DROP\n-A ufw6-skip-to-policy-input -j DROP\n-A ufw6-skip-to-policy-output -j ACCEPT\n-A ufw6-track-output -p tcp -m conntrack --ctstate NEW -j ACCEPT\n-A ufw6-track-output -p udp -m conntrack --ctstate NEW -j ACCEPT\n-A ufw6-user-input -p tcp -m tcp --dport 22 -m comment --comment \"\\'dapp_OpenSSH\\'\" -j ACCEPT\n-A ufw6-user-input -p tcp -m tcp --dport 80 -j ACCEPT\n-A ufw6-user-input -p tcp -m tcp --dport 443 -j ACCEPT\n-A ufw6-user-limit -m limit --limit 3/min -j LOG --log-prefix \"[UFW LIMIT BLOCK] \"\n-A ufw6-user-limit -j REJECT --reject-with icmp6-port-unreachable\n-A ufw6-user-limit-accept -j ACCEPT",
+      "error": ""
+    },
+    "docker_projects": {
+      "exit_code": 0,
+      "output": "[{\"Name\":\"is373-ci-cd\",\"Status\":\"running(2)\",\"ConfigFiles\":\"/opt/is373_ci_cd/compose.yaml,/opt/is373_ci_cd/compose.override.yaml\"},{\"Name\":\"public-web\",\"Status\":\"running(6)\",\"ConfigFiles\":\"/opt/webserver/compose.yaml\"}]",
+      "error": ""
+    },
+    "docker_storage": {
+      "exit_code": 0,
+      "output": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          7         4         1.234GB   14.88MB (1%)\nContainers      8         8         217.1kB   0B (0%)\nLocal Volumes   1         1         4.263MB   0B (0%)\nBuild Cache     0         0         0B        0B",
+      "error": ""
+    },
+    "docker_stats": {
+      "exit_code": 0,
+      "output": "{\"BlockIO\":\"311kB / 0B\",\"CPUPerc\":\"0.23%\",\"Container\":\"278a072568373a10662ca84958a33744f50c3eab3d467fcbfa238be295efad00\",\"ID\":\"278a07256837\",\"MemPerc\":\"2.01%\",\"MemUsage\":\"39.61MiB / 1.922GiB\",\"Name\":\"is373-ci-cd-prod-1\",\"NetIO\":\"282kB / 376kB\",\"PIDs\":\"2\"}\n{\"BlockIO\":\"586kB / 359MB\",\"CPUPerc\":\"0.97%\",\"Container\":\"e4b5267fdb906ef03cf3aa723966cf742ec2e180b97a5435f122be522912655b\",\"ID\":\"e4b5267fdb90\",\"MemPerc\":\"4.75%\",\"MemUsage\":\"93.45MiB / 1.922GiB\",\"Name\":\"is373-ci-cd-wud-1\",\"NetIO\":\"469MB / 242MB\",\"PIDs\":\"23\"}\n{\"BlockIO\":\"14.8MB / 0B\",\"CPUPerc\":\"0.00%\",\"Container\":\"661ca145447ab109bd4f59e245e2e8af1f80c05831eb2a3e9a8f5a7ad68c24ea\",\"ID\":\"661ca145447a\",\"MemPerc\":\"1.70%\",\"MemUsage\":\"33.43MiB / 1.922GiB\",\"Name\":\"public-web-traefik-1\",\"NetIO\":\"59MB / 91.7MB\",\"PIDs\":\"8\"}\n{\"BlockIO\":\"8.19kB / 4.1kB\",\"CPUPerc\":\"0.01%\",\"Container\":\"1f13e5096bc6bb664055a883a9b2459a5414bcfbfa8533d840c4608c49673988\",\"ID\":\"1f13e5096bc6\",\"MemPerc\":\"0.48%\",\"MemUsage\":\"9.359MiB / 1.922GiB\",\"Name\":\"public-web-site-1-1\",\"NetIO\":\"4.64MB / 3.36MB\",\"PIDs\":\"109\"}\n{\"BlockIO\":\"8.19kB / 4.1kB\",\"CPUPerc\":\"0.00%\",\"Container\":\"89f01c81cba258f300a41dcacba964d4fc2fe5180a0bb61856b1dbed3b5d2206\",\"ID\":\"89f01c81cba2\",\"MemPerc\":\"0.30%\",\"MemUsage\":\"5.871MiB / 1.922GiB\",\"Name\":\"public-web-site-2-1\",\"NetIO\":\"755kB / 658kB\",\"PIDs\":\"82\"}\n{\"BlockIO\":\"8.19kB / 4.1kB\",\"CPUPerc\":\"0.00%\",\"Container\":\"61d5d6617456d3d6bb8afdf0ad5ae06d9b809dda001351dfa51a6dcc77bc4e04\",\"ID\":\"61d5d6617456\",\"MemPerc\":\"0.29%\",\"MemUsage\":\"5.793MiB / 1.922GiB\",\"Name\":\"public-web-site-3-1\",\"NetIO\":\"348kB / 261kB\",\"PIDs\":\"82\"}\n{\"BlockIO\":\"8.19kB / 4.1kB\",\"CPUPerc\":\"0.01%\",\"Container\":\"47abf4f166d6b00f7b415cb68a5dd57ef4df9b8c90f235f9d05f68359dc03a5f\",\"ID\":\"47abf4f166d6\",\"MemPerc\":\"0.47%\",\"MemUsage\":\"9.164MiB / 1.922GiB\",\"Name\":\"public-web-site-4-1\",\"NetIO\":\"8.68MB / 5.51MB\",\"PIDs\":\"109\"}\n{\"BlockIO\":\"8.19kB / 4.1kB\",\"CPUPerc\":\"0.00%\",\"Container\":\"ea41af970f348fcf5cef72c3a5598de55253c6ed85f40332ba4c395c7c7e8ad4\",\"ID\":\"ea41af970f34\",\"MemPerc\":\"0.38%\",\"MemUsage\":\"7.574MiB / 1.922GiB\",\"Name\":\"public-web-site-5-1\",\"NetIO\":\"1.38MB / 1.1MB\",\"PIDs\":\"109\"}",
+      "error": ""
+    },
+    "packages": {
+      "exit_code": 0,
+      "output": "adduser\t3.137ubuntu1\napache2-utils\t2.4.58-1ubuntu8.15\napparmor\t4.0.1really4.0.1-0ubuntu0.24.04.8\napport\t2.28.3-0ubuntu0.1\napport-core-dump-handler\t2.28.3-0ubuntu0.1\napport-symptoms\t0.25\nappstream\t1.0.2-1build6\napt\t2.8.3\napt-transport-https\t2.8.3\napt-utils\t2.8.3\nbase-files\t13ubuntu10.5\nbase-passwd\t3.6.3build1\nbash\t5.2.21-2ubuntu4\nbash-completion\t1:2.11-8\nbc\t1.07.1-3ubuntu4\nbcache-tools\t1.0.8-5build1\nbind9-dnsutils\t1:9.18.39-0ubuntu0.24.04.7\nbind9-host\t1:9.18.39-0ubuntu0.24.04.7\nbind9-libs:amd64\t1:9.18.39-0ubuntu0.24.04.7\nbolt\t0.9.7-1\nbpfcc-tools\t0.29.1+ds-1ubuntu7\nbpftrace\t0.20.2-1ubuntu4.3\nbsdextrautils\t2.39.3-9ubuntu6.6\nbsdutils\t1:2.39.3-9ubuntu6.6\nbtrfs-progs\t6.6.3-1.1build2\nbusybox-initramfs\t1:1.36.1-6ubuntu3.1\nbusybox-static\t1:1.36.1-6ubuntu3.1\nbyobu\t6.11-0ubuntu1.1\nca-certificates\t20260601~24.04.1\ncloud-guest-utils\t0.33-1\ncloud-init\t26.1-0ubuntu1~24.04.1\ncloud-initramfs-copymods\t0.49~24.04.1\ncloud-initramfs-dyn-netconf\t0.49~24.04.1\ncommand-not-found\t23.04.0\nconsole-setup\t1.226ubuntu1.1\nconsole-setup-linux\t1.226ubuntu1.1\ncontainerd.io\t2.3.6-1~ubuntu.24.04~noble\ncoreutils\t9.4-3ubuntu6.3\ncpio\t2.15+dfsg-1ubuntu2.1\ncron\t3.0pl1-184ubuntu2\ncron-daemon-common\t3.0pl1-184ubuntu2\ncryptsetup\t2:2.7.0-1ubuntu4.2\ncryptsetup-bin\t2:2.7.0-1ubuntu4.2\ncryptsetup-initramfs\t2:2.7.0-1ubuntu4.2\ncurl\t8.5.0-2ubuntu10.15\ndash\t0.5.12-6ubuntu5\ndbus\t1.14.10-4ubuntu4.1\ndbus-bin\t1.14.10-4ubuntu4.1\ndbus-daemon\t1.14.10-4ubuntu4.1\ndbus-session-bus-common\t1.14.10-4ubuntu4.1\ndbus-system-bus-common\t1.14.10-4ubuntu4.1\ndbus-user-session\t1.14.10-4ubuntu4.1\ndebconf\t1.5.86ubuntu1\ndebconf-i18n\t1.5.86ubuntu1\ndebianutils\t5.17build1\ndhcpcd-base\t1:10.0.6-1ubuntu3.2\ndiffutils\t1:3.10-1ubuntu0.1\ndirmngr\t2.4.4-2ubuntu17.6\ndistro-info\t1.7build1\ndistro-info-data\t0.72-0ubuntu0.24.04.1\ndmeventd\t2:1.02.185-3ubuntu3.2\ndmidecode\t3.5-3ubuntu0.2\ndmsetup\t2:1.02.185-3ubuntu3.2\ndocker-buildx-plugin\t0.37.1-1~ubuntu.24.04~noble\ndocker-ce\t5:29.8.1-1~ubuntu.24.04~noble\ndocker-ce-cli\t5:29.8.1-1~ubuntu.24.04~noble\ndocker-ce-rootless-extras\t5:29.8.1-1~ubuntu.24.04~noble\ndocker-compose-plugin\t5.5.1-1~ubuntu.24.04~noble\ndosfstools\t4.2-1.1build1\ndpkg\t1.22.6ubuntu6.6\ndracut-install\t060+5-1ubuntu3.4\ndroplet-agent\t1.4.3\ndroplet-agent-keyring\t2.0.0\ne2fsprogs\t1.47.0-2.4~exp1ubuntu4.1\ne2fsprogs-l10n\t1.47.0-2.4~exp1ubuntu4.1\neatmydata\t131-1ubuntu1\ned\t1.20.1-1\nefibootmgr\t18-1build2\neject\t2.39.3-9ubuntu6.6\nethtool\t1:6.7-1build1\nfail2ban\t1.0.2-3ubuntu0.1\nfdisk\t2.39.3-9ubuntu6.6\nfile\t1:5.45-3build1\nfinalrd\t9build1\nfindutils\t4.9.0-5build1\nfontconfig-config\t2.15.0-1.1ubuntu2\nfonts-dejavu-core\t2.37-8\nfonts-dejavu-mono\t2.37-8\nfonts-ubuntu-console\t0.869+git20240321-0ubuntu1\nfriendly-recovery\t0.2.42\nftp\t20230507-2build3\nfuse3\t3.14.0-5build1\nfwupd\t2.0.20-1ubuntu2~24.04.2\nfwupd-signed\t1.52+1.4-1\ngawk\t1:5.2.1-2ubuntu0.1\ngcc-14-base:amd64\t14.2.0-4ubuntu2~24.04.1\ngdisk\t1.0.10-1build1\ngettext-base\t0.21-14ubuntu2\ngir1.2-girepository-2.0:amd64\t1.80.1-1\ngir1.2-glib-2.0:amd64\t2.80.0-6ubuntu3.9\ngir1.2-packagekitglib-1.0\t1.2.8-2ubuntu1.5\ngit\t1:2.43.0-1ubuntu7.3\ngit-man\t1:2.43.0-1ubuntu7.3\ngnupg\t2.4.4-2ubuntu17.6\ngnupg-l10n\t2.4.4-2ubuntu17.6\ngnupg-utils\t2.4.4-2ubuntu17.6\ngpg\t2.4.4-2ubuntu17.6\ngpg-agent\t2.4.4-2ubuntu17.6\ngpg-wks-client\t2.4.4-2ubuntu17.6\ngpgconf\t2.4.4-2ubuntu17.6\ngpgsm\t2.4.4-2ubuntu17.6\ngpgv\t2.4.4-2ubuntu17.6\ngrep\t3.11-4build1\ngroff-base\t1.23.0-3build2\ngrub-common\t2.12-1ubuntu7.3\ngrub-efi-amd64-bin\t2.12-1ubuntu7.3\ngrub-efi-amd64-signed\t1.202.5+2.12-1ubuntu7.3\ngrub-gfxpayload-lists\t0.7build2\ngrub-pc\t2.12-1ubuntu7.3\ngrub-pc-bin\t2.12-1ubuntu7.3\ngrub2-common\t2.12-1ubuntu7.3\ngzip\t1.12-1ubuntu3.2\nhdparm\t9.65+ds-1build1\nhostname\t3.23+nmu2ubuntu2\nhtop\t3.3.0-4build1\nhwdata\t0.379-1\nibverbs-providers:amd64\t50.0-2ubuntu0.2\nieee-data\t20220827.1\ninetutils-telnet\t2:2.5-3ubuntu4.2\ninfo\t7.1-3build2\ninit\t1.66ubuntu1\ninit-system-helpers\t1.66ubuntu1\ninitramfs-tools\t0.142ubuntu25.8\ninitramfs-tools-bin\t0.142ubuntu25.8\ninitramfs-tools-core\t0.142ubuntu25.8\ninstall-info\t7.1-3build2\niproute2\t6.1.0-1ubuntu6.4\niptables\t1.8.10-3ubuntu2\niputils-ping\t3:20240117-1ubuntu0.1\niputils-tracepath\t3:20240117-1ubuntu0.1\niso-codes\t4.16.0-1\njq\t1.7.1-3ubuntu0.24.04.2\nkbd\t2.6.4-2ubuntu2\nkeyboard-configuration\t1.226ubuntu1.1\nkeyboxd\t2.4.4-2ubuntu17.6\nklibc-utils\t2.0.13-4ubuntu0.2\nkmod\t31+20240202-2ubuntu7.2\nkpartx\t0.9.4-5ubuntu8.2\nkrb5-locales\t1.20.1-6ubuntu2.10\nlandscape-common\t24.02-0ubuntu5.7\nless\t590-2ubuntu2.1\nlibacl1:amd64\t2.3.2-1build1.1\nlibaio1t64:amd64\t0.3.113-6build1.1\nlibaom3:amd64\t3.8.2-2ubuntu0.2\nlibapparmor1:amd64\t4.0.1really4.0.1-0ubuntu0.24.04.8\nlibappstream5:amd64\t1.0.2-1build6\nlibapr1t64:amd64\t1.7.2-3.1ubuntu0.1\nlibaprutil1t64:amd64\t1.6.3-1.1ubuntu7.1\nlibapt-pkg6.0t64:amd64\t2.8.3\nlibarchive13t64:amd64\t3.7.2-2ubuntu0.8\nlibargon2-1:amd64\t0~20190702+dfsg-4build1\nlibassuan0:amd64\t2.5.6-1build1\nlibatasmart4:amd64\t0.19-5build3\nlibatm1t64:amd64\t1:2.5.1-5.1build1\nlibattr1:amd64\t1:2.5.2-1ubuntu0.1\nlibaudit-common\t1:3.1.2-2.1ubuntu0.1\nlibaudit1:amd64\t1:3.1.2-2.1ubuntu0.1\nlibblkid1:amd64\t2.39.3-9ubuntu6.6\nlibblockdev-crypto3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-fs3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-loop3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-mdraid3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-nvme3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-part3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-swap3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev-utils3:amd64\t3.1.1-1ubuntu0.1\nlibblockdev3:amd64\t3.1.1-1ubuntu0.1\nlibbpf1:amd64\t1:1.3.0-2build2\nlibbpfcc:amd64\t0.29.1+ds-1ubuntu7\nlibbrotli1:amd64\t1.1.0-2build2\nlibbsd0:amd64\t0.12.1-1build1.1\nlibbytesize-common\t2.10-1ubuntu2\nlibbytesize1:amd64\t2.10-1ubuntu2\nlibbz2-1.0:amd64\t1.0.8-5.1ubuntu0.1\nlibc-bin\t2.39-0ubuntu8.9\nlibc-dev-bin\t2.39-0ubuntu8.9\nlibc-devtools\t2.39-0ubuntu8.9\nlibc6:amd64\t2.39-0ubuntu8.9\nlibc6-dev:amd64\t2.39-0ubuntu8.9\nlibcap-ng0:amd64\t0.8.4-2build2\nlibcap2:amd64\t1:2.66-5ubuntu2.4\nlibcap2-bin\t1:2.66-5ubuntu2.4\nlibcbor0.10:amd64\t0.10.2-1.2ubuntu2\nlibclang-cpp18\t1:18.1.3-1ubuntu1\nlibclang1-18\t1:18.1.3-1ubuntu1\nlibcom-err2:amd64\t1.47.0-2.4~exp1ubuntu4.1\nlibcrypt-dev:amd64\t1:4.4.36-4build1\nlibcrypt1:amd64\t1:4.4.36-4build1\nlibcryptsetup12:amd64\t2:2.7.0-1ubuntu4.2\nlibcurl3t64-gnutls:amd64\t8.5.0-2ubuntu10.15\nlibcurl4t64:amd64\t8.5.0-2ubuntu10.15\nlibdb5.3t64:amd64\t5.3.28+dfsg2-7\nlibdbus-1-3:amd64\t1.14.10-4ubuntu4.1\nlibdebconfclient0:amd64\t0.271ubuntu3\nlibdeflate0:amd64\t1.19-1build1.1\nlibdevmapper-event1.02.1:amd64\t2:1.02.185-3ubuntu3.2\nlibdevmapper1.02.1:amd64\t2:1.02.185-3ubuntu3.2\nlibdrm-amdgpu1:amd64\t2.4.125-1ubuntu0.1~24.04.2\nlibdrm-common\t2.4.125-1ubuntu0.1~24.04.2\nlibdrm2:amd64\t2.4.125-1ubuntu0.1~24.04.2\nlibduktape207:amd64\t2.7.0+tests-0ubuntu3\nlibdw1t64:amd64\t0.190-1.1ubuntu0.1\nlibeatmydata1:amd64\t131-1ubuntu1\nlibedit2:amd64\t3.1-20230828-1build1\nlibefiboot1t64:amd64\t38-3.1build1\nlibefivar1t64:amd64\t38-3.1build1\nlibelf1t64:amd64\t0.190-1.1ubuntu0.1\nliberror-perl\t0.17029-2\nlibestr0:amd64\t0.1.11-1build1\nlibevdev2:amd64\t1.13.1+dfsg-1build1\nlibevent-core-2.1-7t64:amd64\t2.1.12-stable-9ubuntu2.2\nlibexpat1:amd64\t2.6.1-2ubuntu0.6\nlibext2fs2t64:amd64\t1.47.0-2.4~exp1ubuntu4.1\nlibfastjson4:amd64\t1.2304.0-1build1\nlibfdisk1:amd64\t2.39.3-9ubuntu6.6\nlibffi8:amd64\t3.4.6-1build1\nlibfido2-1:amd64\t1.14.0-1build3\nlibflashrom1:amd64\t1.3.0-2.1ubuntu2\nlibfontconfig1:amd64\t2.15.0-1.1ubuntu2\nlibfreetype6:amd64\t2.13.2+dfsg-1ubuntu0.1\nlibfribidi0:amd64\t1.0.13-3build1\nlibftdi1-2:amd64\t1.5-6build5\nlibfuse3-3:amd64\t3.14.0-5build1\nlibfwupd3:amd64\t2.0.20-1ubuntu2~24.04.2\nlibgcc-s1:amd64\t14.2.0-4ubuntu2~24.04.1\nlibgcrypt20:amd64\t1.10.3-2ubuntu0.2\nlibgd3:amd64\t2.3.3-9ubuntu5\nlibgdbm-compat4t64:amd64\t1.23-5.1build1\nlibgdbm6t64:amd64\t1.23-5.1build1\nlibgirepository-1.0-1:amd64\t1.80.1-1\nlibglib2.0-0t64:amd64\t2.80.0-6ubuntu3.9\nlibglib2.0-bin\t2.80.0-6ubuntu3.9\nlibglib2.0-data\t2.80.0-6ubuntu3.9\nlibgmp10:amd64\t2:6.3.0+dfsg-2ubuntu6.1\nlibgnutls30t64:amd64\t3.8.3-1.1ubuntu3.6\nlibgpg-error-l10n\t1.47-3build2.1\nlibgpg-error0:amd64\t1.47-3build2.1\nlibgpgme11t64:amd64\t1.18.0-4.1ubuntu4\nlibgpm2:amd64\t1.20.7-11\nlibgssapi-krb5-2:amd64\t1.20.1-6ubuntu2.10\nlibgstreamer1.0-0:amd64\t1.24.2-1ubuntu0.1\nlibgudev-1.0-0:amd64\t1:238-5ubuntu1\nlibheif-plugin-aomdec:amd64\t1.17.6-1ubuntu4.9\nlibheif-plugin-aomenc:amd64\t1.17.6-1ubuntu4.9\nlibheif1:amd64\t1.17.6-1ubuntu4.9\nlibhogweed6t64:amd64\t3.9.1-2.2build1.1\nlibibverbs1:amd64\t50.0-2ubuntu0.2\nlibicu74:amd64\t74.2-1ubuntu3.1\nlibidn2-0:amd64\t2.3.7-2build1.1\nlibinih1:amd64\t55-1ubuntu2\nlibintl-perl\t1.33-1build3\nlibintl-xs-perl\t1.33-1build3\nlibip4tc2:amd64\t1.8.10-3ubuntu2\nlibip6tc2:amd64\t1.8.10-3ubuntu2\nlibisns0t64:amd64\t0.101-0.3ubuntu0.1\nlibjansson4:amd64\t2.14-2build2\nlibjbig0:amd64\t2.1-6.1ubuntu2\nlibjcat1:amd64\t0.2.3-1~ubuntu0.24.04.1\nlibjpeg-turbo8:amd64\t2.1.5-2ubuntu2\nlibjpeg8:amd64\t8c-2ubuntu11\nlibjq1:amd64\t1.7.1-3ubuntu0.24.04.2\nlibjson-c5:amd64\t0.17-1build1\nlibjson-glib-1.0-0:amd64\t1.8.0-2build2\nlibjson-glib-1.0-common\t1.8.0-2build2\nlibk5crypto3:amd64\t1.20.1-6ubuntu2.10\nlibkeyutils1:amd64\t1.6.3-3build1\nlibklibc:amd64\t2.0.13-4ubuntu0.2\nlibkmod2:amd64\t31+20240202-2ubuntu7.2\nlibkrb5-3:amd64\t1.20.1-6ubuntu2.10\nlibkrb5support0:amd64\t1.20.1-6ubuntu2.10\nlibksba8:amd64\t1.6.6-1build1\nlibldap-common\t2.6.10+dfsg-0ubuntu0.24.04.1\nlibldap2:amd64\t2.6.10+dfsg-0ubuntu0.24.04.1\nliblerc4:amd64\t4.0.0+ds-4ubuntu2\nlibllvm18:amd64\t1:18.1.3-1ubuntu1\nliblmdb0:amd64\t0.9.31-1build1\nliblocale-gettext-perl\t1.07-6ubuntu5\nliblvm2cmd2.03:amd64\t2.03.16-3ubuntu3.2\nliblz4-1:amd64\t1.9.4-1build1.1\nliblzma5:amd64\t5.6.1+really5.4.5-1ubuntu0.3\nliblzo2-2:amd64\t2.10-2build4\nlibmagic-mgc\t1:5.45-3build1\nlibmagic1t64:amd64\t1:5.45-3build1\nlibmaxminddb0:amd64\t1.9.1-1build1\nlibmbim-glib4:amd64\t1.31.2-0ubuntu3.1\nlibmbim-proxy\t1.31.2-0ubuntu3.1\nlibmbim-utils\t1.31.2-0ubuntu3.1\nlibmd0:amd64\t1.1.0-2build1.1\nlibmm-glib0:amd64\t1.23.4-0ubuntu2\nlibmnl0:amd64\t1.0.5-2build1\nlibmodule-find-perl\t0.16-2\nlibmodule-scandeps-perl\t1.35-1ubuntu0.24.04.1\nlibmount1:amd64\t2.39.3-9ubuntu6.6\nlibmpfr6:amd64\t4.2.1-1build1.1\nlibmspack0t64:amd64\t0.11-1.1build1\nlibncurses6:amd64\t6.4+20240113-1ubuntu2.2\nlibncursesw6:amd64\t6.4+20240113-1ubuntu2.2\nlibnetfilter-conntrack3:amd64\t1.0.9-6build1\nlibnetplan1:amd64\t1.1.2-8ubuntu1~24.04.3\nlibnettle8t64:amd64\t3.9.1-2.2build1.1\nlibnewt0.52:amd64\t0.52.24-2ubuntu2\nlibnfnetlink0:amd64\t1.0.2-2build1\nlibnftables1:amd64\t1.0.9-1ubuntu0.1\nlibnftnl11:amd64\t1.2.6-2build1\nlibnghttp2-14:amd64\t1.59.0-1ubuntu0.4\nlibnl-3-200:amd64\t3.7.0-0.3build1.1\nlibnl-genl-3-200:amd64\t3.7.0-0.3build1.1\nlibnl-route-3-200:amd64\t3.7.0-0.3build1.1\nlibnpth0t64:amd64\t1.6-3.1build1\nlibnspr4:amd64\t2:4.35-1.1build1\nlibnss-systemd:amd64\t255.4-1ubuntu8.17\nlibnss3:amd64\t2:3.98-1ubuntu0.2\nlibntfs-3g89t64:amd64\t1:2022.10.3-1.2ubuntu3.2\nlibnuma1:amd64\t2.0.18-1ubuntu0.24.04.1\nlibnvme1t64\t1.8-3ubuntu1\nlibonig5:amd64\t6.9.9-1build1\nlibopeniscsiusr\t2.1.9-3ubuntu5.4\nlibp11-kit0:amd64\t0.25.3-4ubuntu2.2\nlibpackagekit-glib2-18:amd64\t1.2.8-2ubuntu1.5\nlibpam-cap:amd64\t1:2.66-5ubuntu2.4\nlibpam-modules:amd64\t1.5.3-5ubuntu5.7\nlibpam-modules-bin\t1.5.3-5ubuntu5.7\nlibpam-runtime\t1.5.3-5ubuntu5.7\nlibpam-systemd:amd64\t255.4-1ubuntu8.17\nlibpam0g:amd64\t1.5.3-5ubuntu5.7\nlibparted2t64:amd64\t3.6-4build1\nlibpcap0.8t64:amd64\t1.10.4-4.1ubuntu3.1\nlibpci3:amd64\t1:3.10.0-2build1\nlibpcre2-8-0:amd64\t10.42-4ubuntu2.1\nlibperl5.38t64:amd64\t5.38.2-3.2ubuntu0.6\nlibpipeline1:amd64\t1.5.7-2\nlibplymouth5:amd64\t24.004.60-1ubuntu7.2\nlibpng16-16t64:amd64\t1.6.43-5ubuntu0.6\nlibpolkit-agent-1-0:amd64\t124-2ubuntu1.24.04.4\nlibpolkit-gobject-1-0:amd64\t124-2ubuntu1.24.04.4\nlibpopt0:amd64\t1.19+dfsg-1build1\nlibproc-processtable-perl:amd64\t0.636-1build3\nlibproc2-0:amd64\t2:4.0.4-4ubuntu3.3\nlibprotobuf-c1:amd64\t1.4.1-1ubuntu4\nlibpsl5t64:amd64\t0.21.2-1.1build1\nlibpython3-stdlib:amd64\t3.12.3-0ubuntu2.1\nlibpython3.12-minimal:amd64\t3.12.3-1ubuntu0.17\nlibpython3.12-stdlib:amd64\t3.12.3-1ubuntu0.17\nlibpython3.12t64:amd64\t3.12.3-1ubuntu0.17\nlibqmi-glib5:amd64\t1.35.2-0ubuntu2\nlibqmi-proxy\t1.35.2-0ubuntu2\nlibqmi-utils\t1.35.2-0ubuntu2\nlibqrtr-glib0:amd64\t1.2.2-1ubuntu4\nlibreadline8t64:amd64\t8.2-4build1\nlibreiserfscore0t64\t1:3.6.27-7.1build1\nlibrtmp1:amd64\t2.4+20151223.gitfa8646d.1-2build7\nlibsasl2-2:amd64\t2.1.28+dfsg1-5ubuntu3.1\nlibsasl2-modules:amd64\t2.1.28+dfsg1-5ubuntu3.1\nlibsasl2-modules-db:amd64\t2.1.28+dfsg1-5ubuntu3.1\nlibseccomp2:amd64\t2.5.5-1ubuntu3.1\nlibselinux1:amd64\t3.5-2ubuntu2.1\nlibsemanage-common\t3.5-1build5\nlibsemanage2:amd64\t3.5-1build5\nlibsensors-config\t1:3.6.0-9build1\nlibsensors5:amd64\t1:3.6.0-9build1\nlibsepol2:amd64\t3.5-2build1\nlibsgutils2-1.46-2:amd64\t1.46-3ubuntu4\nlibsharpyuv0:amd64\t1.3.2-0.4build3\nlibsigsegv2:amd64\t2.14-1ubuntu2\nlibslang2:amd64\t2.3.3-3build2\nlibsmartcols1:amd64\t2.39.3-9ubuntu6.6\nlibsodium23:amd64\t1.0.18-1ubuntu0.24.04.1\nlibsort-naturally-perl\t1.03-4\nlibsqlite3-0:amd64\t3.45.1-1ubuntu2.8\nlibss2:amd64\t1.47.0-2.4~exp1ubuntu4.1\nlibssh-4:amd64\t0.10.6-2ubuntu0.5\nlibssl3t64:amd64\t3.0.13-0ubuntu3.16\nlibstdc++6:amd64\t14.2.0-4ubuntu2~24.04.1\nlibstemmer0d:amd64\t2.2.0-4build1\nlibsystemd-shared:amd64\t255.4-1ubuntu8.17\nlibsystemd0:amd64\t255.4-1ubuntu8.17\nlibtasn1-6:amd64\t4.19.0-3ubuntu0.24.04.2\nlibtcl8.6:amd64\t8.6.14+dfsg-1build1\nlibterm-readkey-perl\t2.38-2build4\nlibtext-charwidth-perl:amd64\t0.04-11build3\nlibtext-iconv-perl:amd64\t1.7-8build3\nlibtext-wrapi18n-perl\t0.06-10\nlibtiff6:amd64\t4.5.1+git230720-4ubuntu2.5\nlibtinfo6:amd64\t6.4+20240113-1ubuntu2.2\nlibtirpc-common\t1.3.4+ds-1.1build1\nlibtirpc3t64:amd64\t1.3.4+ds-1.1build1\nlibtraceevent1:amd64\t1:1.8.2-1ubuntu2.1\nlibtraceevent1-plugin:amd64\t1:1.8.2-1ubuntu2.1\nlibtracefs1:amd64\t1.8.0-1ubuntu1\nlibtss2-esys-3.0.2-0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-mu-4.0.1-0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-sys1t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-tcti-cmd0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-tcti-device0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-tcti-mssim0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibtss2-tcti-swtpm0t64:amd64\t4.0.1-7.1ubuntu5.1\nlibuchardet0:amd64\t0.0.8-1build1\nlibudev1:amd64\t255.4-1ubuntu8.17\nlibudisks2-0:amd64\t2.10.1-6ubuntu1.5\nlibunistring5:amd64\t1.1-2build1.1\nlibunwind8:amd64\t1.6.2-3build1.1\nliburcu8t64:amd64\t0.14.0-3.1build1\nlibusb-1.0-0:amd64\t2:1.0.27-1\nlibutempter0:amd64\t1.2.1-3build1\nlibuuid1:amd64\t2.39.3-9ubuntu6.6\nlibuv1t64:amd64\t1.48.0-1.1build1\nlibvolume-key1:amd64\t0.3.12-7build2\nlibwebp7:amd64\t1.3.2-0.4build3\nlibwrap0:amd64\t7.6.q-33\nlibx11-6:amd64\t2:1.8.7-1build1\nlibx11-data\t2:1.8.7-1build1\nlibxau6:amd64\t1:1.0.9-1build6\nlibxcb1:amd64\t1.15-1ubuntu2\nlibxdmcp6:amd64\t1:1.1.3-0ubuntu6\nlibxext6:amd64\t2:1.3.4-1build2\nlibxkbcommon0:amd64\t1.6.0-1build1\nlibxml2:amd64\t2.9.14+dfsg-1.3ubuntu3.9\nlibxmlb2:amd64\t0.3.24-1~ubuntu0.24.04.1\nlibxmlsec1t64:amd64\t1.2.39-5build2\nlibxmlsec1t64-openssl:amd64\t1.2.39-5build2\nlibxmuu1:amd64\t2:1.1.3-3build2\nlibxpm4:amd64\t1:3.5.17-1ubuntu0.24.04.2\nlibxslt1.1:amd64\t1.1.39-0exp1ubuntu0.24.04.3\nlibxtables12:amd64\t1.8.10-3ubuntu2\nlibxxhash0:amd64\t0.8.2-2build1\nlibyaml-0-2:amd64\t0.2.5-1build1\nlibzstd1:amd64\t1.5.5+dfsg2-2build1.1\nlinux-base\t4.5ubuntu9+24.04.2\nlinux-headers-6.8.0-142\t6.8.0-142.142\nlinux-headers-6.8.0-142-generic\t6.8.0-142.142\nlinux-headers-generic\t6.8.0-142.142\nlinux-headers-virtual\t6.8.0-142.142\nlinux-image-6.8.0-142-generic\t6.8.0-142.142\nlinux-image-virtual\t6.8.0-142.142\nlinux-libc-dev:amd64\t6.8.0-142.142\nlinux-modules-6.8.0-142-generic\t6.8.0-142.142\nlinux-tools-6.8.0-142\t6.8.0-142.142\nlinux-tools-6.8.0-142-generic\t6.8.0-142.142\nlinux-tools-common\t6.8.0-142.142\nlinux-virtual\t6.8.0-142.142\nlocales\t2.39-0ubuntu8.9\nlogin\t1:4.13+dfsg1-4ubuntu3.2\nlogrotate\t3.21.0-2build1\nlogsave\t1.47.0-2.4~exp1ubuntu4.1\nlsb-release\t12.0-2\nlshw\t02.19.git.2021.06.19.996aaad9c7-2ubuntu0.24.04.1\nlsof\t4.95.0-1build3\nlvm2\t2.03.16-3ubuntu3.2\nlxd-agent-loader\t0.7ubuntu0.1\nlxd-installer\t4ubuntu0.1\nmake\t4.3-4.1build2\nman-db\t2.12.0-4build2\nmanpages\t6.7-2\nmanpages-dev\t6.7-2\nmawk\t1.3.4.20240123-1build1\nmdadm\t4.3-1ubuntu2.1\nmedia-types\t10.1.0\nmodemmanager\t1.23.4-0ubuntu2\nmokutil\t0.6.0-2build3\nmotd-news-config\t13ubuntu10.5\nmount\t2.39.3-9ubuntu6.6\nmtr-tiny\t0.95-1.1ubuntu0.1\nmultipath-tools\t0.9.4-5ubuntu8.2\nnano\t7.2-2ubuntu0.2\nncurses-base\t6.4+20240113-1ubuntu2.2\nncurses-bin\t6.4+20240113-1ubuntu2.2\nncurses-term\t6.4+20240113-1ubuntu2.2\nneedrestart\t3.6-7ubuntu4.5\nnetbase\t6.4\nnetcat-openbsd\t1.226-1ubuntu2\nnetplan-generator\t1.1.2-8ubuntu1~24.04.3\nnetplan.io\t1.1.2-8ubuntu1~24.04.3\nnetworkd-dispatcher\t2.2.4-1\nnftables\t1.0.9-1ubuntu0.1\nntfs-3g\t1:2022.10.3-1.2ubuntu3.2\nnumactl\t2.0.18-1ubuntu0.24.04.1\nopen-iscsi\t2.1.9-3ubuntu5.4\nopen-vm-tools\t2:13.0.10-0ubuntu0.24.04.1\nopenssh-client\t1:9.6p1-3ubuntu13.19\nopenssh-server\t1:9.6p1-3ubuntu13.19\nopenssh-sftp-server\t1:9.6p1-3ubuntu13.19\nopenssl\t3.0.13-0ubuntu3.16\nos-prober\t1.81ubuntu4\noverlayroot\t0.49~24.04.1\npackagekit\t1.2.8-2ubuntu1.5\npackagekit-tools\t1.2.8-2ubuntu1.5\nparted\t3.6-4build1\npasswd\t1:4.13+dfsg1-4ubuntu3.2\npastebinit\t1.6.2-1\npatch\t2.7.6-7build3\npci.ids\t0.0~2024.03.31-1ubuntu0.1\npciutils\t1:3.10.0-2build1\nperl\t5.38.2-3.2ubuntu0.6\nperl-base\t5.38.2-3.2ubuntu0.6\nperl-modules-5.38\t5.38.2-3.2ubuntu0.6\npigz\t2.8-1\npinentry-curses\t1.2.1-3ubuntu5\nplymouth\t24.004.60-1ubuntu7.2\nplymouth-theme-ubuntu-text\t24.004.60-1ubuntu7.2\npolkitd\t124-2ubuntu1.24.04.4\npollinate\t4.33-3.1ubuntu1.3\npowermgmt-base\t1.37ubuntu0.1\nprocps\t2:4.0.4-4ubuntu3.3\npsmisc\t23.7-1build1\npublicsuffix\t20231001.0357-0.1\npython-apt-common\t2.7.7ubuntu5.3\npython-babel-localedata\t2.10.3-3build1\npython3\t3.12.3-0ubuntu2.1\npython3-apport\t2.28.3-0ubuntu0.1\npython3-apt\t2.7.7ubuntu5.3\npython3-attr\t23.2.0-2\npython3-automat\t22.10.0-2\npython3-babel\t2.10.3-3build1\npython3-bcrypt\t3.2.2-1build1\npython3-blinker\t1.7.0-1\npython3-boto3\t1.34.46+dfsg-1ubuntu1\npython3-botocore\t1.34.46+repack-1ubuntu1\npython3-bpfcc\t0.29.1+ds-1ubuntu7\npython3-certifi\t2023.11.17-1\npython3-cffi-backend:amd64\t1.16.0-2build1\npython3-chardet\t5.2.0+dfsg-1\npython3-click\t8.1.6-2\npython3-colorama\t0.4.6-4\npython3-commandnotfound\t23.04.0\npython3-configobj\t5.0.8-3\npython3-constantly\t23.10.4-1\npython3-cryptography\t41.0.7-4ubuntu0.4\npython3-dateutil\t2.8.2-3ubuntu1\npython3-dbus\t1.3.2-5build3\npython3-debconf\t1.5.86ubuntu1\npython3-debian\t0.1.49ubuntu2\npython3-distro\t1.9.0-1\npython3-distro-info\t1.7build1\npython3-distupgrade\t1:24.04.29\npython3-gdbm:amd64\t3.12.3-0ubuntu1\npython3-gi\t3.48.2-1\npython3-hamcrest\t2.1.0-1\npython3-httplib2\t0.20.4-3ubuntu0.1\npython3-hyperlink\t21.0.0-5\npython3-idna\t3.6-2ubuntu0.2\npython3-incremental\t22.10.0-1\npython3-jinja2\t3.1.2-1ubuntu1.3\npython3-jmespath\t1.0.1-1\npython3-json-pointer\t2.0-0ubuntu1\npython3-jsonpatch\t1.32-3\npython3-jsonschema\t4.10.3-2ubuntu1\npython3-jwt\t2.7.0-1ubuntu0.2\npython3-launchpadlib\t1.11.0-6\npython3-lazr.restfulclient\t0.14.6-1\npython3-lazr.uri\t1.0.6-3\npython3-magic\t2:0.4.27-3\npython3-markdown-it\t3.0.0-2\npython3-markupsafe\t2.1.5-1build2\npython3-mdurl\t0.1.2-1\npython3-minimal\t3.12.3-0ubuntu2.1\npython3-netaddr\t0.8.0-2ubuntu1\npython3-netifaces:amd64\t0.11.0-2build3\npython3-netplan\t1.1.2-8ubuntu1~24.04.3\npython3-newt:amd64\t0.52.24-2ubuntu2\npython3-oauthlib\t3.2.2-1\npython3-openssl\t23.2.0-1ubuntu0.1\npython3-packaging\t24.0-1\npython3-pexpect\t4.9-2\npython3-pkg-resources\t68.1.2-2ubuntu1.2\npython3-problem-report\t2.28.3-0ubuntu0.1\npython3-ptyprocess\t0.7.0-5\npython3-pyasn1\t0.4.8-4ubuntu0.3\npython3-pyasn1-modules\t0.2.8-1\npython3-pyasyncore\t1.0.2-2\npython3-pygments\t2.17.2+dfsg-1\npython3-pyinotify\t0.9.6-2ubuntu1\npython3-pyparsing\t3.1.1-1\npython3-pyrsistent:amd64\t0.20.0-1build2\npython3-requests\t2.31.0+dfsg-1ubuntu1.2\npython3-rich\t13.7.1-1\npython3-s3transfer\t0.10.1-1ubuntu2\npython3-serial\t3.5-2\npython3-service-identity\t24.1.0-1\npython3-setuptools\t68.1.2-2ubuntu1.2\npython3-six\t1.16.0-4\npython3-software-properties\t0.99.49.4\npython3-systemd\t235-1build4\npython3-twisted\t24.3.0-1ubuntu0.2\npython3-typing-extensions\t4.10.0-1\npython3-tz\t2024.1-2\npython3-update-manager\t1:24.04.12\npython3-urllib3\t2.0.7-1ubuntu0.7\npython3-wadllib\t1.3.6-5\npython3-yaml\t6.0.1-2build2\npython3-zope.interface\t6.1-1build1\npython3.12\t3.12.3-1ubuntu0.17\npython3.12-minimal\t3.12.3-1ubuntu0.17\nreadline-common\t8.2-4build1\nrpcsvc-proto\t1.4.2-0ubuntu7\nrsync\t3.2.7-1ubuntu1.5\nrsyslog\t8.2312.0-3ubuntu9.4\nrun-one\t1.17-0ubuntu2\nsbsigntool\t0.9.4-3.1ubuntu7\nscreen\t4.9.1-1ubuntu1\nsecureboot-db\t1.9build1\nsed\t4.9-2ubuntu0.24.04.1\nsensible-utils\t0.0.22\nsg3-utils\t1.46-3ubuntu4\nsg3-utils-udev\t1.46-3ubuntu4\nsgml-base\t1.31\nshared-mime-info\t2.4-4\nshim-signed\t1.58+15.8-0ubuntu1\nsnapd\t2.76.3+ubuntu24.04\nsoftware-properties-common\t0.99.49.4\nsosreport\t4.10.2-0ubuntu0~24.04.1\nsquashfs-tools\t1:4.6.1-1build1\nssh-import-id\t5.11-0ubuntu2.24.04.1\nstrace\t6.8-0ubuntu2\nsudo\t1.9.15p5-3ubuntu5.24.04.3\nsysstat\t12.6.1-2\nsystemd\t255.4-1ubuntu8.17\nsystemd-dev\t255.4-1ubuntu8.17\nsystemd-hwe-hwdb\t255.1.7\nsystemd-resolved\t255.4-1ubuntu8.17\nsystemd-sysv\t255.4-1ubuntu8.17\nsystemd-timesyncd\t255.4-1ubuntu8.17\nsysvinit-utils\t3.08-6ubuntu3\ntar\t1.35+dfsg-3ubuntu0.4\ntcl\t8.6.14build1\ntcl8.6\t8.6.14+dfsg-1build1\ntcpdump\t4.99.4-3ubuntu4.24.04.1\ntelnet\t0.17+2.5-3ubuntu4.2\nthin-provisioning-tools\t0.9.0-2ubuntu5.1\ntime\t1.9-0.2build1\ntmux\t3.4-1ubuntu0.1\ntnftp\t20230507-2build3\ntpm-udev\t0.6ubuntu1\ntrace-cmd\t3.2-1ubuntu2\ntzdata\t2026c-0ubuntu0.24.04.1\nubuntu-kernel-accessories\t1.539.2\nubuntu-keyring\t2023.11.28.1\nubuntu-minimal\t1.539.2\nubuntu-pro-client\t37.2ubuntu~24.04.1\nubuntu-pro-client-l10n\t37.2ubuntu~24.04.1\nubuntu-release-upgrader-core\t1:24.04.29\nubuntu-server\t1.539.2\nubuntu-standard\t1.539.2\nucf\t3.0043+nmu1\nudev\t255.4-1ubuntu8.17\nudisks2\t2.10.1-6ubuntu1.5\nufw\t0.36.2-6\nunattended-upgrades\t2.9.1+nmu4ubuntu1\nupdate-manager-core\t1:24.04.12\nupdate-notifier-common\t3.192.68.2\nusb-modeswitch\t2.6.1-3ubuntu3\nusb-modeswitch-data\t20191128-6\nusb.ids\t2024.03.18-1\nusbutils\t1:017-3build1\nutil-linux\t2.39.3-9ubuntu6.6\nuuid-runtime\t2.39.3-9ubuntu6.6\nvim\t2:9.1.0016-1ubuntu7.20\nvim-common\t2:9.1.0016-1ubuntu7.20\nvim-runtime\t2:9.1.0016-1ubuntu7.20\nvim-tiny\t2:9.1.0016-1ubuntu7.20\nwget\t1.21.4-1ubuntu4.5\nwhiptail\t0.52.24-2ubuntu2\nwhois\t5.5.22\nxauth\t1:1.1.2-1build1\nxdg-user-dirs\t0.18-1build1\nxfsprogs\t6.6.0-1ubuntu2.1\nxkb-data\t2.41-2ubuntu1.1\nxml-core\t0.19\nxxd\t2:9.1.0016-1ubuntu7.20\nxz-utils\t5.6.1+really5.4.5-1ubuntu0.3\nzerofree\t1.1.1-1build5\nzlib1g:amd64\t1:1.3.dfsg-3.1ubuntu2.2\nzstd\t1.5.5+dfsg2-2build1.1",
+      "error": ""
+    },
+    "manual_packages": {
+      "exit_code": 0,
+      "output": "apache2-utils\napt-transport-https\napt-utils\nbase-files\nbash\nbsdutils\nca-certificates\ncloud-init\ncontainerd.io\ncurl\ndash\ndiffutils\ndocker-buildx-plugin\ndocker-ce\ndocker-ce-cli\ndocker-compose-plugin\ndroplet-agent\ndroplet-agent-keyring\neatmydata\nfail2ban\nfindutils\ngnupg\ngrep\ngrub-pc\ngzip\nhostname\ninit\nlibeatmydata1\nlibwrap0\nlinux-virtual\nlogin\nmake\nncurses-base\nncurses-bin\nncurses-term\nopenssh-server\nopenssh-sftp-server\npython-babel-localedata\npython3-babel\npython3-jinja2\npython3-json-pointer\npython3-jsonpatch\npython3-jsonschema\npython3-markupsafe\npython3-pyrsistent\npython3-serial\npython3-tz\nshim-signed\nssh-import-id\nubuntu-minimal\nubuntu-server\nubuntu-standard\nutil-linux",
+      "error": ""
+    },
+    "pending_updates": {
+      "exit_code": 0,
+      "output": "Listing...\ndocker-ce-cli/noble 5:29.8.2-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.8.1-1~ubuntu.24.04~noble]\ndocker-ce-rootless-extras/noble 5:29.8.2-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.8.1-1~ubuntu.24.04~noble]\ndocker-ce/noble 5:29.8.2-1~ubuntu.24.04~noble amd64 [upgradable from: 5:29.8.1-1~ubuntu.24.04~noble]\ndocker-compose-plugin/noble 5.6.0-1~ubuntu.24.04~noble amd64 [upgradable from: 5.5.1-1~ubuntu.24.04~noble]\nlinux-headers-generic/noble-updates 6.8.0-146.146 amd64 [upgradable from: 6.8.0-142.142]\nlinux-headers-virtual/noble-updates 6.8.0-146.146 amd64 [upgradable from: 6.8.0-142.142]\nlinux-image-virtual/noble-updates 6.8.0-146.146 amd64 [upgradable from: 6.8.0-142.142]\nlinux-libc-dev/noble-updates 6.8.0-146.146 amd64 [upgradable from: 6.8.0-142.142]\nlinux-tools-common/noble-updates 6.8.0-146.146 all [upgradable from: 6.8.0-142.142]\nlinux-virtual/noble-updates 6.8.0-146.146 amd64 [upgradable from: 6.8.0-142.142]\nsosreport/noble-updates 4.11.2-0ubuntu0~24.04.1 amd64 [upgradable from: 4.10.2-0ubuntu0~24.04.1]",
+      "error": "WARNING: apt does not have a stable CLI interface. Use with caution in scripts."
+    },
+    "fstab": {
+      "exit_code": 0,
+      "output": "LABEL=cloudimg-rootfs\t/\t ext4\tdiscard,commit=30,errors=remount-ro\t0 1\nLABEL=BOOT\t/boot\text4\tdefaults\t0 2\nLABEL=UEFI\t/boot/efi\tvfat\tumask=0077\t0 1",
+      "error": ""
+    },
+    "forwarding": {
+      "exit_code": 0,
+      "output": "net.ipv4.ip_forward = 1\nnet.ipv6.conf.all.forwarding = 0",
+      "error": ""
+    }
+  },
+  "reboot_required": false,
+  "users": [
+    "root:x:0:0:root:/root:/bin/bash",
+    "nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin",
+    "kwilliams:x:1000:1000:,,,:/home/kwilliams:/bin/bash"
+  ],
+  "groups": [
+    "sudo:x:27:kwilliams",
+    "kwilliams:x:1000:",
+    "docker:x:988:"
+  ],
+  "host_config": {
+    "/etc/ssh/sshd_config": "\n# This is the sshd server system-wide configuration file.  See\n# sshd_config(5) for more information.\n\n# This sshd was compiled with PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games\n\n# The strategy used for options in the default sshd_config shipped with\n# OpenSSH is to specify options with their default value where\n# possible, but leave them commented.  Uncommented options override the\n# default value.\n\nInclude /etc/ssh/sshd_config.d/*.conf\n\n# When systemd socket activation is used (the default), the socket\n# configuration must be re-generated after changing Port, AddressFamily, or\n# ListenAddress.\n#\n# For changes to take effect, run:\n#\n#   systemctl daemon-reload\n#   systemctl restart ssh.socket\n#\n#Port 22\n#AddressFamily any\n#ListenAddress 0.0.0.0\n#ListenAddress ::\n\n#HostKey /etc/ssh/ssh_host_rsa_key\n#HostKey /etc/ssh/ssh_host_ecdsa_key\n#HostKey /etc/ssh/ssh_host_ed25519_key\n\n# Ciphers and keying\n#RekeyLimit default none\n\n# Logging\n#SyslogFacility AUTH\n#LogLevel INFO\n\n# Authentication:\n\n#LoginGraceTime 2m\nPermitRootLogin yes\n#StrictModes yes\n#MaxAuthTries 6\n#MaxSessions 10\n\n#PubkeyAuthentication yes\n\n# Expect .ssh/authorized_keys2 to be disregarded by default in future.\n#AuthorizedKeysFile\t.ssh/authorized_keys .ssh/authorized_keys2\n\n#AuthorizedPrincipalsFile none\n\n#AuthorizedKeysCommand none\n#AuthorizedKeysCommandUser nobody\n\n# For this to work you will also need host keys in /etc/ssh/ssh_known_hosts\n#HostbasedAuthentication no\n# Change to yes if you don't trust ~/.ssh/known_hosts for\n# HostbasedAuthentication\n#IgnoreUserKnownHosts no\n# Don't read the user's ~/.rhosts and ~/.shosts files\n#IgnoreRhosts yes\n\n# To disable tunneled clear text passwords, change to no here!\n#PasswordAuthentication yes\n#PermitEmptyPasswords no\n\n# Change to yes to enable challenge-response passwords (beware issues with\n# some PAM modules and threads)\nKbdInteractiveAuthentication no\n\n# Kerberos options\n#KerberosAuthentication no\n#KerberosOrLocalPasswd yes\n#KerberosTicketCleanup yes\n#KerberosGetAFSToken no\n\n# GSSAPI options\n#GSSAPIAuthentication no\n#GSSAPICleanupCredentials yes\n#GSSAPIStrictAcceptorCheck yes\n#GSSAPIKeyExchange no\n\n# Set this to 'yes' to enable PAM authentication, account processing,\n# and session processing. If this is enabled, PAM authentication will\n# be allowed through the KbdInteractiveAuthentication and\n# PasswordAuthentication.  Depending on your PAM configuration,\n# PAM authentication via KbdInteractiveAuthentication may bypass\n# the setting of \"PermitRootLogin yes\n# If you just want the PAM account and session checks to run without\n# PAM authentication, then enable this but set PasswordAuthentication\n# and KbdInteractiveAuthentication to 'no'.\nUsePAM yes\n\n#AllowAgentForwarding yes\n#AllowTcpForwarding yes\n#GatewayPorts no\nX11Forwarding yes\n#X11DisplayOffset 10\n#X11UseLocalhost yes\n#PermitTTY yes\nPrintMotd no\n#PrintLastLog yes\n#TCPKeepAlive yes\n#PermitUserEnvironment no\n#Compression delayed\n#ClientAliveInterval 0\n#ClientAliveCountMax 3\n#UseDNS no\n#PidFile /run/sshd.pid\n#MaxStartups 10:30:100\n#PermitTunnel no\n#ChrootDirectory none\n#VersionAddendum none\n\n# no default banner path\n#Banner none\n\n# Allow client to pass locale environment variables\nAcceptEnv LANG LC_*\n\n# override default of no subsystems\nSubsystem\tsftp\t/usr/lib/openssh/sftp-server\n\n# Example of overriding settings on a per-user basis\n#Match User anoncvs\n#\tX11Forwarding no\n#\tAllowTcpForwarding no\n#\tPermitTTY no\n#\tForceCommand cvs server\n",
+    "/etc/ssh/sshd_config.d/50-cloud-init.conf": "PasswordAuthentication no\n",
+    "/etc/ssh/sshd_config.d/60-cloudimg-settings.conf": "PasswordAuthentication no\n",
+    "/etc/ssh/sshd_config.d/00-disable-root.conf": "PermitRootLogin no\n",
+    "/etc/apt/sources.list.d/docker.sources": "Types: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: noble\nComponents: stable\nArchitectures: amd64\nSigned-By: /etc/apt/keyrings/docker.asc\n",
+    "/etc/apt/apt.conf.d/20auto-upgrades": "APT::Periodic::Update-Package-Lists \"1\";\nAPT::Periodic::Unattended-Upgrade \"1\";\n",
+    "/etc/apt/apt.conf.d/50unattended-upgrades": "// Automatically upgrade packages from these (origin:archive) pairs\n//\n// Note that in Ubuntu security updates may pull in new dependencies\n// from non-security sources (e.g. chromium). By allowing the release\n// pocket these get automatically pulled in.\nUnattended-Upgrade::Allowed-Origins {\n\t\"${distro_id}:${distro_codename}\";\n\t\"${distro_id}:${distro_codename}-security\";\n\t// Extended Security Maintenance; doesn't necessarily exist for\n\t// every release and this system may not have it installed, but if\n\t// available, the policy for updates is such that unattended-upgrades\n\t// should also install from here by default.\n\t\"${distro_id}ESMApps:${distro_codename}-apps-security\";\n\t\"${distro_id}ESM:${distro_codename}-infra-security\";\n//\t\"${distro_id}:${distro_codename}-updates\";\n//\t\"${distro_id}:${distro_codename}-proposed\";\n//\t\"${distro_id}:${distro_codename}-backports\";\n};\n\n// Python regular expressions, matching packages to exclude from upgrading\nUnattended-Upgrade::Package-Blacklist {\n    // The following matches all packages starting with linux-\n//  \"linux-\";\n\n    // Use $ to explicitely define the end of a package name. Without\n    // the $, \"libc6\" would match all of them.\n//  \"libc6$\";\n//  \"libc6-dev$\";\n//  \"libc6-i686$\";\n\n    // Special characters need escaping\n//  \"libstdc\\+\\+6$\";\n\n    // The following matches packages like xen-system-amd64, xen-utils-4.1,\n    // xenstore-utils and libxenstore3.0\n//  \"(lib)?xen(store)?\";\n\n    // For more information about Python regular expressions, see\n    // https://docs.python.org/3/howto/regex.html\n};\n\n// This option controls whether the development release of Ubuntu will be\n// upgraded automatically. Valid values are \"true\", \"false\", and \"auto\".\nUnattended-Upgrade::DevRelease \"auto\";\n\n// This option allows you to control if on a unclean dpkg exit\n// unattended-upgrades will automatically run \n//   dpkg --force-confold --configure -a\n// The default is true, to ensure updates keep getting installed\n//Unattended-Upgrade::AutoFixInterruptedDpkg \"true\";\n\n// Split the upgrade into the smallest possible chunks so that\n// they can be interrupted with SIGTERM. This makes the upgrade\n// a bit slower but it has the benefit that shutdown while a upgrade\n// is running is possible (with a small delay)\n//Unattended-Upgrade::MinimalSteps \"true\";\n\n// Install all updates when the machine is shutting down\n// instead of doing it in the background while the machine is running.\n// This will (obviously) make shutdown slower.\n// Unattended-upgrades increases logind's InhibitDelayMaxSec to 30s.\n// This allows more time for unattended-upgrades to shut down gracefully\n// or even install a few packages in InstallOnShutdown mode, but is still a\n// big step back from the 30 minutes allowed for InstallOnShutdown previously.\n// Users enabling InstallOnShutdown mode are advised to increase\n// InhibitDelayMaxSec even further, possibly to 30 minutes.\n//Unattended-Upgrade::InstallOnShutdown \"false\";\n\n// Send email to this address for problems or packages upgrades\n// If empty or unset then no email is sent, make sure that you\n// have a working mail setup on your system. A package that provides\n// 'mailx' must be installed. E.g. \"user@example.com\"\n//Unattended-Upgrade::Mail \"\";\n\n// Set this value to one of:\n//    \"always\", \"only-on-error\" or \"on-change\"\n// If this is not set, then any legacy MailOnlyOnError (boolean) value\n// is used to chose between \"only-on-error\" and \"on-change\"\n//Unattended-Upgrade::MailReport \"on-change\";\n\n// Remove unused automatically installed kernel-related packages\n// (kernel images, kernel headers and kernel version locked tools).\n//Unattended-Upgrade::Remove-Unused-Kernel-Packages \"true\";\n\n// Do automatic removal of newly unused dependencies after the upgrade\n//Unattended-Upgrade::Remove-New-Unused-Dependencies \"true\";\n\n// Do automatic removal of unused packages after the upgrade\n// (equivalent to apt-get autoremove)\n//Unattended-Upgrade::Remove-Unused-Dependencies \"false\";\n\n// Automatically reboot *WITHOUT CONFIRMATION* if\n//  the file /var/run/reboot-required is found after the upgrade\n//Unattended-Upgrade::Automatic-Reboot \"false\";\n\n// Automatically reboot even if there are users currently logged in\n// when Unattended-Upgrade::Automatic-Reboot is set to true\n//Unattended-Upgrade::Automatic-Reboot-WithUsers \"true\";\n\n// If automatic reboot is enabled and needed, reboot at the specific\n// time instead of immediately\n//  Default: \"now\"\n//Unattended-Upgrade::Automatic-Reboot-Time \"02:00\";\n\n// Use apt bandwidth limit feature, this example limits the download\n// speed to 70kb/sec\n//Acquire::http::Dl-Limit \"70\";\n\n// Enable logging to syslog. Default is False\n// Unattended-Upgrade::SyslogEnable \"false\";\n\n// Specify syslog facility. Default is daemon\n// Unattended-Upgrade::SyslogFacility \"daemon\";\n\n// Download and install upgrades only on AC power\n// (i.e. skip or gracefully stop updates on battery)\n// Unattended-Upgrade::OnlyOnACPower \"true\";\n\n// Download and install upgrades only on non-metered connection\n// (i.e. skip or gracefully stop updates on a metered connection)\n// Unattended-Upgrade::Skip-Updates-On-Metered-Connections \"true\";\n\n// Verbose logging\n// Unattended-Upgrade::Verbose \"false\";\n\n// Print debugging information both in unattended-upgrades and\n// in unattended-upgrade-shutdown\n// Unattended-Upgrade::Debug \"false\";\n\n// Allow package downgrade if Pin-Priority exceeds 1000\n// Unattended-Upgrade::Allow-downgrade \"false\";\n\n// When APT fails to mark a package to be upgraded or installed try adjusting\n// candidates of related packages to help APT's resolver in finding a solution\n// where the package can be upgraded or installed.\n// This is a workaround until APT's resolver is fixed to always find a\n// solution if it exists. (See Debian bug #711128.)\n// The fallback is enabled by default, except on Debian's sid release because\n// uninstallable packages are frequent there.\n// Disabling the fallback speeds up unattended-upgrades when there are\n// uninstallable packages at the expense of rarely keeping back packages which\n// could be upgraded or installed.\n// Unattended-Upgrade::Allow-APT-Mark-Fallback \"true\";\n"
+  },
+  "apt_sources": [
+    {
+      "path": "/etc/apt/sources.list.d/droplet-agent.list",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 129,
+      "modified": "2026-09-29T17:18:39.927488+00:00",
+      "content": "deb [signed-by=/usr/share/keyrings/droplet-agent-keyring.gpg] https://repos-droplet.digitalocean.com/apt/droplet-agent main main\n"
+    },
+    {
+      "path": "/etc/apt/sources.list.d/docker.sources",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 152,
+      "modified": "2026-09-29T18:01:52.639237+00:00",
+      "content": "Types: deb\nURIs: https://download.docker.com/linux/ubuntu\nSuites: noble\nComponents: stable\nArchitectures: amd64\nSigned-By: /etc/apt/keyrings/docker.asc\n"
+    },
+    {
+      "path": "/etc/apt/sources.list.d/ubuntu.sources",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2995,
+      "modified": "2026-09-29T17:18:15.492000+00:00",
+      "content": "## Note, this file is written by cloud-init on first boot of an instance\n## modifications made here will not survive a re-bundle.\n##\n## If you wish to make changes you can:\n## a.) add 'apt_preserve_sources_list: true' to /etc/cloud/cloud.cfg\n##     or do the same in user-data\n## b.) add supplemental sources in /etc/apt/sources.list.d\n## c.) make changes to template file\n##      /etc/cloud/templates/sources.list.ubuntu.deb822.tmpl\n##\n\n# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to\n# newer versions of the distribution.\n\n## Ubuntu distribution repository\n##\n## The following settings can be adjusted to configure which packages to use from Ubuntu.\n## Mirror your choices (except for URIs and Suites) in the security section below to\n## ensure timely security updates.\n##\n## Types: Append deb-src to enable the fetching of source package.\n## URIs: A URL to the repository (you may add multiple URLs)\n## Suites: The following additional suites can be configured\n##   <name>-updates   - Major bug fix updates produced after the final release of the\n##                      distribution.\n##   <name>-backports - software from this repository may not have been tested as\n##                      extensively as that contained in the main release, although it includes\n##                      newer versions of some applications which may provide useful features.\n##                      Also, please note that software in backports WILL NOT receive any review\n##                      or updates from the Ubuntu security team.\n## Components: Aside from main, the following components can be added to the list\n##   restricted  - Software that may not be under a free license, or protected by patents.\n##   universe    - Community maintained packages. Software in this repository receives maintenance\n##                 from volunteers in the Ubuntu community, or a 10 year security maintenance\n##                 commitment from Canonical when an Ubuntu Pro subscription is attached.\n##   multiverse  - Community maintained of restricted. Software from this repository is\n##                 ENTIRELY UNSUPPORTED by the Ubuntu team, and may not be under a free\n##                 licence. Please satisfy yourself as to your rights to use the software.\n##                 Also, please note that software in multiverse WILL NOT receive any\n##                 review or updates from the Ubuntu security team.\n##\n## See the sources.list(5) manual page for further settings.\nTypes: deb\nURIs: http://mirrors.digitalocean.com/ubuntu/\nSuites: noble noble-updates noble-backports\nComponents: main universe restricted multiverse\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n\n## Ubuntu security updates. Aside from URIs and Suites,\n## this should mirror your choices in the previous section.\nTypes: deb\nURIs: http://security.ubuntu.com/ubuntu\nSuites: noble-security\nComponents: main universe restricted multiverse\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n"
+    }
+  ],
+  "scheduled_file_inventory": [
+    {
+      "path": "/etc/cron.daily/sysstat",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 518,
+      "modified": "2024-01-09T20:31:44+00:00"
+    },
+    {
+      "path": "/etc/cron.daily/apt-compat",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1478,
+      "modified": "2024-03-22T10:11:44+00:00"
+    },
+    {
+      "path": "/etc/cron.daily/logrotate",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 377,
+      "modified": "2024-04-08T16:11:30+00:00"
+    },
+    {
+      "path": "/etc/cron.daily/man-db",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1395,
+      "modified": "2024-03-29T19:33:19+00:00"
+    },
+    {
+      "path": "/etc/cron.daily/apport",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 376,
+      "modified": "2026-07-29T14:09:48+00:00"
+    },
+    {
+      "path": "/etc/cron.daily/dpkg",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 123,
+      "modified": "2024-02-05T02:31:16+00:00"
+    },
+    {
+      "path": "/etc/cron.weekly/man-db",
+      "mode": "-rwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1055,
+      "modified": "2024-03-29T19:33:19+00:00"
+    },
+    {
+      "path": "/etc/cron.d/e2scrub_all",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 201,
+      "modified": "2024-04-08T14:38:40+00:00"
+    },
+    {
+      "path": "/etc/cron.d/sysstat",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 396,
+      "modified": "2024-01-09T20:31:44+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/apt-daily.timer.d",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-10-01T17:23:37.946041+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/getty.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:53:31.840380+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/droplet-agent-update.timer",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 200,
+      "modified": "2026-09-17T21:05:15+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/suspend-then-hibernate.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.761419+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/cloud-config.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:27.768335+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/sleep.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.879421+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/syslog.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 890,
+      "modified": "2025-08-21T20:53:52+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/iscsi.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1003,
+      "modified": "2025-06-04T12:20:05+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/timers.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-29T17:19:03.760679+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/open-vm-tools.service.requires",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:24.597282+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/multi-user.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-10-01T17:21:28.120054+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/suspend.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.760419+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/graphical.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:36.443481+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/droplet-agent-update.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 320,
+      "modified": "2026-09-17T21:05:15+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/sockets.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-29T18:02:19.750326+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/vpc-peering.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 344,
+      "modified": "2026-09-29T17:18:17.133000+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/cloud-final.service.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:25.941305+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/final.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:26.415313+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/dbus-org.freedesktop.timesync1.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1768,
+      "modified": "2026-07-28T15:04:45+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/emergency.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.879421+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/dbus-org.freedesktop.ModemManager1.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 515,
+      "modified": "2024-03-31T02:34:30+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/dbus-org.freedesktop.resolve1.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1898,
+      "modified": "2026-07-28T15:04:45+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/ssh.service.requires",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:29.378362+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/droplet-agent.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 358,
+      "modified": "2026-09-17T21:05:15+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/apt-daily-upgrade.timer.d",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-10-01T17:23:37.949041+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/network-online.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:52:44+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/sysinit.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:40.272546+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/vmtoolsd.service",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 489,
+      "modified": "2026-07-01T13:40:20+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/paths.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:38.554517+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/hybrid-sleep.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.761419+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/mdmonitor.service.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:17.822168+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/sysstat.service.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:17.083155+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/cloud-init.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:28.006339+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/hibernate.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.760419+00:00"
+    },
+    {
+      "path": "/etc/systemd/system/rescue.target.wants",
+      "mode": "drwxr-xr-x",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4096,
+      "modified": "2026-09-26T12:55:32.879421+00:00"
+    }
+  ],
+  "history_inventory": [
+    {
+      "path": "/root/.bash_history",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 18377,
+      "modified": "2026-09-29T21:47:56.926509+00:00"
+    },
+    {
+      "path": "/home/kwilliams/.bash_history",
+      "mode": "-rw-------",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 117,
+      "modified": "2026-10-01T17:11:35.180276+00:00"
+    }
+  ],
+  "ssh_inventory": [
+    {
+      "path": "/root/.ssh/authorized_keys",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 427,
+      "modified": "2026-09-29T17:18:10.475000+00:00",
+      "fingerprints": {
+        "exit_code": 0,
+        "output": "2048 SHA256:dbQtFdv+qJuf94N+Zu9GOLV3vNB2m/ch14y0MIm1ciM kwilliams@keiths-mbp.resource.campus.njit.edu (RSA)",
+        "error": ""
+      }
+    },
+    {
+      "path": "/home/kwilliams/.ssh/authorized_keys",
+      "mode": "-rw-------",
+      "uid": 1000,
+      "gid": 1000,
+      "bytes": 427,
+      "modified": "2026-09-29T17:43:41.236660+00:00",
+      "fingerprints": {
+        "exit_code": 0,
+        "output": "2048 SHA256:dbQtFdv+qJuf94N+Zu9GOLV3vNB2m/ch14y0MIm1ciM kwilliams@keiths-mbp.resource.campus.njit.edu (RSA)",
+        "error": ""
+      }
+    }
+  ],
+  "containers": [
+    {
+      "name": "is373-ci-cd-prod-1",
+      "id": "278a072568373a10662ca84958a33744f50c3eab3d467fcbfa238be295efad00",
+      "image_id": "sha256:aec414c990a5de6ed74c9e8dcb105b78f6358c03a8cea70a9d40dcda51c3a8fa",
+      "requested_image": "kaw393939/is373_ci_cd:prod",
+      "created": "2026-10-01T18:09:11.642325064Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 772627,
+        "ExitCode": 0,
+        "StartedAt": "2026-10-01T18:09:11.836278922Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": "healthy",
+      "user": "10001:10001",
+      "working_directory": "/app",
+      "environment": {
+        "names": [
+          "APP_ENV",
+          "GPG_KEY",
+          "PATH",
+          "PYTHONDONTWRITEBYTECODE",
+          "PYTHONUNBUFFERED",
+          "PYTHON_SHA256",
+          "PYTHON_VERSION"
+        ],
+        "public_values": {
+          "APP_ENV": "production"
+        }
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "85fbb70d9b2bb281a60c5b96737f025498c4118576664eca2bf9afd569240bf7",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:f0acf1738a05f619905afd176013e20abccab8b47c804b6e42621267d0687e43",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "is373-ci-cd",
+        "com.docker.compose.project.config_files": "/opt/is373_ci_cd/compose.yaml,/opt/is373_ci_cd/compose.override.yaml",
+        "com.docker.compose.project.environment_file": "/opt/is373_ci_cd/.env",
+        "com.docker.compose.project.working_dir": "/opt/is373_ci_cd",
+        "com.docker.compose.replace": "prod-1",
+        "com.docker.compose.service": "prod",
+        "com.docker.compose.version": "5.5.1",
+        "org.opencontainers.image.created": "2026-10-01T17:51:11Z",
+        "org.opencontainers.image.revision": "74a0722bd68fdc877db5b4f493618c355ddedea4",
+        "org.opencontainers.image.source": "https://github.com/kaw393939/is373_ci_cd",
+        "traefik.docker.network": "web",
+        "traefik.enable": "true",
+        "traefik.http.routers.calculator.entrypoints": "websecure",
+        "traefik.http.routers.calculator.rule": "Host(`calc.mywebclass.org`)",
+        "traefik.http.routers.calculator.service": "calculator",
+        "traefik.http.services.calculator.loadbalancer.server.port": "8000",
+        "wud.tag.include": "^prod$",
+        "wud.trigger.include": "docker.production",
+        "wud.watch": "true",
+        "wud.watch.digest": "true"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": true,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": 128,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {}
+      },
+      "tmpfs": {
+        "/tmp": "rw,noexec,nosuid,nodev,size=64m,mode=1777"
+      },
+      "mounts": [],
+      "ports": {
+        "8000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8090"
+          }
+        ]
+      },
+      "networks": {
+        "is373-ci-cd_default": {
+          "Aliases": [
+            "is373-ci-cd-prod-1",
+            "prod"
+          ],
+          "NetworkID": "3c5a1ad596ca49e16b71b2f2fcda16aae0527d9f5a7c39a391047eb0d74cf5a6",
+          "IPAddress": "172.19.0.2"
+        },
+        "web": {
+          "Aliases": [
+            "is373-ci-cd-prod-1",
+            "prod"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.8"
+        }
+      }
+    },
+    {
+      "name": "is373-ci-cd-wud-1",
+      "id": "e4b5267fdb906ef03cf3aa723966cf742ec2e180b97a5435f122be522912655b",
+      "image_id": "sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151",
+      "requested_image": "getwud/wud:9.0.2@sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151",
+      "created": "2026-09-29T19:30:08.23992552Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 11088,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T19:30:08.555971163Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": "healthy",
+      "user": "",
+      "working_directory": "/home/node/app",
+      "environment": {
+        "names": [
+          "NODE_VERSION",
+          "PATH",
+          "WORKDIR",
+          "WUD_AUTH_ADMIN_PASSWORD",
+          "WUD_AUTH_ADMIN_USER",
+          "WUD_LOG_FORMAT",
+          "WUD_TRIGGER_DOCKER_PRODUCTION_AUTO",
+          "WUD_TRIGGER_DOCKER_PRODUCTION_DRYRUN",
+          "WUD_TRIGGER_DOCKER_PRODUCTION_PRUNE",
+          "WUD_VERSION",
+          "WUD_WATCHER_LOCAL_CRON",
+          "WUD_WATCHER_LOCAL_JITTER",
+          "WUD_WATCHER_LOCAL_WATCHBYDEFAULT",
+          "WUD_WATCHER_LOCAL_WATCHDIGESTDEFAULT",
+          "YARN_VERSION"
+        ],
+        "public_values": {
+          "WUD_TRIGGER_DOCKER_PRODUCTION_DRYRUN": "false",
+          "WUD_WATCHER_LOCAL_WATCHBYDEFAULT": "false",
+          "WUD_WATCHER_LOCAL_JITTER": "1000",
+          "WUD_TRIGGER_DOCKER_PRODUCTION_PRUNE": "false",
+          "WUD_WATCHER_LOCAL_CRON": "* * * * *",
+          "WUD_WATCHER_LOCAL_WATCHDIGESTDEFAULT": "true",
+          "WUD_TRIGGER_DOCKER_PRODUCTION_AUTO": "true"
+        }
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "caf30db5ee1bab648e127c6a1bb7fdcf4d0edf1909265a75ad98b0c4e01ae689",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:624dd172a71ad628db73f41b500eff4f90740b1251479d2fe1927e3e5dcd6e9d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "is373-ci-cd",
+        "com.docker.compose.project.config_files": "/opt/is373_ci_cd/compose.yaml,/opt/is373_ci_cd/compose.override.yaml",
+        "com.docker.compose.project.environment_file": "/opt/is373_ci_cd/.env",
+        "com.docker.compose.project.working_dir": "/opt/is373_ci_cd",
+        "com.docker.compose.service": "wud",
+        "com.docker.compose.version": "5.5.1",
+        "maintainer": "fmartinou",
+        "org.opencontainers.image.created": "2026-09-12T10:23:43.430Z",
+        "org.opencontainers.image.description": "Keep your containers up-to-date!",
+        "org.opencontainers.image.licenses": "MIT",
+        "org.opencontainers.image.revision": "928b1e64a915f84559b6a86a5a8410c7d4814789",
+        "org.opencontainers.image.source": "https://github.com/getwud/wud",
+        "org.opencontainers.image.title": "wud",
+        "org.opencontainers.image.url": "https://github.com/getwud/wud",
+        "org.opencontainers.image.version": "9.0.2",
+        "wud.watch": "false"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": null,
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {}
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "volume",
+          "Name": "is373-ci-cd_wud-data",
+          "Source": "/var/lib/docker/volumes/is373-ci-cd_wud-data/_data",
+          "Destination": "/store",
+          "Driver": "local",
+          "Mode": "rw",
+          "RW": true,
+          "Propagation": ""
+        },
+        {
+          "Type": "bind",
+          "Source": "/var/run/docker.sock",
+          "Destination": "/var/run/docker.sock",
+          "Mode": "rw",
+          "RW": true,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "3000/tcp": [
+          {
+            "HostIp": "127.0.0.1",
+            "HostPort": "8091"
+          }
+        ]
+      },
+      "networks": {
+        "is373-ci-cd_default": {
+          "Aliases": [
+            "is373-ci-cd-wud-1",
+            "wud"
+          ],
+          "NetworkID": "3c5a1ad596ca49e16b71b2f2fcda16aae0527d9f5a7c39a391047eb0d74cf5a6",
+          "IPAddress": "172.19.0.3"
+        }
+      }
+    },
+    {
+      "name": "public-web-traefik-1",
+      "id": "661ca145447ab109bd4f59e245e2e8af1f80c05831eb2a3e9a8f5a7ad68c24ea",
+      "image_id": "sha256:24841fe2de7304c149343d877d2923b4c8800a38ba015dea9174c23b20e344a0",
+      "requested_image": "traefik:v3.7.13",
+      "created": "2026-09-29T18:14:17.521593461Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 6901,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:14:18.711773393Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": "healthy",
+      "user": "",
+      "working_directory": "/",
+      "environment": {
+        "names": [
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "2e0995b048c0cdbcc310b980e2e173ff736c883dec0a9f9871b6e33e04352173",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:3429c14149401de2ac82fc72ddc6a92642332b90deb3012301ff211b9d2d0f18",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.replace": "traefik-1",
+        "com.docker.compose.service": "traefik",
+        "com.docker.compose.version": "5.5.1",
+        "org.opencontainers.image.description": "A modern reverse-proxy",
+        "org.opencontainers.image.documentation": "https://docs.traefik.io",
+        "org.opencontainers.image.source": "https://github.com/traefik/traefik",
+        "org.opencontainers.image.title": "Traefik",
+        "org.opencontainers.image.url": "https://traefik.io",
+        "org.opencontainers.image.vendor": "Traefik Labs",
+        "org.opencontainers.image.version": "v3.7.13",
+        "traefik.enable": "true",
+        "traefik.http.routers.dashboard.entrypoints": "websecure",
+        "traefik.http.routers.dashboard.rule": "Host(`traefik.firehose360.com`)",
+        "traefik.http.routers.dashboard.service": "api@internal"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/letsencrypt",
+          "Destination": "/letsencrypt",
+          "Mode": "rw",
+          "RW": true,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/secrets/dashboard.htpasswd",
+          "Destination": "/run/secrets/dashboard.htpasswd",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        },
+        {
+          "Type": "bind",
+          "Source": "/var/run/docker.sock",
+          "Destination": "/var/run/docker.sock",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "80"
+          }
+        ]
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-traefik-1",
+            "traefik"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.7"
+        }
+      }
+    },
+    {
+      "name": "public-web-site-1-1",
+      "id": "1f13e5096bc6bb664055a883a9b2459a5414bcfbfa8533d840c4608c49673988",
+      "image_id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "requested_image": "httpd:2.4-alpine",
+      "created": "2026-09-29T18:03:11.026049849Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 4428,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:03:11.686181651Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": null,
+      "user": "",
+      "working_directory": "/usr/local/apache2",
+      "environment": {
+        "names": [
+          "HTTPD_PATCHES",
+          "HTTPD_PREFIX",
+          "HTTPD_SHA256",
+          "HTTPD_VERSION",
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "938df47c74c67daa1e2c47665e3e5506fa992b790670fcd49f3eaecc493ce170",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:7ed5668e2fb31c738bcd291847fbb313073998e561ac6d8dc63cfd061dd0fb4d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.service": "site-1",
+        "com.docker.compose.version": "5.5.1",
+        "traefik.enable": "true",
+        "traefik.http.routers.site-1.entrypoints": "websecure",
+        "traefik.http.routers.site-1.rule": "Host(`firehose360.com`)",
+        "traefik.http.services.site-1.loadbalancer.server.port": "80"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/sites/firehose360.com",
+          "Destination": "/usr/local/apache2/htdocs",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "80/tcp": null
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-site-1-1",
+            "site-1"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.2"
+        }
+      }
+    },
+    {
+      "name": "public-web-site-2-1",
+      "id": "89f01c81cba258f300a41dcacba964d4fc2fe5180a0bb61856b1dbed3b5d2206",
+      "image_id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "requested_image": "httpd:2.4-alpine",
+      "created": "2026-09-29T18:03:11.020008779Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 4576,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:03:12.165860736Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": null,
+      "user": "",
+      "working_directory": "/usr/local/apache2",
+      "environment": {
+        "names": [
+          "HTTPD_PATCHES",
+          "HTTPD_PREFIX",
+          "HTTPD_SHA256",
+          "HTTPD_VERSION",
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "05a46a3143b5aeb69c806c51c9bd59af9f6ffbac89c9aba5618d426c6148ecdd",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:7ed5668e2fb31c738bcd291847fbb313073998e561ac6d8dc63cfd061dd0fb4d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.service": "site-2",
+        "com.docker.compose.version": "5.5.1",
+        "traefik.enable": "true",
+        "traefik.http.routers.site-2.entrypoints": "websecure",
+        "traefik.http.routers.site-2.rule": "Host(`www.firehose360.com`)",
+        "traefik.http.services.site-2.loadbalancer.server.port": "80"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/sites/www.firehose360.com",
+          "Destination": "/usr/local/apache2/htdocs",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "80/tcp": null
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-site-2-1",
+            "site-2"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.3"
+        }
+      }
+    },
+    {
+      "name": "public-web-site-3-1",
+      "id": "61d5d6617456d3d6bb8afdf0ad5ae06d9b809dda001351dfa51a6dcc77bc4e04",
+      "image_id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "requested_image": "httpd:2.4-alpine",
+      "created": "2026-09-29T18:03:11.018337024Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 4723,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:03:12.595185835Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": null,
+      "user": "",
+      "working_directory": "/usr/local/apache2",
+      "environment": {
+        "names": [
+          "HTTPD_PATCHES",
+          "HTTPD_PREFIX",
+          "HTTPD_SHA256",
+          "HTTPD_VERSION",
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "5baddc84cbd4b25ba8f2919560295f73d6238cabd37828b8e6c76b5600b92d97",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:7ed5668e2fb31c738bcd291847fbb313073998e561ac6d8dc63cfd061dd0fb4d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.service": "site-3",
+        "com.docker.compose.version": "5.5.1",
+        "traefik.enable": "true",
+        "traefik.http.routers.site-3.entrypoints": "websecure",
+        "traefik.http.routers.site-3.rule": "Host(`dev.firehose360.com`)",
+        "traefik.http.services.site-3.loadbalancer.server.port": "80"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/sites/dev.firehose360.com",
+          "Destination": "/usr/local/apache2/htdocs",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "80/tcp": null
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-site-3-1",
+            "site-3"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.4"
+        }
+      }
+    },
+    {
+      "name": "public-web-site-4-1",
+      "id": "47abf4f166d6b00f7b415cb68a5dd57ef4df9b8c90f235f9d05f68359dc03a5f",
+      "image_id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "requested_image": "httpd:2.4-alpine",
+      "created": "2026-09-29T18:03:11.01026879Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 4869,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:03:13.003878531Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": null,
+      "user": "",
+      "working_directory": "/usr/local/apache2",
+      "environment": {
+        "names": [
+          "HTTPD_PATCHES",
+          "HTTPD_PREFIX",
+          "HTTPD_SHA256",
+          "HTTPD_VERSION",
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "1ee849b3af497fbb20e6b473a2cb050d564b99334efded5db1c2bc76e9da354f",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:7ed5668e2fb31c738bcd291847fbb313073998e561ac6d8dc63cfd061dd0fb4d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.service": "site-4",
+        "com.docker.compose.version": "5.5.1",
+        "traefik.enable": "true",
+        "traefik.http.routers.site-4.entrypoints": "websecure",
+        "traefik.http.routers.site-4.rule": "Host(`mywebclass.org`)",
+        "traefik.http.services.site-4.loadbalancer.server.port": "80"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/sites/mywebclass.org",
+          "Destination": "/usr/local/apache2/htdocs",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "80/tcp": null
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-site-4-1",
+            "site-4"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.5"
+        }
+      }
+    },
+    {
+      "name": "public-web-site-5-1",
+      "id": "ea41af970f348fcf5cef72c3a5598de55253c6ed85f40332ba4c395c7c7e8ad4",
+      "image_id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "requested_image": "httpd:2.4-alpine",
+      "created": "2026-09-29T18:03:11.009430856Z",
+      "state": {
+        "Status": "running",
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 5013,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-29T18:03:13.394044177Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+      },
+      "health_status": null,
+      "user": "",
+      "working_directory": "/usr/local/apache2",
+      "environment": {
+        "names": [
+          "HTTPD_PATCHES",
+          "HTTPD_PREFIX",
+          "HTTPD_SHA256",
+          "HTTPD_VERSION",
+          "PATH"
+        ],
+        "public_values": {}
+      },
+      "labels": {
+        "com.docker.compose.config-hash": "8a038090583d277100c49bd05f53dd0d7f62688dc766ed58d30834bb92ca5afd",
+        "com.docker.compose.container-number": "1",
+        "com.docker.compose.depends_on": "",
+        "com.docker.compose.image": "sha256:7ed5668e2fb31c738bcd291847fbb313073998e561ac6d8dc63cfd061dd0fb4d",
+        "com.docker.compose.oneoff": "False",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.project.config_files": "/opt/webserver/compose.yaml",
+        "com.docker.compose.project.working_dir": "/opt/webserver",
+        "com.docker.compose.service": "site-5",
+        "com.docker.compose.version": "5.5.1",
+        "traefik.enable": "true",
+        "traefik.http.routers.site-5.entrypoints": "websecure",
+        "traefik.http.routers.site-5.rule": "Host(`www.mywebclass.org`)",
+        "traefik.http.services.site-5.loadbalancer.server.port": "80"
+      },
+      "restart_policy": {
+        "Name": "unless-stopped",
+        "MaximumRetryCount": 0
+      },
+      "read_only": false,
+      "privileged": false,
+      "cap_add": null,
+      "cap_drop": null,
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "memory_limit": 0,
+      "nano_cpus": 0,
+      "pids_limit": null,
+      "log_config": {
+        "Type": "json-file",
+        "Config": {
+          "max-file": "3",
+          "max-size": "10m"
+        }
+      },
+      "tmpfs": null,
+      "mounts": [
+        {
+          "Type": "bind",
+          "Source": "/opt/webserver/sites/www.mywebclass.org",
+          "Destination": "/usr/local/apache2/htdocs",
+          "Mode": "ro",
+          "RW": false,
+          "Propagation": "rprivate"
+        }
+      ],
+      "ports": {
+        "80/tcp": null
+      },
+      "networks": {
+        "web": {
+          "Aliases": [
+            "public-web-site-5-1",
+            "site-5"
+          ],
+          "NetworkID": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+          "IPAddress": "172.18.0.6"
+        }
+      }
+    }
+  ],
+  "images": [
+    {
+      "Id": "sha256:24841fe2de7304c149343d877d2923b4c8800a38ba015dea9174c23b20e344a0",
+      "RepoTags": [
+        "traefik:v3.7.13"
+      ],
+      "RepoDigests": [
+        "traefik@sha256:24841fe2de7304c149343d877d2923b4c8800a38ba015dea9174c23b20e344a0"
+      ],
+      "Created": "2026-09-17T21:33:14.492030677Z",
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Size": 252486480
+    },
+    {
+      "Id": "sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151",
+      "RepoTags": [
+        "getwud/wud@sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151"
+      ],
+      "RepoDigests": [
+        "getwud/wud@sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151"
+      ],
+      "Created": "2026-09-12T10:25:16.899048954Z",
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Size": 477765155
+    },
+    {
+      "Id": "sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b",
+      "RepoTags": [
+        "httpd:2.4-alpine"
+      ],
+      "RepoDigests": [
+        "httpd@sha256:4e585da9d0125dec36d4500a9f5c5df7b2c0a01f67cb47865a91a4b05bdbec1b"
+      ],
+      "Created": "2026-09-17T21:17:01.091081141Z",
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Size": 96151717
+    },
+    {
+      "Id": "sha256:aec414c990a5de6ed74c9e8dcb105b78f6358c03a8cea70a9d40dcda51c3a8fa",
+      "RepoTags": [
+        "kaw393939/is373_ci_cd:prod"
+      ],
+      "RepoDigests": [
+        "kaw393939/is373_ci_cd@sha256:aec414c990a5de6ed74c9e8dcb105b78f6358c03a8cea70a9d40dcda51c3a8fa"
+      ],
+      "Created": "2026-10-01T18:06:28.962652615Z",
+      "Architecture": "amd64",
+      "Os": "linux",
+      "Size": 206211260
+    }
+  ],
+  "networks": [
+    {
+      "Name": "bridge",
+      "Id": "09d857975f2ef73e9e7adc6355954dc7d3a0754dd0410c5792235a3583820593",
+      "Created": "2026-09-29T18:02:21.277374213Z",
+      "Scope": "local",
+      "Driver": "bridge",
+      "EnableIPv4": true,
+      "EnableIPv6": false,
+      "IPAM": {
+        "Driver": "default",
+        "Options": null,
+        "Config": [
+          {
+            "Subnet": "172.17.0.0/16",
+            "Gateway": "172.17.0.1"
+          }
+        ]
+      },
+      "Internal": false,
+      "Attachable": false,
+      "Ingress": false,
+      "ConfigFrom": {
+        "Network": ""
+      },
+      "ConfigOnly": false,
+      "Options": {
+        "com.docker.network.bridge.default_bridge": "true",
+        "com.docker.network.bridge.enable_icc": "true",
+        "com.docker.network.bridge.enable_ip_masquerade": "true",
+        "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+        "com.docker.network.bridge.name": "docker0",
+        "com.docker.network.driver.mtu": "1500"
+      },
+      "Labels": {},
+      "Containers": {},
+      "Status": {
+        "IPAM": {
+          "Subnets": {
+            "172.17.0.0/16": {
+              "IPsInUse": 3,
+              "DynamicIPsAvailable": 65533
+            }
+          }
+        }
+      }
+    },
+    {
+      "Name": "host",
+      "Id": "c581940bb3c6a55950de0d19cb055917f8ccf1ef36c0c08469217769fa0994e1",
+      "Created": "2026-09-29T18:02:21.269371933Z",
+      "Scope": "local",
+      "Driver": "host",
+      "EnableIPv4": true,
+      "EnableIPv6": false,
+      "IPAM": {
+        "Driver": "default",
+        "Options": null,
+        "Config": null
+      },
+      "Internal": false,
+      "Attachable": false,
+      "Ingress": false,
+      "ConfigFrom": {
+        "Network": ""
+      },
+      "ConfigOnly": false,
+      "Options": {},
+      "Labels": {},
+      "Containers": {},
+      "Status": {
+        "IPAM": {}
+      }
+    },
+    {
+      "Name": "is373-ci-cd_default",
+      "Id": "3c5a1ad596ca49e16b71b2f2fcda16aae0527d9f5a7c39a391047eb0d74cf5a6",
+      "Created": "2026-09-29T19:29:43.500805808Z",
+      "Scope": "local",
+      "Driver": "bridge",
+      "EnableIPv4": true,
+      "EnableIPv6": false,
+      "IPAM": {
+        "Driver": "default",
+        "Options": null,
+        "Config": [
+          {
+            "Subnet": "172.19.0.0/16",
+            "Gateway": "172.19.0.1"
+          }
+        ]
+      },
+      "Internal": false,
+      "Attachable": false,
+      "Ingress": false,
+      "ConfigFrom": {
+        "Network": ""
+      },
+      "ConfigOnly": false,
+      "Options": {},
+      "Labels": {
+        "com.docker.compose.config-hash": "9ebb165edeba3d0b9334729ed1bb774b45ac4e01d7aebb47ab5ad5341f7d99b4",
+        "com.docker.compose.network": "default",
+        "com.docker.compose.project": "is373-ci-cd",
+        "com.docker.compose.version": "5.5.1"
+      },
+      "Containers": {
+        "278a072568373a10662ca84958a33744f50c3eab3d467fcbfa238be295efad00": {
+          "Name": "is373-ci-cd-prod-1",
+          "EndpointID": "f9e1f18b7a4a7d306bc7d925996186db33949de8b20f901df1382e5fc5dba72d",
+          "MacAddress": "ae:a7:d7:f4:3c:66",
+          "IPv4Address": "172.19.0.2/16",
+          "IPv6Address": ""
+        },
+        "e4b5267fdb906ef03cf3aa723966cf742ec2e180b97a5435f122be522912655b": {
+          "Name": "is373-ci-cd-wud-1",
+          "EndpointID": "2e88155e9dd6caeb4552c94a2f0f1d5e86dba7af1b89969be885b248efb0d57d",
+          "MacAddress": "8a:ed:27:7b:20:5d",
+          "IPv4Address": "172.19.0.3/16",
+          "IPv6Address": ""
+        }
+      },
+      "Status": {
+        "IPAM": {
+          "Subnets": {
+            "172.19.0.0/16": {
+              "IPsInUse": 5,
+              "DynamicIPsAvailable": 65531
+            }
+          }
+        }
+      }
+    },
+    {
+      "Name": "none",
+      "Id": "42e903e4d3847abd7c7086e1b9e3f8bc95efe8aa592df3df917975ab0127c5ab",
+      "Created": "2026-09-29T18:02:21.251405652Z",
+      "Scope": "local",
+      "Driver": "null",
+      "EnableIPv4": true,
+      "EnableIPv6": false,
+      "IPAM": {
+        "Driver": "default",
+        "Options": null,
+        "Config": null
+      },
+      "Internal": false,
+      "Attachable": false,
+      "Ingress": false,
+      "ConfigFrom": {
+        "Network": ""
+      },
+      "ConfigOnly": false,
+      "Options": {},
+      "Labels": {},
+      "Containers": {},
+      "Status": {
+        "IPAM": {}
+      }
+    },
+    {
+      "Name": "web",
+      "Id": "e35615794475ab15a2fd30bfe82177aa7e0912bff0e97a67156f7740a5f88a57",
+      "Created": "2026-09-29T18:03:10.586687246Z",
+      "Scope": "local",
+      "Driver": "bridge",
+      "EnableIPv4": true,
+      "EnableIPv6": false,
+      "IPAM": {
+        "Driver": "default",
+        "Options": null,
+        "Config": [
+          {
+            "Subnet": "172.18.0.0/16",
+            "Gateway": "172.18.0.1"
+          }
+        ]
+      },
+      "Internal": false,
+      "Attachable": false,
+      "Ingress": false,
+      "ConfigFrom": {
+        "Network": ""
+      },
+      "ConfigOnly": false,
+      "Options": {},
+      "Labels": {
+        "com.docker.compose.config-hash": "0da48553e916da568c751f545c1078e39e619abc2a298c8e52692caa229d95d1",
+        "com.docker.compose.network": "web",
+        "com.docker.compose.project": "public-web",
+        "com.docker.compose.version": "5.5.1"
+      },
+      "Containers": {
+        "1f13e5096bc6bb664055a883a9b2459a5414bcfbfa8533d840c4608c49673988": {
+          "Name": "public-web-site-1-1",
+          "EndpointID": "616e6063b479f1a28df6f7f80d8f5f06222c447a18106bd00bb4401e0c6a3009",
+          "MacAddress": "66:8b:56:a4:03:80",
+          "IPv4Address": "172.18.0.2/16",
+          "IPv6Address": ""
+        },
+        "278a072568373a10662ca84958a33744f50c3eab3d467fcbfa238be295efad00": {
+          "Name": "is373-ci-cd-prod-1",
+          "EndpointID": "1b491ab96c6202fcb7e180c1b2fb0e6c03560a6fc87dd5a6d7ca64112964172f",
+          "MacAddress": "3a:d9:3c:b6:fc:1b",
+          "IPv4Address": "172.18.0.8/16",
+          "IPv6Address": ""
+        },
+        "47abf4f166d6b00f7b415cb68a5dd57ef4df9b8c90f235f9d05f68359dc03a5f": {
+          "Name": "public-web-site-4-1",
+          "EndpointID": "3e1a93ad85b7c6458fcbe8e449e2245e8c8cab1d89ba4d2ec1e8ae48cdc79337",
+          "MacAddress": "da:a3:bd:aa:63:27",
+          "IPv4Address": "172.18.0.5/16",
+          "IPv6Address": ""
+        },
+        "61d5d6617456d3d6bb8afdf0ad5ae06d9b809dda001351dfa51a6dcc77bc4e04": {
+          "Name": "public-web-site-3-1",
+          "EndpointID": "7692b5d7b527e8676c163ef2c5cfcabc2af9cbc08cc4f5c024e69f654d6eaf15",
+          "MacAddress": "3a:31:d9:c1:8d:58",
+          "IPv4Address": "172.18.0.4/16",
+          "IPv6Address": ""
+        },
+        "661ca145447ab109bd4f59e245e2e8af1f80c05831eb2a3e9a8f5a7ad68c24ea": {
+          "Name": "public-web-traefik-1",
+          "EndpointID": "df20ca112946b608d0905b418ea74255097b4b730be5e50f6bf61e3af7c9750f",
+          "MacAddress": "aa:3c:78:e3:6a:5f",
+          "IPv4Address": "172.18.0.7/16",
+          "IPv6Address": ""
+        },
+        "89f01c81cba258f300a41dcacba964d4fc2fe5180a0bb61856b1dbed3b5d2206": {
+          "Name": "public-web-site-2-1",
+          "EndpointID": "47641e52bcd13aa07324b51ea14d4cc725cc1c9d153df4da05bc2a8b890daa5a",
+          "MacAddress": "2e:4f:d8:8d:a1:98",
+          "IPv4Address": "172.18.0.3/16",
+          "IPv6Address": ""
+        },
+        "ea41af970f348fcf5cef72c3a5598de55253c6ed85f40332ba4c395c7c7e8ad4": {
+          "Name": "public-web-site-5-1",
+          "EndpointID": "71fe07e37055e9516ffbf0c40163408fe4b91348316226b28e993c82336c674a",
+          "MacAddress": "0e:f8:22:55:e8:68",
+          "IPv4Address": "172.18.0.6/16",
+          "IPv6Address": ""
+        }
+      },
+      "Status": {
+        "IPAM": {
+          "Subnets": {
+            "172.18.0.0/16": {
+              "IPsInUse": 10,
+              "DynamicIPsAvailable": 65526
+            }
+          }
+        }
+      }
+    }
+  ],
+  "volumes": [
+    {
+      "CreatedAt": "2026-09-29T19:30:08Z",
+      "Driver": "local",
+      "Labels": {
+        "com.docker.compose.config-hash": "ce6c3e49da63a68f4105b006a2371f0573f222bca0d7a846cd7eca16f929234f",
+        "com.docker.compose.project": "is373-ci-cd",
+        "com.docker.compose.version": "5.5.1",
+        "com.docker.compose.volume": "wud-data"
+      },
+      "Mountpoint": "/var/lib/docker/volumes/is373-ci-cd_wud-data/_data",
+      "Name": "is373-ci-cd_wud-data",
+      "Options": null,
+      "Scope": "local"
+    }
+  ],
+  "compose_models": {
+    "/opt/webserver": {
+      "name": "public-web",
+      "networks": {
+        "web": {
+          "name": "web",
+          "ipam": {}
+        }
+      },
+      "services": {
+        "site-1": {
+          "command": null,
+          "entrypoint": null,
+          "image": "httpd:2.4-alpine",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.site-1.entrypoints": "websecure",
+            "traefik.http.routers.site-1.rule": "Host(`firehose360.com`)",
+            "traefik.http.services.site-1.loadbalancer.server.port": "80"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/webserver/sites/firehose360.com",
+              "target": "/usr/local/apache2/htdocs",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        },
+        "site-2": {
+          "command": null,
+          "entrypoint": null,
+          "image": "httpd:2.4-alpine",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.site-2.entrypoints": "websecure",
+            "traefik.http.routers.site-2.rule": "Host(`www.firehose360.com`)",
+            "traefik.http.services.site-2.loadbalancer.server.port": "80"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/webserver/sites/www.firehose360.com",
+              "target": "/usr/local/apache2/htdocs",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        },
+        "site-3": {
+          "command": null,
+          "entrypoint": null,
+          "image": "httpd:2.4-alpine",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.site-3.entrypoints": "websecure",
+            "traefik.http.routers.site-3.rule": "Host(`dev.firehose360.com`)",
+            "traefik.http.services.site-3.loadbalancer.server.port": "80"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/webserver/sites/dev.firehose360.com",
+              "target": "/usr/local/apache2/htdocs",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        },
+        "site-4": {
+          "command": null,
+          "entrypoint": null,
+          "image": "httpd:2.4-alpine",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.site-4.entrypoints": "websecure",
+            "traefik.http.routers.site-4.rule": "Host(`mywebclass.org`)",
+            "traefik.http.services.site-4.loadbalancer.server.port": "80"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/webserver/sites/mywebclass.org",
+              "target": "/usr/local/apache2/htdocs",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        },
+        "site-5": {
+          "command": null,
+          "entrypoint": null,
+          "image": "httpd:2.4-alpine",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.site-5.entrypoints": "websecure",
+            "traefik.http.routers.site-5.rule": "Host(`www.mywebclass.org`)",
+            "traefik.http.services.site-5.loadbalancer.server.port": "80"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/webserver/sites/www.mywebclass.org",
+              "target": "/usr/local/apache2/htdocs",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        },
+        "traefik": {
+          "command": [
+            "--api.dashboard=true",
+            "--api.insecure=false",
+            "--providers.docker=true",
+            "--providers.docker.exposedbydefault=false",
+            "--providers.docker.network=web",
+            "--entrypoints.web.address=:80",
+            "--entrypoints.web.http.redirections.entrypoint.to=websecure",
+            "--entrypoints.web.http.redirections.entrypoint.scheme=https",
+            "--entrypoints.websecure.address=:443",
+            "--entrypoints.websecure.http.tls.certresolver=letsencrypt",
+            "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json",
+            "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web",
+            "--ping=true",
+            "--log.level=INFO",
+            "--accesslog=true",
+            "--certificatesresolvers.letsencrypt.acme.email=keith@firehose360.com"
+          ],
+          "entrypoint": null,
+          "healthcheck": {
+            "timeout": "5s",
+            "interval": "30s",
+            "retries": 3
+          },
+          "image": "traefik:v3.7.13",
+          "labels": {
+            "traefik.enable": "true",
+            "traefik.http.routers.dashboard.entrypoints": "websecure",
+            "traefik.http.routers.dashboard.rule": "Host(`traefik.firehose360.com`)",
+            "traefik.http.routers.dashboard.service": "api@internal"
+          },
+          "logging": {
+            "driver": "json-file",
+            "options": {
+              "max-file": "3",
+              "max-size": "10m"
+            }
+          },
+          "networks": {
+            "web": null
+          },
+          "ports": [
+            {
+              "mode": "ingress",
+              "target": 80,
+              "published": "80",
+              "protocol": "tcp"
+            },
+            {
+              "mode": "ingress",
+              "target": 443,
+              "published": "443",
+              "protocol": "tcp"
+            }
+          ],
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/var/run/docker.sock",
+              "target": "/var/run/docker.sock",
+              "read_only": true,
+              "bind": {}
+            },
+            {
+              "type": "bind",
+              "source": "/opt/webserver/letsencrypt",
+              "target": "/letsencrypt",
+              "bind": {}
+            },
+            {
+              "type": "bind",
+              "source": "/opt/webserver/secrets/dashboard.htpasswd",
+              "target": "/run/secrets/dashboard.htpasswd",
+              "read_only": true,
+              "bind": {}
+            }
+          ],
+          "environment": {
+            "names": [],
+            "public_values": {}
+          }
+        }
+      }
+    },
+    "/opt/is373_ci_cd": {
+      "name": "is373-ci-cd",
+      "networks": {
+        "default": {
+          "name": "is373-ci-cd_default",
+          "ipam": {}
+        },
+        "hosting": {
+          "name": "web",
+          "ipam": {},
+          "external": true
+        }
+      },
+      "services": {
+        "dev": {
+          "build": {
+            "context": "/opt/is373_ci_cd",
+            "dockerfile": "Dockerfile"
+          },
+          "command": [
+            "uvicorn",
+            "app.main:app",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+            "--reload"
+          ],
+          "entrypoint": null,
+          "environment": {
+            "names": [
+              "APP_ENV"
+            ],
+            "public_values": {
+              "APP_ENV": "development"
+            }
+          },
+          "image": "is373-ci-cd-dev:local",
+          "labels": {
+            "wud.watch": "false"
+          },
+          "networks": {
+            "default": null
+          },
+          "ports": [
+            {
+              "mode": "ingress",
+              "host_ip": "127.0.0.1",
+              "target": 8000,
+              "published": "8080",
+              "protocol": "tcp"
+            }
+          ],
+          "restart": "unless-stopped",
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/opt/is373_ci_cd/app",
+              "target": "/app/app",
+              "read_only": true,
+              "bind": {}
+            }
+          ]
+        },
+        "prod": {
+          "cap_drop": [
+            "ALL"
+          ],
+          "command": null,
+          "entrypoint": null,
+          "environment": {
+            "names": [
+              "APP_ENV"
+            ],
+            "public_values": {
+              "APP_ENV": "production"
+            }
+          },
+          "image": "kaw393939/is373_ci_cd:prod",
+          "labels": {
+            "traefik.docker.network": "web",
+            "traefik.enable": "true",
+            "traefik.http.routers.calculator.entrypoints": "websecure",
+            "traefik.http.routers.calculator.rule": "Host(`calc.mywebclass.org`)",
+            "traefik.http.routers.calculator.service": "calculator",
+            "traefik.http.services.calculator.loadbalancer.server.port": "8000",
+            "wud.tag.include": "^prod$$",
+            "wud.trigger.include": "docker.production",
+            "wud.watch": "true",
+            "wud.watch.digest": "true"
+          },
+          "networks": {
+            "default": null,
+            "hosting": null
+          },
+          "pids_limit": 128,
+          "ports": [
+            {
+              "mode": "ingress",
+              "host_ip": "127.0.0.1",
+              "target": 8000,
+              "published": "8090",
+              "protocol": "tcp"
+            }
+          ],
+          "read_only": true,
+          "restart": "unless-stopped",
+          "security_opt": [
+            "no-new-privileges:true"
+          ],
+          "tmpfs": [
+            "/tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777"
+          ],
+          "user": "10001:10001"
+        },
+        "wud": {
+          "command": null,
+          "entrypoint": null,
+          "environment": {
+            "names": [
+              "WUD_AUTH_ADMIN_PASSWORD",
+              "WUD_AUTH_ADMIN_USER",
+              "WUD_TRIGGER_DOCKER_PRODUCTION_AUTO",
+              "WUD_TRIGGER_DOCKER_PRODUCTION_DRYRUN",
+              "WUD_TRIGGER_DOCKER_PRODUCTION_PRUNE",
+              "WUD_WATCHER_LOCAL_CRON",
+              "WUD_WATCHER_LOCAL_JITTER",
+              "WUD_WATCHER_LOCAL_WATCHBYDEFAULT",
+              "WUD_WATCHER_LOCAL_WATCHDIGESTDEFAULT"
+            ],
+            "public_values": {
+              "WUD_TRIGGER_DOCKER_PRODUCTION_AUTO": "true",
+              "WUD_TRIGGER_DOCKER_PRODUCTION_DRYRUN": "false",
+              "WUD_TRIGGER_DOCKER_PRODUCTION_PRUNE": "false",
+              "WUD_WATCHER_LOCAL_CRON": "* * * * *",
+              "WUD_WATCHER_LOCAL_JITTER": "1000",
+              "WUD_WATCHER_LOCAL_WATCHBYDEFAULT": "false",
+              "WUD_WATCHER_LOCAL_WATCHDIGESTDEFAULT": "true"
+            }
+          },
+          "image": "getwud/wud:9.0.2@sha256:257b2221f201a0231db295b662882c5873ff72dc687be94dbae2e15f5394f151",
+          "labels": {
+            "wud.watch": "false"
+          },
+          "networks": {
+            "default": null
+          },
+          "ports": [
+            {
+              "mode": "ingress",
+              "host_ip": "127.0.0.1",
+              "target": 3000,
+              "published": "8091",
+              "protocol": "tcp"
+            }
+          ],
+          "restart": "unless-stopped",
+          "volumes": [
+            {
+              "type": "bind",
+              "source": "/var/run/docker.sock",
+              "target": "/var/run/docker.sock",
+              "bind": {}
+            },
+            {
+              "type": "volume",
+              "source": "wud-data",
+              "target": "/store",
+              "volume": {}
+            }
+          ]
+        }
+      },
+      "volumes": {
+        "wud-data": {
+          "name": "is373-ci-cd_wud-data"
+        }
+      }
+    }
+  },
+  "project_files": [
+    {
+      "path": "/opt/webserver/compose.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5580,
+      "modified": "2026-09-29T18:14:16.766705+00:00",
+      "sha256": "a0f457487eb2dbea3dea59a7d19e5f6c304484096ff30636af078d5887b72108"
+    },
+    {
+      "path": "/opt/webserver/README.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1778,
+      "modified": "2026-09-29T19:32:53.156011+00:00",
+      "sha256": "2d1e73c88bcdd553c27c3c075a38e699ded4ee06369f2e6a72d6e8fdebeb05a0"
+    },
+    {
+      "path": "/opt/webserver/letsencrypt/acme.json",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 91202,
+      "modified": "2026-09-29T19:30:48.558954+00:00"
+    },
+    {
+      "path": "/opt/webserver/letsencrypt/acme.before-email-change.json",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 78640,
+      "modified": "2026-09-29T18:03:53.291189+00:00"
+    },
+    {
+      "path": "/opt/webserver/secrets/dashboard.htpasswd",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 68,
+      "modified": "2026-09-29T18:03:01.022010+00:00"
+    },
+    {
+      "path": "/opt/webserver/secrets/dashboard-login.txt",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 107,
+      "modified": "2026-09-29T18:03:01.023010+00:00"
+    },
+    {
+      "path": "/opt/webserver/sites/mywebclass.org/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 967,
+      "modified": "2026-09-29T18:03:01.024010+00:00",
+      "sha256": "67bdf33de7080b144591f486930304d6a5d354a5acc0d0a658d0038fc9584282"
+    },
+    {
+      "path": "/opt/webserver/sites/firehose360.com/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 970,
+      "modified": "2026-09-29T18:03:01.023010+00:00",
+      "sha256": "1949ed53ec8892f9b3b14136507be02d38409e203144a751741a552e3648507a"
+    },
+    {
+      "path": "/opt/webserver/sites/www.firehose360.com/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 982,
+      "modified": "2026-09-29T18:03:01.023010+00:00",
+      "sha256": "ea43496718c0617f822a19f8afe6c9dca8333fb2bd683520ca2a42afa5273188"
+    },
+    {
+      "path": "/opt/webserver/sites/www.mywebclass.org/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 979,
+      "modified": "2026-09-29T18:03:01.024010+00:00",
+      "sha256": "595019d512bb1f507e7c0c620362836e1be87515bcf4830f4d48fb910f047646"
+    },
+    {
+      "path": "/opt/webserver/sites/dev.firehose360.com/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 982,
+      "modified": "2026-09-29T18:03:01.023010+00:00",
+      "sha256": "1d553c0f0296267e134027e93af2eb945cfe21b547f0fff0cf7b09fab812636e"
+    },
+    {
+      "path": "/opt/is373_ci_cd/compose.override.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 859,
+      "modified": "2026-09-29T19:33:15.522921+00:00",
+      "sha256": "b7a9d231620959edbba364609b2053a848616d6c8ea42d7d67ec079d99cf18e4"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.env",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 49,
+      "modified": "2026-09-29T19:29:37.232069+00:00",
+      "environment": {
+        "names": [
+          "APP_HOST",
+          "TRAEFIK_NETWORK"
+        ],
+        "public_values": {
+          "APP_HOST": "calc.mywebclass.org",
+          "TRAEFIK_NETWORK": "web"
+        }
+      }
+    },
+    {
+      "path": "/opt/is373_ci_cd/.env.example",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 86,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "environment": {
+        "names": [
+          "DEV_PORT"
+        ],
+        "public_values": {
+          "DEV_PORT": "8080"
+        }
+      }
+    },
+    {
+      "path": "/opt/is373_ci_cd/compose.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1632,
+      "modified": "2026-10-01T17:50:53.923983+00:00",
+      "sha256": "20f3f67d6dd36de953a032b22b1e08621ca8604a8c853a8cc3442f0a127ba099"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.python-version",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 8,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "861b3dd8083d28f336ef70f6755bc399538ddad627b1d095820ca34cb953cf14"
+    },
+    {
+      "path": "/opt/is373_ci_cd/uv.lock",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 46501,
+      "modified": "2026-09-29T19:29:36.856054+00:00",
+      "sha256": "21cc71b07983ae5db72337bd480b39af8c87770f37e6a2d23942cac6c795b8bb"
+    },
+    {
+      "path": "/opt/is373_ci_cd/CONTRIBUTING.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4639,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "db22027b1e804b402cac453b3e54f05ddfc9052159277e992120caa5088c946d"
+    },
+    {
+      "path": "/opt/is373_ci_cd/README.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4432,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "9f38484e539812b01aae8e3299a31251819cf0568881b7c86443db8fe85e4e6d"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.dockerignore",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 71,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "170a5217c96da1f665ca9adc8b438702bf70e07c5700b98c8a0618b255504e63"
+    },
+    {
+      "path": "/opt/is373_ci_cd/Makefile",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 784,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "8f8f77062bc19ba96ade95b0f9dd524fa6cead64b285fa044bbccd79447e0183"
+    },
+    {
+      "path": "/opt/is373_ci_cd/Dockerfile",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1718,
+      "modified": "2026-10-01T18:05:43.687855+00:00",
+      "sha256": "606744836abe8c2beadaf3e638d8dbda71273cc5587c51000dd7be35a0fc83e6"
+    },
+    {
+      "path": "/opt/is373_ci_cd/AGENTS.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3451,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "8842d70a4df2c94cdb0a3e5af1577a4de43db7f44462431e416bbbfa6f52752b"
+    },
+    {
+      "path": "/opt/is373_ci_cd/pyproject.toml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 380,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "89b03688e2e2188017eb592a6ee7f4d54f8140af74f81bfc949d3df5f12e0482"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.gitignore",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 412,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "1de9ea316b9773d6d9876fe04a402eeb698a477bccc4c0bbeaa001b74dd63933"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/pull_request_template.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 716,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "ed54506eedc0a77fbcf02d9c2504f59bc421f0f84ceca6c496fb7da440a86252"
+    },
+    {
+      "path": "/opt/is373_ci_cd/app/calculator.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1338,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "3ff3445c719bdd654b4a017269864ac2fd4078279285d329ba1c205c7b43728f"
+    },
+    {
+      "path": "/opt/is373_ci_cd/app/index.html",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 10132,
+      "modified": "2026-10-01T17:50:53.923983+00:00",
+      "sha256": "7f5a1631de1c85ec182af806579f9e55a51176a1eb6a4fc7427f7ec84d19b0d3"
+    },
+    {
+      "path": "/opt/is373_ci_cd/app/main.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2129,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "0d5ae61cd0856aa34910bc24df02906425455b9ebd5584caa45188af9f153178"
+    },
+    {
+      "path": "/opt/is373_ci_cd/app/__init__.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 44,
+      "modified": "2026-09-29T19:29:36.853054+00:00",
+      "sha256": "05af8706c8686ecfa81b8297bd3721e7af71aedf8b6ffd2ee6106f8174a2f6ea"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/security-remediation.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2981,
+      "modified": "2026-10-01T18:05:43.687855+00:00",
+      "sha256": "5ead246e94661e501b8243680e102b18eec8fc4107099361c2b646d2ec16f823"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/ci-cd.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 8708,
+      "modified": "2026-10-01T18:05:43.687855+00:00",
+      "sha256": "a6d66848f9ce552e1d57c8299e061279abcc5d939dbfd6e293c686ef0267db20"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/testing.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5854,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "06e6ba5e5ef7e0d75f69d7d0bcf965a873ea6d5227ee46d8bfd700cc79d3b8f8"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/implementation-plan.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5134,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "3a45442d99c0bff83fbc0f5ddfa0b148afb70251a5adac0b9316ab7cfedf11ba"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/evidence.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5362,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "d75b2cc1bdcfab26ee7b2bb2d337b58de1a2ea73f964323d0b612350c9f5e35e"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/integration-evidence.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1799,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "31b93cebcd49b3083bf68c60108da7bc0009fe5b619d5c0dd879652c9f231431"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/architecture.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 7581,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "9c420ad26a1516cc49f7ad7fa5f35dc54775a699f2fd28da873609ffa4625958"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/spec.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 9939,
+      "modified": "2026-10-01T18:05:43.688855+00:00",
+      "sha256": "eac186ee19b7e51e46ea92e8ad36f04ae2322d9fce5f81c60cf7788ffec39f00"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/demo.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5695,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "8526eaf83d39ba1ef1abffce38db54db230680148e97976f2a52469eccc058d2"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/hosting.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4140,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "2af0ddade858a7268c1393e7d261fd2dd4aaaadca278d3ad75464573cc08d555"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/qa.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4793,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "d476db0448da55acfa8852779a88bc30ad706816fe392bcbc46b7527f96599c1"
+    },
+    {
+      "path": "/opt/is373_ci_cd/docs/github-workflow.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3036,
+      "modified": "2026-09-29T19:29:36.854054+00:00",
+      "sha256": "0fe60f8f1d76cfef7fdc4d6db112e6a5a25bb2e6244e02c0a41fbcc7169a14b9"
+    },
+    {
+      "path": "/opt/is373_ci_cd/scripts/runtime.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 10596,
+      "modified": "2026-10-01T18:05:43.688855+00:00",
+      "sha256": "71fd26e037ba20ba110da7dd5e04b51c3801f34349e0eee8fb79ed2a9842f641"
+    },
+    {
+      "path": "/opt/is373_ci_cd/scripts/install-trivy.sh",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 995,
+      "modified": "2026-10-01T17:50:53.924983+00:00",
+      "sha256": "7ec0a65dbc7f3f6d1c182a634cd596a6b471e7622e33ecdf0693356f1f8549bc"
+    },
+    {
+      "path": "/opt/is373_ci_cd/scripts/uv.sh",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 586,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "687f485ca63b8f5f76498ac696c74a97cea1a6d5c5bfd2938464783d07bcbfc2"
+    },
+    {
+      "path": "/opt/is373_ci_cd/scripts/scan-image.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2236,
+      "modified": "2026-10-01T17:50:53.924983+00:00",
+      "sha256": "a35017e76e20e14641b26996afd6f18604d8f6521777d1f294ecd6886db8593d"
+    },
+    {
+      "path": "/opt/is373_ci_cd/scripts/publish.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5144,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "2966881d8d74603e785f06edc384e934bbd4907bbea19161876728de951e70af"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.state/wud.env",
+      "mode": "-rw-------",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 83,
+      "modified": "2026-09-29T19:29:37.522081+00:00",
+      "environment": {
+        "names": [
+          "WUD_AUTH_ADMIN_PASSWORD",
+          "WUD_AUTH_ADMIN_USER"
+        ],
+        "public_values": {}
+      }
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/workflows/image-security.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2167,
+      "modified": "2026-10-01T17:50:53.923983+00:00",
+      "sha256": "715358cf13732e20f07a729dbb10c31bba5fe037a900c9c0fae53460f987f92a"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/workflows/ci.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5052,
+      "modified": "2026-10-01T17:50:53.923983+00:00",
+      "sha256": "9bf5600df93a65e4a1fe6449a3c5d48496d46bf0a2187d21ac832ec0e38558b7"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/ISSUE_TEMPLATE/config.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 27,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "13064e7bea658e01e718b414fbb7b3b244f36411fe25ee2055c151f7b534547a"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/ISSUE_TEMPLATE/bug.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1105,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "122e3cd8b924bee39dbf9d93d63563b43db69a586ee1c4617ccfd297b26131bf"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/ISSUE_TEMPLATE/feature.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1233,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "98e4dd74581f3bd89aa4d04acacfdcbaf92f9d9eb9927ff90a3fd19278e286e8"
+    },
+    {
+      "path": "/opt/is373_ci_cd/.github/ISSUE_TEMPLATE/decision.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 808,
+      "modified": "2026-09-29T19:29:36.852054+00:00",
+      "sha256": "5ef1d8f8ab874b435aa071c6e3aeb4365c5d15be5ea39b7acf491f6ae9f1ba63"
+    },
+    {
+      "path": "/opt/is373_ci_cd/tests/e2e/test_calculator.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2794,
+      "modified": "2026-10-01T17:50:53.924983+00:00",
+      "sha256": "a530860f57ac238f011e12113f65ac9a451c3669a5d889fe206b091a455dfbb4"
+    },
+    {
+      "path": "/opt/is373_ci_cd/tests/unit/test_release.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1995,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "4723275f62bbd5dc65a27d9484a34db08273bd4bfb8e745c3282714b854c64a2"
+    },
+    {
+      "path": "/opt/is373_ci_cd/tests/unit/test_calculator.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1042,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "2b2f193178205ec66b26f8ce2adcb50835710715c8f6dba3f4b287aa2f3336a8"
+    },
+    {
+      "path": "/opt/is373_ci_cd/tests/unit/test_runtime.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2612,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "8465cb119d818513aaafd55dffbfe4e2889ff6682b09349a6a07f75e8df4a2c9"
+    },
+    {
+      "path": "/opt/is373_ci_cd/tests/integration/test_api.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2347,
+      "modified": "2026-09-29T19:29:36.855054+00:00",
+      "sha256": "1d776d7f936b2295f09057d51f981202b7a533ae222ff85023034a3b628d2ddf"
+    },
+    {
+      "path": "/opt/373_hosting/VALIDATION.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2581,
+      "modified": "2026-09-29T19:33:15.513921+00:00",
+      "sha256": "3e3cffe7c67cfe2635307bf840e6f53b50b0f318d935319c22794b943c941132"
+    },
+    {
+      "path": "/opt/373_hosting/README.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 7214,
+      "modified": "2026-09-29T19:33:15.513921+00:00",
+      "sha256": "dd3162970df74d9510a13cb9f8e8123f125890e1037e213ee7e28c26c9c5e98d"
+    },
+    {
+      "path": "/opt/373_hosting/.gitignore",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 150,
+      "modified": "2026-09-29T19:29:37.223069+00:00",
+      "sha256": "a3ba97201244cb6052764a4940f178fa54eb6024f055bcfd2b2b2e071dd7eede"
+    },
+    {
+      "path": "/opt/373_hosting/book/04-deploy.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3217,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "34970386879d85c751d156c6a42b6af7981ff8694b211c48a6b09f819f234874"
+    },
+    {
+      "path": "/opt/373_hosting/book/05-https-dashboard.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3778,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "97af3b4a940dab61a23e28046199f5c4f5c6bb210cad144d5fb32ab1a453ca47"
+    },
+    {
+      "path": "/opt/373_hosting/book/07-operations.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3837,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "40f015ca8ed06bcc9eee3de9c2b18d7971c5c41c5c5cc571ce349569e244438a"
+    },
+    {
+      "path": "/opt/373_hosting/book/09-configuration-files.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 6801,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "d96cf77461ac58ed27030c0c786f992089704f473f2b6de36d0b28d4b7b5c421"
+    },
+    {
+      "path": "/opt/373_hosting/book/06-troubleshooting.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3467,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "8cf2278fac1436b03eb6ce3551c88b9dd582c4b7ff6e995edf58c5fa1fa22284"
+    },
+    {
+      "path": "/opt/373_hosting/book/01-architecture.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2875,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "9ce3c71cb436a8d0b3f763bb21b6af9ce579a41200044de187e189458fbb6c65"
+    },
+    {
+      "path": "/opt/373_hosting/book/03-docker.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2901,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "48a902355668b08bac95b898fbc885f3bd8ab1519315e86caad73f93661bddf9"
+    },
+    {
+      "path": "/opt/373_hosting/book/02-server-and-dns.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3181,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "b51c648b82ab442e31a34a2260fcd3787094d1cb9043fcd257408b61b1ac0c0f"
+    },
+    {
+      "path": "/opt/373_hosting/book/08-assessment.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3673,
+      "modified": "2026-09-29T19:29:37.224069+00:00",
+      "sha256": "16aa5683e0d3906bf14dd1bf1522950c7e322e36b1c5a415c4029e9010109167"
+    },
+    {
+      "path": "/opt/373_hosting/book/10-application-delivery.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 7852,
+      "modified": "2026-09-29T19:33:15.513921+00:00",
+      "sha256": "0171b8315e5789e548f2f50590b8b884b21907612f7767d274e9f41815b8698a"
+    },
+    {
+      "path": "/opt/373_hosting/tests/test_configure.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 3083,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "38ede81990a25963726fffd7dafb218ccfa5ac5c325ad6482b5d1b50604f2593"
+    },
+    {
+      "path": "/opt/373_hosting/tests/test_verify_release.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1593,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "4c2c2661f4c2305e2fbbec413812cc730f871e9feb393b6678b277257aa1f092"
+    },
+    {
+      "path": "/opt/373_hosting/scripts/configure.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5573,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "795341bb6f4aeda9f395685854fbcf288b7bd831da951aa8f95ec8cf9651ce36"
+    },
+    {
+      "path": "/opt/373_hosting/scripts/verify-release.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1817,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "71831669bd6057ef433ab332b6d4073275553f0883124d4d89a22984cada6b80"
+    },
+    {
+      "path": "/opt/373_hosting/scripts/install-docker.sh",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1394,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "2bd528d643a2f57b5d7c68c85844db5586af0dbd6985d843e1ffb5b72091d913"
+    },
+    {
+      "path": "/opt/373_hosting/scripts/verify.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1957,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "ae6a4a2df9e8cd3f37d3e17136ff62918c1d956770f41f42f147a51e21092c0a"
+    },
+    {
+      "path": "/opt/373_hosting/scripts/check-integration.py",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2146,
+      "modified": "2026-09-29T19:33:15.514921+00:00",
+      "sha256": "1a2a83007a1c78bba88a0c0cc45f4a382df8435572b841460525c02745a28352"
+    },
+    {
+      "path": "/opt/373_hosting/examples/hosting.example.json",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 197,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "98d538ef49b21488a15adb290a2f225a3f643a2c816ab7bdd87064836840daef"
+    },
+    {
+      "path": "/opt/373_hosting/.github/workflows/validate.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1833,
+      "modified": "2026-09-29T19:29:37.223069+00:00",
+      "sha256": "354099e34190bf3702024d8ce165ca0ab7e72992777bae9137a3d08a0b4fe592"
+    },
+    {
+      "path": "/opt/373_hosting/book/deployments/2026-09-29-calculator.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 2980,
+      "modified": "2026-09-29T19:33:15.514921+00:00",
+      "sha256": "138f441c1872b8e3869d6f18edcfe52fa68a831f30817d6bc7801634dea2d5b6"
+    },
+    {
+      "path": "/opt/373_hosting/examples/full-stack/traefik.yml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1188,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "20dd771b24d7d9a3d0465441e6df907f91d2b7973598f659e37e3ff6dcb8b4c0"
+    },
+    {
+      "path": "/opt/373_hosting/examples/full-stack/compose.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 5477,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "a54e0933bb88b107e29552b2044868dd6adc0f2aec86085b80f41c0d15e9d6bb"
+    },
+    {
+      "path": "/opt/373_hosting/examples/full-stack/README.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 4976,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "d6d6d34dd80694e1d832dd2388df0070296aec39a9c58eb9949d1e6c39b17da6"
+    },
+    {
+      "path": "/opt/373_hosting/examples/full-stack/compose.file-config.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 215,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "824f564f45fc348f6368c12c3957b449117c2dd49b8b64ef53b5525abbb17c6f"
+    },
+    {
+      "path": "/opt/373_hosting/examples/full-stack/compose.auth.yaml",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 438,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "03460c918475a8f7b61b89dc1561af00630660f3af1c715b675cdbee40bdd2c8"
+    },
+    {
+      "path": "/opt/373_hosting/examples/host-config/firewall-commands.sh",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 383,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "139d5afc585a652be25f9d389d0f6ca255483066e600f063808a8f662930282a"
+    },
+    {
+      "path": "/opt/373_hosting/examples/host-config/dns-records.example.csv",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 276,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "80494c7c5186cb30f396585067a97a5f165d1d51185b658c9b432537dc2e8595"
+    },
+    {
+      "path": "/opt/373_hosting/examples/host-config/docker.sources",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 284,
+      "modified": "2026-09-29T19:29:37.226069+00:00",
+      "sha256": "7e4224c25448ad6ea6b3d08dc228d1d09fa515b4cf0e924359a524b7da790fa3"
+    },
+    {
+      "path": "/opt/373_hosting/examples/host-config/README.md",
+      "mode": "-rw-r--r--",
+      "uid": 0,
+      "gid": 0,
+      "bytes": 1550,
+      "modified": "2026-09-29T19:29:37.225069+00:00",
+      "sha256": "d776b664381557cf5cc83ffa770c93257638bbb16c5a35ebc5776d43e80400b1"
+    }
+  ],
+  "git_checkouts": {
+    "/opt/is373_ci_cd": {
+      "head": {
+        "exit_code": 0,
+        "output": "4600202bad42da0c5ffb11d83ce8364671293d3d",
+        "error": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "",
+        "error": ""
+      },
+      "tracked": {
+        "exit_code": 0,
+        "output": ".dockerignore\n.env.example\n.github/ISSUE_TEMPLATE/bug.yml\n.github/ISSUE_TEMPLATE/config.yml\n.github/ISSUE_TEMPLATE/decision.yml\n.github/ISSUE_TEMPLATE/feature.yml\n.github/pull_request_template.md\n.github/workflows/ci.yml\n.github/workflows/image-security.yml\n.gitignore\n.python-version\nAGENTS.md\nCONTRIBUTING.md\nDockerfile\nMakefile\nREADME.md\napp/__init__.py\napp/calculator.py\napp/index.html\napp/main.py\ncompose.yaml\ndocs/architecture.md\ndocs/ci-cd.md\ndocs/demo.md\ndocs/evidence.md\ndocs/github-workflow.md\ndocs/hosting.md\ndocs/implementation-plan.md\ndocs/integration-evidence.md\ndocs/qa.md\ndocs/security-remediation.md\ndocs/spec.md\ndocs/testing.md\npyproject.toml\nscripts/install-trivy.sh\nscripts/publish.py\nscripts/runtime.py\nscripts/scan-image.py\nscripts/uv.sh\ntests/e2e/test_calculator.py\ntests/integration/test_api.py\ntests/unit/test_calculator.py\ntests/unit/test_release.py\ntests/unit/test_runtime.py\nuv.lock",
+        "error": ""
+      }
+    },
+    "/opt/373_hosting": {
+      "head": {
+        "exit_code": 0,
+        "output": "9d828ad1cf3b72d3c6379e074474683eae0cdd8f",
+        "error": ""
+      },
+      "status": {
+        "exit_code": 0,
+        "output": "",
+        "error": ""
+      },
+      "tracked": {
+        "exit_code": 0,
+        "output": ".github/workflows/validate.yml\n.gitignore\nREADME.md\nVALIDATION.md\nbook/01-architecture.md\nbook/02-server-and-dns.md\nbook/03-docker.md\nbook/04-deploy.md\nbook/05-https-dashboard.md\nbook/06-troubleshooting.md\nbook/07-operations.md\nbook/08-assessment.md\nbook/09-configuration-files.md\nbook/10-application-delivery.md\nbook/deployments/2026-09-29-calculator.md\nexamples/full-stack/README.md\nexamples/full-stack/compose.auth.yaml\nexamples/full-stack/compose.file-config.yaml\nexamples/full-stack/compose.yaml\nexamples/full-stack/letsencrypt/README.md\nexamples/full-stack/sites/dev.example.com/index.html\nexamples/full-stack/sites/example.com/index.html\nexamples/full-stack/sites/example.org/index.html\nexamples/full-stack/sites/www.example.com/index.html\nexamples/full-stack/sites/www.example.org/index.html\nexamples/full-stack/traefik.yml\nexamples/host-config/README.md\nexamples/host-config/dns-records.example.csv\nexamples/host-config/docker.sources\nexamples/host-config/firewall-commands.sh\nexamples/hosting.example.json\nexamples/integrations/calculator/.env.example\nexamples/integrations/calculator/README.md\nexamples/integrations/calculator/compose.traefik.yaml\nscripts/check-integration.py\nscripts/configure.py\nscripts/install-docker.sh\nscripts/verify-release.py\nscripts/verify.py\ntests/test_configure.py\ntests/test_verify_release.py",
+        "error": ""
+      }
+    }
+  },
+  "certificate_store": {
+    "path": "/opt/webserver/letsencrypt/acme.json",
+    "mode": "-rw-------",
+    "uid": 0,
+    "gid": 0,
+    "bytes": 91202,
+    "modified": "2026-09-29T19:30:48.558954+00:00",
+    "domains": [
+      {
+        "main": "www.firehose360.com"
+      },
+      {
+        "main": "dev.firehose360.com"
+      },
+      {
+        "main": "mywebclass.org"
+      },
+      {
+        "main": "firehose360.com"
+      },
+      {
+        "main": "www.mywebclass.org"
+      },
+      {
+        "main": "traefik.firehose360.com"
+      },
+      {
+        "main": "calc.mywebclass.org"
+      }
+    ]
+  },
+  "registry_auth_inventory": [
+    {
+      "path": "/root/.docker/config.json",
+      "exists": false
+    },
+    {
+      "path": "/home/kwilliams/.docker/config.json",
+      "exists": false
+    }
+  ]
+}

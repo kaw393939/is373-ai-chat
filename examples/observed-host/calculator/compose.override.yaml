@@ -1,0 +1,21 @@
+# Copy into the APPLICATION checkout as ignored compose.override.yaml.
+# The application Make commands include that local file on every operation.
+# This file adds routing to an existing proxy; it never starts another Traefik.
+services:
+  prod:
+    networks:
+      - default
+      - hosting
+    labels:
+      traefik.enable: 'true'
+      traefik.docker.network: ${TRAEFIK_NETWORK:-hosting-web}
+      traefik.http.routers.calculator.rule: Host(`${APP_HOST:?Set APP_HOST in the application .env}`)
+      traefik.http.routers.calculator.entrypoints: websecure
+      # Inherit entry-point TLS + certificate resolver; tls=true overrides that default.
+      traefik.http.routers.calculator.service: calculator
+      traefik.http.services.calculator.loadbalancer.server.port: '8000'
+
+networks:
+  hosting:
+    external: true
+    name: ${TRAEFIK_NETWORK:-hosting-web}

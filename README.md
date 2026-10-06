@@ -6,6 +6,8 @@ A proposed teaching application and installation guide for a provider-independen
 
 ## Read before implementation
 
+- [Full system and Docker audit](docs/system-audit.md)
+- [Recreate the observed server](docs/recreate-observed-host.md) and [captured configuration](examples/observed-host/README.md)
 - [Investigation: server and existing repositories](docs/investigation.md)
 - [Architecture, authentication, streaming, and frontend choices](docs/architecture.md)
 - [Installation and CI/CD plan, including secret ownership](docs/install-and-delivery.md)

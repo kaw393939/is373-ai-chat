@@ -1,0 +1,201 @@
+{
+  "name": "public-web",
+  "services": {
+    "traefik": {
+      "image": "traefik:v3.7.13",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "command": [
+        "--api.dashboard=true",
+        "--api.insecure=false",
+        "--providers.docker=true",
+        "--providers.docker.exposedbydefault=false",
+        "--providers.docker.network=web",
+        "--entrypoints.web.address=:80",
+        "--entrypoints.web.http.redirections.entrypoint.to=websecure",
+        "--entrypoints.web.http.redirections.entrypoint.scheme=https",
+        "--entrypoints.websecure.address=:443",
+        "--entrypoints.websecure.http.tls.certresolver=letsencrypt",
+        "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json",
+        "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web",
+        "--ping=true",
+        "--log.level=INFO",
+        "--accesslog=true",
+        "--certificatesresolvers.letsencrypt.acme.email=keith@firehose360.com"
+      ],
+      "ports": [
+        "80:80",
+        "443:443"
+      ],
+      "volumes": [
+        "/var/run/docker.sock:/var/run/docker.sock:ro",
+        "./letsencrypt:/letsencrypt",
+        "./secrets/dashboard.htpasswd:/run/secrets/dashboard.htpasswd:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "traefik",
+          "healthcheck",
+          "--ping"
+        ],
+        "interval": "30s",
+        "timeout": "5s",
+        "retries": 3
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.dashboard.rule": "Host(`traefik.firehose360.com`)",
+        "traefik.http.routers.dashboard.entrypoints": "websecure",
+        "traefik.http.routers.dashboard.service": "api@internal"
+      }
+    },
+    "site-1": {
+      "image": "httpd:2.4-alpine",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        "./sites/firehose360.com:/usr/local/apache2/htdocs:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.site-1.rule": "Host(`firehose360.com`)",
+        "traefik.http.routers.site-1.entrypoints": "websecure",
+        "traefik.http.services.site-1.loadbalancer.server.port": "80"
+      }
+    },
+    "site-2": {
+      "image": "httpd:2.4-alpine",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        "./sites/www.firehose360.com:/usr/local/apache2/htdocs:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.site-2.rule": "Host(`www.firehose360.com`)",
+        "traefik.http.routers.site-2.entrypoints": "websecure",
+        "traefik.http.services.site-2.loadbalancer.server.port": "80"
+      }
+    },
+    "site-3": {
+      "image": "httpd:2.4-alpine",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        "./sites/dev.firehose360.com:/usr/local/apache2/htdocs:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.site-3.rule": "Host(`dev.firehose360.com`)",
+        "traefik.http.routers.site-3.entrypoints": "websecure",
+        "traefik.http.services.site-3.loadbalancer.server.port": "80"
+      }
+    },
+    "site-4": {
+      "image": "httpd:2.4-alpine",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        "./sites/mywebclass.org:/usr/local/apache2/htdocs:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.site-4.rule": "Host(`mywebclass.org`)",
+        "traefik.http.routers.site-4.entrypoints": "websecure",
+        "traefik.http.services.site-4.loadbalancer.server.port": "80"
+      }
+    },
+    "site-5": {
+      "image": "httpd:2.4-alpine",
+      "restart": "unless-stopped",
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "volumes": [
+        "./sites/www.mywebclass.org:/usr/local/apache2/htdocs:ro"
+      ],
+      "networks": [
+        "web"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
+      },
+      "labels": {
+        "traefik.enable": "true",
+        "traefik.http.routers.site-5.rule": "Host(`www.mywebclass.org`)",
+        "traefik.http.routers.site-5.entrypoints": "websecure",
+        "traefik.http.services.site-5.loadbalancer.server.port": "80"
+      }
+    }
+  },
+  "networks": {
+    "web": {
+      "name": "web"
+    }
+  }
+}
