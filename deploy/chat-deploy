@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Root-owned, fixed-repository deployment entrypoint. Token arrives on stdin."""
+import fcntl
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import time
+from pathlib import Path
+
+DIGEST = re.compile(r'^sha256:[a-f0-9]{64}$')
+SHA = re.compile(r'^[a-f0-9]{40}$')
+if len(sys.argv)!=3 or not DIGEST.fullmatch(sys.argv[1]) or not SHA.fullmatch(sys.argv[2]):
+    raise SystemExit('Expected image digest and source commit')
+root=Path('/opt/is373-ai-chat')
+root.mkdir(mode=0o700,exist_ok=True)
+lock=open(root/'deploy.lock','w')
+fcntl.flock(lock,fcntl.LOCK_EX)
+image='ghcr.io/kaw393939/is373-ai-chat@'+sys.argv[1]
+commit=sys.argv[2]
+credential=sys.stdin.readline().strip()
+if not credential:
+    raise SystemExit('Registry pull credential required')
+base_env=os.environ.copy()
+
+
+def run(args,**kw):
+    result=subprocess.run(args,env=base_env,capture_output=True,**kw)
+    if result.returncode:
+        # Avoid passing raw registry/config output to workflow logs.
+        raise RuntimeError('Command failed: '+args[0]+' '+args[1])
+    return result.stdout
+
+
+with tempfile.TemporaryDirectory(prefix='chat-registry-') as auth:
+    base_env['DOCKER_CONFIG']=auth
+    run(['docker','login','ghcr.io','-u','kaw393939','--password-stdin'],input=credential.encode())
+    credential=''
+    run(['docker','pull',image])
+    probe=run(['docker','create',image]).decode().strip()
+    try:
+        run(['docker','cp',probe+':/app/deploy/compose.yaml',str(root/'compose.next.yaml')])
+    finally:
+        run(['docker','rm',probe])
+    label=run(['docker','image','inspect',image,'--format','{{index .Config.Labels "org.opencontainers.image.revision"}}']).decode().strip()
+    if label!=commit:
+        raise SystemExit('Image source commit mismatch')
+    env_file=root/'.env'
+    if not env_file.is_file() or env_file.stat().st_mode & 0o077:
+        raise SystemExit('Protect the production .env with mode 0600')
+    old_image=(root/'current-image').read_text().strip() if (root/'current-image').exists() else ''
+    old_compose=(root/'compose.yaml').read_bytes() if (root/'compose.yaml').exists() else None
+    base_env['APP_IMAGE']=image
+    (root/'compose.next.yaml').replace(root/'compose.yaml')
+    compose=['docker','compose','--project-directory',str(root),'-f',str(root/'compose.yaml')]
+    run(compose+['config','--quiet'])
+    run(compose+['up','-d','--wait','db'])
+    backup=root/'backups'
+    backup.mkdir(mode=0o700,exist_ok=True)
+    dump=backup/(time.strftime('%Y%m%dT%H%M%SZ',time.gmtime())+'.dump')
+    dump.write_bytes(run(compose+['exec','-T','db','pg_dump','-U','chat','-d','chat','-Fc']))
+    os.chmod(dump,0o600)
+    schema_query=['exec','-T','db','psql','-U','chat','-d','chat','-Atc','SELECT version_num FROM alembic_version']
+    try:
+        before=run(compose+schema_query).decode().strip()
+    except RuntimeError:
+        before=''
+    try:
+        run(compose+['run','--rm','--no-deps','app','alembic','upgrade','head'])
+        run(compose+['run','--rm','--no-deps','app','python','-m','app.cli','seed'])
+        run(compose+['up','-d','--no-deps','--wait','--wait-timeout','90','app'])
+        health=json.loads(run(compose+['exec','-T','app','python','-c',"import json,urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8000/api/health').read().decode())"]))
+        if health['commit']!=commit:
+            raise RuntimeError('Running commit mismatch')
+    except Exception:
+        after=run(compose+schema_query).decode().strip()
+        if old_image and old_compose and before==after:
+            (root/'compose.yaml').write_bytes(old_compose)
+            base_env['APP_IMAGE']=old_image
+            run(compose+['up','-d','--no-deps','--wait','app'])
+            print('Restored previous application; schema unchanged')
+        else:
+            print('Deployment failed; schema changed or first install. Inspect backup before recovery.')
+        raise SystemExit(1)
+    (root/'current-image').write_text(image+'\n')
+    (root/'release.json').write_text(json.dumps({'image':image,'commit':commit,'schema':health['schema'],'deployed_at':time.time()}))
+    # Keep 14 pre-deploy database dumps; off-host copies are configured separately.
+    for stale in sorted(backup.glob('*.dump'))[:-14]:
+        stale.unlink()
+    print(json.dumps({'status':'deployed','commit':commit,'schema':health['schema'],'image':image}))

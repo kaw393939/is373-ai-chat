@@ -1,0 +1,129 @@
+name: Test, publish, deploy
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.event_name == 'push' && 'chat-production' || format('verify-{0}', github.ref) }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: chat_test
+          POSTGRES_DB: chat_test
+          POSTGRES_PASSWORD: ci-only-password
+        ports: [5432:5432]
+        options: --health-cmd "pg_isready -U chat_test" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/chat_test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install locked Python environment
+        run: |
+          python3 -m pip install uv==0.12.15
+          uv sync --frozen --python 3.13
+      - name: Lint and unit/integration coverage
+        run: |
+          uv run ruff check app tests deploy
+          uv run ruff format --check app tests deploy migrations
+          uv run pytest --cov --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml
+      - name: Check migration parity
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
+        run: uv run alembic check
+      - name: Build the release once
+        run: docker build --build-arg COMMIT_SHA="$GITHUB_SHA" -t chat:ci .
+      - name: Migrate and seed an isolated browser database
+        run: |
+          docker exec "${{ job.services.postgres.id }}" psql -U chat_test -d chat_test -c 'CREATE DATABASE browser_test'
+          docker run --rm --network host -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test chat:ci alembic upgrade head
+          docker run --rm --network host -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e ADMIN_PASSWORD=browser-workshop-admin-1234 chat:ci python -m app.cli admin
+      - name: Browser test the exact release image
+        run: |
+          docker run -d --name browser-app --network host --user 10001:10001 --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 512m --tmpfs /tmp:size=64m -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e BASE_URL=http://localhost:9001 chat:ci uvicorn app.main:create_app --factory --host 127.0.0.1 --port 9001
+          for attempt in $(seq 1 30); do curl -fsS http://localhost:9001/api/health && break || sleep 2; done
+          uv run playwright install --with-deps chromium
+          uv run pytest tests/e2e -v
+      - name: Vulnerability gate and SBOM
+        run: |
+          sh scripts/install-trivy.sh
+          .tools/trivy/trivy image --exit-code 1 --severity CRITICAL --ignore-unfixed chat:ci
+          .tools/trivy/trivy image --format cyclonedx --output artifacts/sbom.json chat:ci
+      - name: Save tested artifact
+        run: |
+          mkdir -p release
+          docker save chat:ci -o release/image.tar
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: tested-image
+          path: release/image.tar
+          compression-level: 0
+          retention-days: 2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: test-evidence
+          path: artifacts/
+          retention-days: 7
+  publish:
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
+    steps:
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          name: tested-image
+          path: release
+      - name: Publish the tested image without rebuilding
+        id: push
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          docker load -i release/image.tar
+          test "$(docker image inspect chat:ci --format '{{index .Config.Labels "org.opencontainers.image.revision"}}')" = "$GITHUB_SHA"
+          printf '%s' "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          image="ghcr.io/kaw393939/is373-ai-chat:sha-$GITHUB_SHA"
+          docker tag chat:ci "$image"
+          docker push "$image"
+          digest=$(docker image inspect "$image" --format '{{index .RepoDigests 0}}' | cut -d@ -f2)
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+  deploy:
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Deploy with restricted SSH and a temporary registry token
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          GH_TOKEN: ${{ github.token }}
+          DIGEST: ${{ needs.publish.outputs.digest }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/chat-key
+          chmod 600 ~/.ssh/chat-key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf '%s\n' "$GH_TOKEN" | ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i ~/.ssh/chat-key "kwilliams@$DEPLOY_HOST" "deploy $DIGEST $GITHUB_SHA"
+      - name: Verify the public HTTPS release
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+        run: |
+          curl --retry 10 --retry-all-errors --retry-delay 3 -fsS "$APP_URL/api/health" > health.json
+          python3 -c 'import json,os; assert json.load(open("health.json"))["commit"] == os.environ["GITHUB_SHA"]'

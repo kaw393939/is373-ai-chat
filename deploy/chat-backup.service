@@ -1,0 +1,6 @@
+[Unit]
+Description=Back up chat PostgreSQL and prune expired account metadata
+After=docker.service
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/chat-backup.sh

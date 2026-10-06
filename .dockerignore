@@ -1,0 +1,15 @@
+.git
+.venv
+.env
+.env.*
+.state
+research
+frontend/node_modules
+frontend/dist
+tests
+docs
+book
+artifacts
+examples
+__pycache__
+.coverage

@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+"""Authorized-key forced command: no shell, forwarding, or arbitrary commands."""
+import os
+import re
+
+original=os.environ.get('SSH_ORIGINAL_COMMAND','')
+match=re.fullmatch(r'deploy (sha256:[a-f0-9]{64}) ([a-f0-9]{40})',original)
+if not match:
+    raise SystemExit('Only a verified chat deployment is permitted')
+os.execv('/usr/bin/sudo',['sudo','-n','/usr/local/sbin/chat-deploy',match[1],match[2]])
