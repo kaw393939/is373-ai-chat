@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     metrics_path: str = "/metrics/host.json"
     commit_sha: str = "development"
     global_concurrency: int = 4
+    email_provider: str = "disabled"
+    resend_api_key: str = ""
+    email_from: str = "accounts@notify.firehose360.com"
+    email_reply_to: str = "keith@firehose360.com"
+    email_encryption_key: str = ""
 
     @model_validator(mode="after")
     def production_contract(self):
@@ -29,7 +34,17 @@ class Settings(BaseSettings):
             raise ValueError("Choose approval or open registration")
         if self.provider not in {"mock", "openai", "compatible"}:
             raise ValueError("Unsupported provider")
+        if self.email_provider not in {"disabled", "mock", "resend"}:
+            raise ValueError("Unsupported email provider")
+        if self.email_provider != "disabled":
+            from cryptography.fernet import Fernet
+
+            Fernet(self.email_encryption_key.encode())
+        if self.email_provider == "resend" and not self.resend_api_key:
+            raise ValueError("Resend requires its sending API key")
         if self.app_env == "production":
+            if self.email_provider == "mock":
+                raise ValueError("Production cannot use mock email delivery")
             if len(self.jwt_secret) < 48 or self.jwt_secret.startswith("development"):
                 raise ValueError("Production requires a randomly generated JWT key")
             if not self.base_url.startswith("https://"):

@@ -1,37 +1,56 @@
+import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from time import perf_counter
+from urllib.parse import urlparse
 from uuid import uuid4
 
+import anyio
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import delete, func, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import Settings
 from app.db import database
+from app.email import drain, enqueue, make_mailer, token_email
+from app.middleware import BodyLimit
 from app.models import (
     Audit,
     Conversation,
     DailyUsage,
+    EmailOutbox,
     Family,
     Generation,
     Message,
-    Recovery,
     Refresh,
     RoleBudget,
     User,
     now,
 )
 from app.providers import make_provider
-from app.schemas import BudgetEdit, Credentials, Login, Prompt, ResetPassword, Title, UserEdit
+from app.schemas import (
+    BudgetEdit,
+    ChangePassword,
+    Credentials,
+    EmailAddress,
+    Login,
+    Prompt,
+    ResetPassword,
+    Title,
+    UserEdit,
+    VerifyEmail,
+)
 from app.security import DUMMY_HASH, decode_token, digest, hash_password, verify_password
 from app.services import (
+    consume_link,
     generate,
     issue_recovery,
     new_session,
@@ -50,16 +69,54 @@ def create_app(config=None, provider=None):
     config = config or Settings()
     engine, factory = database(config.database_url)
     adapter = provider or make_provider(config)
+    mailer = make_mailer(config)
+    password_limiter = anyio.CapacityLimiter(2)
+
+    async def password_hash(value):
+        return await anyio.to_thread.run_sync(hash_password, value, limiter=password_limiter)
+
+    async def password_valid(value, hashed):
+        return await anyio.to_thread.run_sync(
+            verify_password, value, hashed, limiter=password_limiter
+        )
+
+    async def mail_loop():  # pragma: no cover - lifecycle loop; delivery behavior tested directly
+        while True:
+            try:
+                await drain(factory, config, mailer)
+            except Exception:
+                log.error("Email worker unavailable")
+            await asyncio.sleep(5)
 
     @asynccontextmanager
     async def lifespan(_):  # pragma: no cover - server lifecycle verified by container E2E
-        yield
-        await engine.dispose()
+        task = asyncio.create_task(mail_loop()) if config.email_provider != "disabled" else None
+        try:
+            yield
+        finally:
+            if task:
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+            await engine.dispose()
 
     app = FastAPI(
         title="373 Chat", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan
     )
     app.state.engine, app.state.factory, app.state.config = engine, factory, config
+    app.state.mailer = mailer
+    app.add_middleware(BodyLimit)
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=[urlparse(config.base_url).hostname, "localhost", "127.0.0.1"],
+    )
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_inputs(_, exc):
+        # Pydantic's default error contains submitted inputs, including passwords.
+        return JSONResponse({"detail": "Invalid request inputs"}, status_code=422)
 
     async def session():
         async with factory() as db:
@@ -88,6 +145,7 @@ def create_app(config=None, provider=None):
             or not user
             or not user.active
             or not user.approved
+            or not user.email_verified
         ):
             raise HTTPException(401, "Session is no longer active")
         request.state.family_id = family.id
@@ -156,19 +214,33 @@ def create_app(config=None, provider=None):
     @app.post("/api/auth/register", status_code=201)
     async def register(body: Credentials, request: Request, db: AsyncSession = Depends(session)):
         await throttle(db, "register:" + request.client.host, 5)
+        email = str(body.email).lower()
+        hashed = await password_hash(body.password)
+        if config.email_provider != "disabled" and await db.scalar(
+            select(User).where(User.email == email)
+        ):
+            return {
+                "message": "Check your inbox for verification instructions; administrator approval is also required."
+            }
         user = User(
-            email=str(body.email).lower(),
-            password_hash=hash_password(body.password),
+            email=email,
+            password_hash=hashed,
             approved=config.registration_policy == "open",
+            email_verified=config.email_provider == "disabled",
         )
         db.add(user)
         try:
+            await db.flush()
+            if config.email_provider != "disabled":
+                await token_email(db, config, user, "verify")
             await db.commit()
         except IntegrityError:
             await db.rollback()
             raise HTTPException(409, "Account cannot be registered")
         return {
-            "message": "Account created. Sign in."
+            "message": "Check your inbox for verification instructions; administrator approval is also required."
+            if not user.email_verified
+            else "Account created. Sign in."
             if user.approved
             else "Account created. An administrator must approve it."
         }
@@ -180,10 +252,13 @@ def create_app(config=None, provider=None):
         if request.headers.get("origin"):
             same_origin(request)
         await throttle(db, "login:" + request.client.host, 10)
+        await throttle(db, "login-account:" + str(body.email).lower(), 10)
         user = await db.scalar(select(User).where(User.email == str(body.email).lower()))
-        valid = verify_password(body.password, user.password_hash if user else DUMMY_HASH)
-        if not valid or not user or not user.active or not user.approved:
-            raise HTTPException(401, "Invalid credentials or account awaiting approval")
+        valid = await password_valid(body.password, user.password_hash if user else DUMMY_HASH)
+        if not valid or not user or not user.active or not user.approved or not user.email_verified:
+            raise HTTPException(
+                401, "Invalid credentials or account awaiting verification/approval"
+            )
         access, refresh = await new_session(db, user, config)
         set_refresh(response, refresh)
         return {"access_token": access, "user": user_view(user)}
@@ -215,24 +290,69 @@ def create_app(config=None, provider=None):
     async def me(user=Depends(current)):
         return user_view(user)
 
+    @app.get("/api/auth/options")
+    async def auth_options():
+        return {
+            "email_enabled": config.email_provider != "disabled",
+            "approval_required": config.registration_policy == "approval",
+        }
+
+    @app.post("/api/auth/email")
+    async def request_email(
+        body: EmailAddress,
+        request: Request,
+        purpose: str = "reset",
+        db: AsyncSession = Depends(session),
+    ):
+        if config.email_provider == "disabled":
+            raise HTTPException(503, "Contact your administrator for a recovery link")
+        if purpose not in {"verify", "reset"}:
+            raise HTTPException(400, "Unsupported email request")
+        await throttle(db, "email-ip:" + request.client.host, 5)
+        await throttle(db, "email-account:" + str(body.email).lower(), 1)
+        user = await db.scalar(select(User).where(User.email == str(body.email).lower()))
+        if (
+            user
+            and user.active
+            and (
+                (purpose == "verify" and not user.email_verified)
+                or (purpose == "reset" and user.approved and user.email_verified)
+            )
+        ):
+            await token_email(db, config, user, purpose)
+            await db.commit()
+        return {
+            "message": "If the account is eligible, an email will arrive shortly. Check spam too."
+        }
+
+    @app.post("/api/auth/verify")
+    async def verify_email(
+        body: VerifyEmail, request: Request, db: AsyncSession = Depends(session)
+    ):
+        await throttle(db, "verify:" + request.client.host, 5)
+        user = await consume_link(db, body.token, "verify")
+        user.email_verified = True
+        db.add(Audit(actor_id=user.id, action="email.verified", target_id=user.id))
+        await db.commit()
+        return {"message": "Email verified. Sign in once your administrator approves the account."}
+
     @app.post("/api/auth/reset", status_code=204)
     async def reset(body: ResetPassword, request: Request, db: AsyncSession = Depends(session)):
         await throttle(db, "reset:" + request.client.host, 5)
-        recovery = await db.get(Recovery, digest(body.token), with_for_update=True)
-        if not recovery or recovery.used or recovery.expires_at <= now():
-            raise HTTPException(400, "Invalid or expired recovery link")
-        user = await db.get(User, recovery.user_id)
-        user.password_hash = hash_password(body.password)
-        recovery.used = True
+        user = await consume_link(db, body.token, "reset")
+        user.password_hash = await password_hash(body.password)
         await revoke_all(db, user.id)
         db.add(Audit(actor_id=user.id, action="password.reset", target_id=user.id))
         await db.commit()
 
     @app.post("/api/auth/password", status_code=204)
     async def change_password(
-        body: Credentials, user=Depends(current), db: AsyncSession = Depends(session)
+        body: ChangePassword, user=Depends(current), db: AsyncSession = Depends(session)
     ):
-        user.password_hash = hash_password(body.password)
+        await throttle(db, "password:" + user.id, 5)
+        if not await password_valid(body.current_password, user.password_hash):
+            raise HTTPException(400, "Current password is incorrect")
+        user.password_hash = await password_hash(body.password)
         db.add(user)
         await revoke_all(db, user.id)
         db.add(Audit(actor_id=user.id, action="password.changed", target_id=user.id))
@@ -348,9 +468,18 @@ def create_app(config=None, provider=None):
         user = await db.get(User, uid, with_for_update=True)
         if not user:
             raise HTTPException(404, "User not found")
+        newly_approved = body.approved and not user.approved
         for key, value in body.model_dump().items():
             setattr(user, key, value)
         await revoke_all(db, uid)
+        if newly_approved and user.email_verified:
+            await enqueue(
+                db,
+                config,
+                user.email,
+                "Your Firehose360 account is approved",
+                "You can now sign in at " + config.base_url + ".",
+            )
         db.add(Audit(actor_id=actor.id, action="user.updated", target_id=uid))
         await db.commit()
         return user_view(user)
@@ -407,6 +536,15 @@ def create_app(config=None, provider=None):
             ),
             "requests": await db.scalar(select(func.coalesce(func.sum(DailyUsage.requests), 0))),
             "reserved_units": await db.scalar(select(func.coalesce(func.sum(DailyUsage.units), 0))),
+            "email_pending": await db.scalar(
+                select(func.count()).select_from(EmailOutbox).where(EmailOutbox.status == "pending")
+            ),
+            "email_failed": await db.scalar(
+                select(func.count()).select_from(EmailOutbox).where(EmailOutbox.status == "failed")
+            ),
+            "email_sent": await db.scalar(
+                select(func.count()).select_from(EmailOutbox).where(EmailOutbox.status == "sent")
+            ),
         }
         audits = (await db.scalars(select(Audit).order_by(Audit.created_at.desc()).limit(20))).all()
         return {

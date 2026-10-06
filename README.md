@@ -45,6 +45,7 @@ For source development, `uv sync --frozen`, `npm --prefix frontend ci`, `npm --p
 | [8. Build, release, deploy](book/08-delivery.md) | Exact tested image, registry, restricted SSH |
 | [9. Install on DigitalOcean](book/09-hosting.md) | Fresh host and existing Traefik integration |
 | [10. Recovery and exercises](book/10-recovery.md) | Backups, failed migrations, verification |
+| [11. Transactional email](book/11-email.md) | Verification, recovery, encrypted outbox and retries |
 
 ## Verify
 
@@ -67,6 +68,8 @@ Tests clear application tables in TEST_DATABASE_URL. Use a dedicated disposable 
 
 [Original server audit](docs/system-audit.md), [recreation of the prior classroom host](docs/recreate-observed-host.md), and [research decisions](docs/references-and-decisions.md) preserve how the project started. They describe the earlier server state; current application behavior is explained in the textbook and code.
 
-This is a single-server teaching deployment. It does not claim high availability, independently verified account-side backups, unrestricted provider feature parity, attachment/RAG/tool execution, or exact dollar billing. Admin-issued recovery replaces automated email enrollment/recovery in the initial system. Provider configuration is controlled by the operator, not exposed to browser users. Temporary credentials require replacement when their lease expires.
+This is a single-server teaching deployment. It does not claim high availability, independently verified account-side backups, unrestricted provider feature parity, attachment/RAG/tool execution, or exact dollar billing. Automated email requires sender activation; admin-issued recovery remains available. Provider configuration is controlled by the operator, not exposed to browser users. Temporary credentials require replacement when their lease expires.
+
+[Browser review and security notes](docs/review-and-security.md) records findings, fixes and follow-up ideas.
 
 [Low-cost email options](docs/email-options.md) explains Google aliases, a free transactional sender and the Google-only API alternative.

@@ -39,6 +39,8 @@ jobs:
         env:
           DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
         run: uv run alembic check
+      - name: Audit locked browser dependencies
+        run: npm --prefix frontend audit --audit-level=high
       - name: Build the release once
         run: docker build --build-arg COMMIT_SHA="$GITHUB_SHA" -t chat:ci .
       - name: Migrate and seed an isolated browser database

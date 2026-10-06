@@ -6,10 +6,10 @@ A successful login creates a database session family and a random refresh token.
 
 Refresh consumes its old token and creates a replacement. PostgreSQL locks the family during rotation. Reusing an already consumed token revokes that family. The frontend serializes refresh requests so concurrent UI calls do not accidentally rotate the same token twice.
 
-Cookies are Secure in production, HttpOnly, SameSite=Strict, and scoped to `/api/auth`. Refresh/logout require the configured Origin. No CORS is needed for the same-origin deployment. Password changes revoke all sessions.
+Cookies are Secure in production, HttpOnly, SameSite=Strict, and scoped to `/api/auth`. Refresh/logout require the configured Origin. No CORS is needed for the same-origin deployment. Password changes verify the current password and revoke all sessions; revocation also requests cancellation of active generations.
 
 Authorization is separate: every conversation operation checks ownership; admin routes check the current role. Registration cannot set a role. Admin edits cannot remove the editing admin's own access. Administrative changes create audit events without recording passwords/tokens.
 
-The initial enrollment policy is admin approval. Recovery links are issued by admins, expire after 30 minutes, are single-use and stored hashed. Links use a URL fragment so their tokens are not sent in ordinary HTTP request paths/access logs. Share them privately. Automated email is not configured in this release.
+Enrollment requires admin approval. With email enabled, new users must also verify their address; existing approved accounts retain access across the additive migration. Admin-issued and emailed recovery links expire after 30 minutes and are stored hashed. Consuming a link invalidates siblings for that purpose, under a user lock. Links use URL fragments, keeping tokens out of ordinary request paths/access logs. See [transactional email](11-email.md) for delivery and activation.
 
 **Exercise:** revoke a session and try its still-unexpired JWT. Then use a refresh token twice and explain why the second attempt invalidates the family.

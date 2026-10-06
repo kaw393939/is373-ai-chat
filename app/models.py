@@ -25,6 +25,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(16), default="user")
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     approved: Mapped[bool] = mapped_column(Boolean, default=False)
+    email_verified: Mapped[bool] = mapped_column(Boolean, default=True)
     daily_requests: Mapped[int | None] = mapped_column(Integer)
     daily_units: Mapped[int | None] = mapped_column(Integer)
     max_concurrent: Mapped[int | None] = mapped_column(Integer)
@@ -64,6 +65,19 @@ class Recovery(Base):
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
     expires_at: Mapped[float]
     used: Mapped[bool] = mapped_column(default=False)
+    purpose: Mapped[str] = mapped_column(String(16), default="reset")
+
+
+class EmailOutbox(Base):
+    __tablename__ = "email_outbox"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    payload: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    attempts: Mapped[int] = mapped_column(default=0)
+    created_at: Mapped[float] = mapped_column(default=now)
+    next_attempt: Mapped[float] = mapped_column(default=now)
+    expires_at: Mapped[float]
+    provider_id: Mapped[str | None] = mapped_column(String(128))
 
 
 class Conversation(Base):

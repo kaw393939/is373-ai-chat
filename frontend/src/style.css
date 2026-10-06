@@ -580,7 +580,12 @@ td button {
   }
   .workspace nav,
   .search {
-    display: none;
+    display: block;
+    grid-column: 1/-1;
+  }
+  .workspace nav {
+    max-height: 9rem;
+    overflow: auto;
   }
   .new-chat {
     margin: 0;

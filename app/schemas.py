@@ -18,6 +18,19 @@ class ResetPassword(BaseModel):
     password: str = Field(min_length=12, max_length=128)
 
 
+class EmailAddress(BaseModel):
+    email: EmailStr
+
+
+class VerifyEmail(BaseModel):
+    token: str = Field(min_length=1, max_length=256)
+
+
+class ChangePassword(BaseModel):
+    current_password: str = Field(min_length=1, max_length=128)
+    password: str = Field(min_length=12, max_length=128)
+
+
 class Title(BaseModel):
     title: str = Field(min_length=1, max_length=100)
 

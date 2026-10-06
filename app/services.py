@@ -34,6 +34,7 @@ def user_view(user):
             "role",
             "active",
             "approved",
+            "email_verified",
             "daily_requests",
             "daily_units",
             "max_concurrent",
@@ -79,7 +80,13 @@ async def rotate(session, value, config):
         await session.commit()
         raise HTTPException(401, "Refresh reuse detected; sign in again")
     user = await session.get(User, family.user_id)
-    if family.revoked or family.expires_at <= now() or not user.active or not user.approved:
+    if (
+        family.revoked
+        or family.expires_at <= now()
+        or not user.active
+        or not user.approved
+        or not user.email_verified
+    ):
         raise HTTPException(401, "Session revoked or expired")
     token.used = True
     fresh = secret_token()
@@ -90,10 +97,15 @@ async def rotate(session, value, config):
 
 async def revoke_all(session, user_id):
     await session.execute(update(Family).where(Family.user_id == user_id).values(revoked=True))
+    await session.execute(
+        update(Generation)
+        .where(Generation.user_id == user_id, Generation.status == "streaming")
+        .values(cancel_requested=True)
+    )
 
 
 async def owned(session, conversation_id, user_id):
-    item = await session.get(Conversation, conversation_id)
+    item = await session.get(Conversation, conversation_id, with_for_update=True)
     if not item or item.user_id != user_id:
         raise HTTPException(404, "Conversation not found")
     return item
@@ -237,3 +249,21 @@ async def issue_recovery(session, user, actor_id):
     session.add(Audit(actor_id=actor_id, action="recovery.issued", target_id=user.id))
     await session.commit()
     return value
+
+
+async def consume_link(session, value, purpose):
+    token = await session.get(Recovery, digest(value))
+    if not token or token.purpose != purpose:
+        raise HTTPException(400, "Invalid or expired link")
+    # Lock the user before token rows: different links for one owner cannot
+    # deadlock while invalidating siblings, or both change the account.
+    user = await session.get(User, token.user_id, with_for_update=True)
+    await session.refresh(token)
+    if token.used or token.expires_at <= now():
+        raise HTTPException(400, "Invalid or expired link")
+    await session.execute(
+        update(Recovery)
+        .where(Recovery.user_id == user.id, Recovery.purpose == purpose)
+        .values(used=True)
+    )
+    return user

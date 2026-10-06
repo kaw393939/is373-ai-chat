@@ -9,7 +9,7 @@ from sqlalchemy import delete, select
 
 from app.config import Settings
 from app.db import database
-from app.models import Family, Recovery, RoleBudget, Throttle, User, now
+from app.models import EmailOutbox, Family, Recovery, RoleBudget, Throttle, User, now
 from app.security import hash_password
 
 
@@ -33,6 +33,11 @@ async def execute(args):  # pragma: no cover - operational adapter; verified via
                     )
                 )
         if args.command == "prune":
+            await db.execute(
+                delete(EmailOutbox).where(
+                    EmailOutbox.created_at < now() - 32 * 86400, EmailOutbox.status != "pending"
+                )
+            )
             await db.execute(delete(Throttle).where(Throttle.expires_at < now()))
             await db.execute(delete(Recovery).where(Recovery.expires_at < now()))
             await db.execute(delete(Family).where(Family.expires_at < now()))

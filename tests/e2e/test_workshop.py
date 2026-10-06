@@ -16,7 +16,7 @@ def sign_in(page, email=ADMIN_EMAIL, password=ADMIN_PASSWORD):
     page.get_by_label("Email", exact=True).fill(email)
     page.get_by_label("Password", exact=True).fill(password)
     page.get_by_role("button", name="Sign in", exact=True).click()
-    expect(page.get_by_role("button", name="New conversation")).to_be_visible()
+    expect(page.get_by_role("button", name="＋ New conversation", exact=True)).to_be_visible()
 
 
 def test_registration_approval_chat_and_session_reload():
@@ -43,25 +43,67 @@ def test_registration_approval_chat_and_session_reload():
         sign_in(student, email, password)
         expect(student.get_by_role("button", name="Administration")).not_to_be_visible()
         student.get_by_label("Message", exact=True).fill(
-            "Explain the adapter pattern <script>alert(1)</script>"
+            "Explain the adapter pattern <script>alert(1)</script> **safe formatting** "
+            "![tracker](https://example.invalid/tracker.png) [unsafe](javascript:alert(1))"
         )
         student.get_by_role("button", name="Send", exact=False).click()
         expect(student.locator(".message.assistant")).to_contain_text("adapter", timeout=15000)
         expect(student.get_by_role("button", name="Send", exact=False)).to_be_visible(timeout=15000)
+        expect(student.locator(".message.assistant strong")).to_have_text("safe formatting")
+        assert (
+            student.locator(
+                ".messages img, .messages script, .messages a[href^='javascript:']"
+            ).count()
+            == 0
+        )
         student.reload()
-        expect(student.get_by_role("button", name="New conversation")).to_be_visible()
+        expect(
+            student.get_by_role("button", name="＋ New conversation", exact=True)
+        ).to_be_visible()
         student.get_by_role("navigation", name="Conversations").get_by_role("button").first.click()
         expect(student.locator(".message.assistant")).to_contain_text("<script>alert(1)</script>")
-        student.once("dialog", lambda dialog: dialog.accept("Adapter lesson"))
         student.get_by_role("button", name="Rename", exact=True).click()
+        student.get_by_label("Conversation title", exact=True).fill("Adapter lesson")
+        student.get_by_role("button", name="Save title", exact=True).click()
         expect(student.get_by_role("heading", name="Adapter lesson")).to_be_visible()
         student.get_by_role("button", name="Retry last prompt").click()
         expect(student.locator(".message.assistant")).to_have_count(2)
         expect(student.get_by_role("button", name="Send", exact=False)).to_be_visible(timeout=15000)
-        student.once("dialog", lambda dialog: dialog.accept())
         student.get_by_role("button", name="Delete", exact=True).click()
+        student.get_by_role("button", name="Delete conversation", exact=True).click()
         expect(student.locator(".message")).to_have_count(0)
         assert errors == []
+        browser.close()
+
+
+def test_mobile_history_and_password_reauthentication():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page(viewport={"width": 390, "height": 844})
+        sign_in(page)
+        page.get_by_role("button", name="＋ New conversation", exact=True).click()
+        page.get_by_label("Message", exact=True).fill("Mobile history review")
+        page.get_by_label("Message", exact=True).press("Control+Enter")
+        expect(page.locator(".message.assistant")).to_contain_text("Mobile history review")
+        expect(
+            page.get_by_role("navigation", name="Conversations").get_by_role(
+                "button", name="Mobile history review", exact=True
+            )
+        ).to_be_visible()
+        expect(page.get_by_role("navigation", name="Conversations")).to_be_visible()
+        expect(page.get_by_placeholder("Find a conversation…")).to_be_visible()
+        page.get_by_role("button", name="Account", exact=False).click()
+        page.get_by_label("Current password", exact=True).fill("incorrect")
+        page.get_by_label("New password", exact=True).fill("different-test-password-123")
+        page.get_by_role("button", name="Change password & sign out").click()
+        expect(
+            page.get_by_role("status").filter(has_text="Current password is incorrect")
+        ).to_be_visible()
+        expect(page.get_by_role("button", name="Sign out", exact=True)).to_be_visible()
+        assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth")
+        Path("artifacts").mkdir(exist_ok=True)
+        page.screenshot(path="artifacts/mobile-account.png", full_page=True)
+        page.get_by_role("button", name="Sign out", exact=True).click()
         browser.close()
 
 
@@ -81,7 +123,7 @@ def test_admin_budget_controls_and_dashboard():
         expect(page.get_by_role("heading", name="Host resources", exact=False)).to_be_visible()
         Path("artifacts").mkdir(exist_ok=True)
         page.screenshot(path="artifacts/admin.png", full_page=True)
-        page.get_by_role("button", name="New conversation").click()
+        page.get_by_role("button", name="＋ New conversation", exact=True).click()
         page.get_by_label("Message", exact=True).fill("word " * 120)
         page.get_by_role("button", name="Send", exact=False).click()
         expect(page.locator(".message.assistant")).to_contain_text("Workshop", timeout=15000)

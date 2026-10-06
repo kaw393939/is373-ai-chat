@@ -10,7 +10,7 @@ from tests.conftest import PASSWORD, login, signup
 async def test_registration_login_logout_and_headers(client):
     assert (await client.get("/api/auth/me")).status_code == 401
     assert (await client.get("/")).status_code == 200
-    assert (await client.get("/api/health")).json()["schema"] == "0001"
+    assert (await client.get("/api/health")).json()["schema"] == "0002"
     assert (await client.get("/api/missing")).status_code == 404
     r = await client.post(
         "/api/auth/login", json={"email": "missing@example.org", "password": PASSWORD}
@@ -108,7 +108,8 @@ async def test_recovery_changes_password_revokes_sessions(client, application):
     await login(client, password="changed-workshop-password")
     assert (
         await client.post(
-            "/api/auth/password", json={"email": admin["email"], "password": PASSWORD}
+            "/api/auth/password",
+            json={"current_password": "changed-workshop-password", "password": PASSWORD},
         )
     ).status_code == 204
     assert (await client.get("/api/auth/me")).status_code == 401

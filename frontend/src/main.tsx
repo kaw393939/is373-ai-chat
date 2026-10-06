@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { api, consume, refresh, request, setToken } from "./api";
 import "./style.css";
 
@@ -9,6 +11,7 @@ type User = {
   role: string;
   active: boolean;
   approved: boolean;
+  email_verified: boolean;
   daily_requests: number | null;
   daily_units: number | null;
   max_concurrent: number | null;
@@ -35,9 +38,15 @@ function App() {
   const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authOptions, setAuthOptions] = useState({
+    email_enabled: false,
+    approval_required: true,
+  });
   const resetToken = new URLSearchParams(location.hash.slice(1)).get("reset");
   const [chats, setChats] = useState<Chat[]>([]);
   const [selected, setSelected] = useState("");
+  const [editTitle, setEditTitle] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState("");
   const [busy, setBusy] = useState(false);
@@ -52,7 +61,18 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        if (await refresh()) setUser(await api("/auth/me"));
+        setAuthOptions(await api("/auth/options"));
+        const verifyToken = new URLSearchParams(location.hash.slice(1)).get(
+          "verify",
+        );
+        if (verifyToken) {
+          const result = await api("/auth/verify", "POST", {
+            token: verifyToken,
+          });
+          history.replaceState(null, "", location.pathname);
+          setNotice(result.message);
+        } else if (!resetToken && (await refresh()))
+          setUser(await api("/auth/me"));
       } catch (e) {
         fail(e);
       } finally {
@@ -92,6 +112,13 @@ function App() {
         setNotice(r.message);
         setMode("login");
         setPassword("");
+      } else if (mode === "recover" || mode === "resend") {
+        const result = await api(
+          `/auth/email?purpose=${mode === "resend" ? "verify" : "reset"}`,
+          "POST",
+          { email },
+        );
+        setNotice(result.message);
       } else {
         const r = await api("/auth/login", "POST", { email, password });
         setToken(r.access_token);
@@ -105,6 +132,7 @@ function App() {
     }
   }
   async function logout() {
+    controller.current?.abort();
     try {
       await api("/auth/logout", "POST");
     } finally {
@@ -160,11 +188,14 @@ function App() {
         if (kind === "error") setNotice(data.message);
       });
     } catch (e) {
-      if (!(e instanceof DOMException && e.name === "AbortError")) fail(e);
+      if (!(e instanceof DOMException && e.name === "AbortError")) {
+        fail(e);
+        if (!run.current) setPrompt(content);
+      }
     } finally {
       setBusy(false);
       controller.current = null;
-      await openChat(cid).catch(fail);
+      if (cid) await openChat(cid).catch(fail);
       await listChats().catch(fail);
     }
   }
@@ -204,12 +235,18 @@ function App() {
               ? "Set a new password"
               : mode === "login"
                 ? "Welcome back"
-                : "Join the workshop"}
+                : mode === "recover"
+                  ? "Recover your account"
+                  : mode === "resend"
+                    ? "Verify your email"
+                    : "Join the workshop"}
           </h2>
           <p>
             {mode === "register"
-              ? "Registration requests are reviewed by an administrator."
-              : "Sign in to continue your conversations."}
+              ? `${authOptions.email_enabled ? "Check your email to verify your address. " : ""}${authOptions.approval_required ? "Registration requests are reviewed by an administrator." : "Create your private account."}`
+              : mode === "recover" || mode === "resend"
+                ? "Enter your account email. Links expire after 30 minutes."
+                : "Sign in to continue your conversations."}
           </p>
           <form onSubmit={authenticate}>
             {!resetToken && (
@@ -222,18 +259,20 @@ function App() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             )}
-            <FormField
-              label="Password"
-              type="password"
-              autoComplete={
-                mode === "login" ? "current-password" : "new-password"
-              }
-              minLength={resetToken || mode === "register" ? 12 : 1}
-              maxLength={128}
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            {mode !== "recover" && mode !== "resend" && (
+              <FormField
+                label="Password"
+                type="password"
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
+                minLength={resetToken || mode === "register" ? 12 : 1}
+                maxLength={128}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            )}
             <button className="primary" disabled={busy}>
               {busy
                 ? "Please wait…"
@@ -241,7 +280,9 @@ function App() {
                   ? "Save password"
                   : mode === "login"
                     ? "Sign in"
-                    : "Request account"}
+                    : mode === "recover" || mode === "resend"
+                      ? "Send email"
+                      : "Request account"}
             </button>
           </form>
           <p role="status" className="notice">
@@ -260,10 +301,33 @@ function App() {
                 : "Already registered? Sign in"}
             </button>
           )}
-          <p className="fine">
-            For password recovery, contact your administrator for a short-lived
-            recovery link.
-          </p>
+          {!resetToken && authOptions.email_enabled ? (
+            <div className="fine">
+              <button
+                className="link"
+                onClick={() => {
+                  setMode("recover");
+                  setNotice("");
+                }}
+              >
+                Forgot password?
+              </button>
+              <button
+                className="link"
+                onClick={() => {
+                  setMode("resend");
+                  setNotice("");
+                }}
+              >
+                Resend verification email
+              </button>
+            </div>
+          ) : (
+            <p className="fine">
+              For password recovery, contact your administrator for a
+              short-lived recovery link.
+            </p>
+          )}
         </section>
       </main>
     );
@@ -351,7 +415,7 @@ function App() {
             </h2>
           </div>
           <span className="status">
-            <i /> Connected
+            <i /> Signed in
           </span>
         </header>
         <div role="status" className="notice">
@@ -399,19 +463,47 @@ function App() {
                   </div>
                   <div>
                     {m.content ? (
-                      m.content.split("```").map((part, i) =>
-                        i % 2 ? (
-                          <pre key={i}>
-                            <code>{part}</code>
-                          </pre>
-                        ) : (
-                          <p key={i}>{part}</p>
-                        ),
-                      )
+                      <Markdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ children, href }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              referrerPolicy="no-referrer"
+                            >
+                              {children}
+                            </a>
+                          ),
+                          img: ({ alt }) => (
+                            <span>[External image omitted: {alt}]</span>
+                          ),
+                        }}
+                      >
+                        {m.content}
+                      </Markdown>
                     ) : (
-                      <span className="typing">Thinking…</span>
+                      <span className="typing">
+                        {busy && m.id === "live"
+                          ? "Thinking…"
+                          : "No response was saved. Retry your prompt."}
+                      </span>
                     )}
                   </div>
+                  {m.content && (
+                    <button
+                      aria-label={`Copy ${m.role} message`}
+                      onClick={() =>
+                        navigator.clipboard
+                          .writeText(m.content)
+                          .then(() => setNotice("Message copied."))
+                          .catch(fail)
+                      }
+                    >
+                      Copy
+                    </button>
+                  )}
                 </article>
               ))}
               <div ref={bottom} />
@@ -435,31 +527,15 @@ function App() {
                 {selected && !busy && (
                   <>
                     <button
-                      onClick={() => {
-                        const title = window.prompt(
-                          "Conversation title",
-                          chats.find((c) => c.id === selected)?.title,
-                        );
-                        if (title)
-                          api(`/conversations/${selected}`, "PATCH", { title })
-                            .then(listChats)
-                            .catch(fail);
-                      }}
+                      onClick={() =>
+                        setEditTitle(
+                          chats.find((c) => c.id === selected)?.title ?? "",
+                        )
+                      }
                     >
                       Rename
                     </button>
-                    <button
-                      onClick={() => {
-                        if (window.confirm("Delete this conversation?"))
-                          api(`/conversations/${selected}`, "DELETE")
-                            .then(() => {
-                              setSelected("");
-                              setMessages([]);
-                              return listChats();
-                            })
-                            .catch(fail);
-                      }}
-                    >
+                    <button onClick={() => setDeleteConfirm(true)}>
                       Delete
                     </button>
                   </>
@@ -490,6 +566,12 @@ function App() {
                   value={prompt}
                   disabled={busy}
                   onChange={(e) => setPrompt(e.target.value)}
+                  onKeyDown={(e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                      e.preventDefault();
+                      send().catch(fail);
+                    }
+                  }}
                 />
                 {busy ? (
                   <button type="button" onClick={() => stop().catch(fail)}>
@@ -503,12 +585,80 @@ function App() {
               </form>
               <p className="fine">
                 AI can make mistakes. Check important answers. Usage is subject
-                to your account limits.
+                to your account limits. Ctrl/⌘+Enter sends; Enter adds a line.
               </p>
             </div>
           </>
         )}
       </main>
+      {editTitle !== null && (
+        <div
+          className="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Rename conversation"
+        >
+          <form
+            className="panel"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              try {
+                await api(`/conversations/${selected}`, "PATCH", {
+                  title: editTitle,
+                });
+                setEditTitle(null);
+                await listChats();
+              } catch (e) {
+                fail(e);
+              }
+            }}
+          >
+            <h3>Rename conversation</h3>
+            <FormField
+              label="Conversation title"
+              value={editTitle}
+              required
+              maxLength={100}
+              autoFocus
+              onChange={(e) => setEditTitle(e.target.value)}
+            />
+            <button className="primary">Save title</button>{" "}
+            <button type="button" onClick={() => setEditTitle(null)}>
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+      {deleteConfirm && (
+        <div
+          className="modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Delete conversation"
+        >
+          <div className="panel">
+            <h3>Delete conversation?</h3>
+            <p>This permanently deletes the conversation and its messages.</p>
+            <button
+              className="danger"
+              onClick={async () => {
+                try {
+                  await api(`/conversations/${selected}`, "DELETE");
+                  setDeleteConfirm(false);
+                  setSelected("");
+                  setMessages([]);
+                  await listChats();
+                } catch (e) {
+                  fail(e);
+                }
+              }}
+            >
+              Delete conversation
+            </button>{" "}
+            <button onClick={() => setDeleteConfirm(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -522,16 +672,18 @@ function Account({
   fail: (e: unknown) => void;
 }) {
   const [password, setPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   return (
     <section className="panel">
       <h3>Change your password</h3>
       <p>Changing your password signs out all your sessions.</p>
+      <p>{user.email}</p>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
           try {
             await api("/auth/password", "POST", {
-              email: user.email,
+              current_password: currentPassword,
               password,
             });
             await done();
@@ -540,6 +692,15 @@ function Account({
           }
         }}
       >
+        <FormField
+          label="Current password"
+          type="password"
+          autoComplete="current-password"
+          maxLength={128}
+          required
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+        />
         <FormField
           label="New password"
           type="password"
@@ -602,7 +763,9 @@ function Admin({ actor, fail }: { actor: User; fail: (e: unknown) => void }) {
               ? stale
                 ? "Stale"
                 : "Live · 30 sec"
-              : "Collector unavailable"}
+              : overview
+                ? "Collector unavailable"
+                : "Loading metrics…"}
           </span>
         </h3>
         <div className="stats">
@@ -751,9 +914,11 @@ function Admin({ actor, fail }: { actor: User; fail: (e: unknown) => void }) {
                   <td>
                     {!u.active
                       ? "Disabled"
-                      : u.approved
-                        ? "Approved"
-                        : "Pending approval"}
+                      : !u.email_verified
+                        ? "Email unverified"
+                        : u.approved
+                          ? "Approved"
+                          : "Pending approval"}
                   </td>
                   <td>
                     {u.id !== actor.id && (

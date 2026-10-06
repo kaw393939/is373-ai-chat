@@ -1,6 +1,6 @@
 # Email without another paid mailbox
 
-Checked October 6, 2026. Public MX records for firehose360.com point to Google. The app currently uses administrator approval and administrator-issued recovery; automated email is a proposed extension.
+Checked October 6, 2026. Public MX records for firehose360.com point to Google. The app implements verification, recovery and approval notifications through an encrypted outbox; production delivery is pending sender activation. Administrator approval remains required.
 
 ## Receive replies in the existing inbox
 
@@ -18,8 +18,8 @@ The Gmail HTTPS API can send from the existing account using OAuth authorization
 
 Receiving replies in Gmail is different from processing email inside the app. If that becomes necessary, use a separate receiving subdomain and authenticated webhooks; preserve Keith's existing inbox routing.
 
-An eventual email adapter should have mock tests, bounded sending, expiring single-use verification/recovery tokens, generic recovery responses and retry handling. Activation requires the chosen provider credentials and domain verification; no email was sent or mail-routing configuration changed during this research.
+The email adapter has mock/HTTPS contract tests, bounded sending, expiring single-use verification/recovery tokens, generic recovery responses and retry handling. Activation requires sender credentials and domain verification; no production email has yet been sent.
 
 ## Setup status
 
-Google Admin was opened for the existing Keith account; Google requires the owner to reauthenticate. Resend's login is prepared for keith@firehose360.com, pending approval of the terms displayed on its login page. Neither a Resend account nor a sending credential has been created. Public nameservers are ns15/ns16.domaincontrol.com (GoDaddy); sender verification will require access to that DNS account. Existing Google MX routing remains unchanged.
+Google Admin is signed in. Alias setup was attempted, but its accessibility selector reported firehose360.com while the saved addresses used the organization’s primary domain. Those two new aliases were removed and the original alias configuration restored. Reply-To can use the existing Keith inbox without aliases. Resend's login asks for the existing account password; the owner must complete login/terms. No sending credential has been created. Public nameservers are ns15/ns16.domaincontrol.com (GoDaddy); sender verification requires access to that DNS account. Existing Google MX routing remains unchanged.
