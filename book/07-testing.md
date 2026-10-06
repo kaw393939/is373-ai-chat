@@ -17,3 +17,5 @@ For a local browser fixture, use a disposable DATABASE_URL, migrate it, run `ADM
 Image scanning blocks fixed CRITICAL findings; unfixed/lower-severity findings still require review. An SBOM records components. Scan success does not establish absence of vulnerabilities.
 
 **Exercise:** remove an ownership check and identify which test catches it. Explain why a 100% report alone would not make that change safe.
+
+The project pins Python 3.14.7 for development, coverage and the production image. Keep these aligned: the same tests pass on 3.13, but its tracing engine reported incomplete execution around asynchronous database operations in this environment. Changing exclusions is not a fix for that measurement difference.

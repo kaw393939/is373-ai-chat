@@ -29,7 +29,7 @@ jobs:
       - name: Install locked Python environment
         run: |
           python3 -m pip install uv==0.12.15
-          uv sync --frozen --python 3.13
+          uv sync --frozen --python 3.14.7
       - name: Lint and unit/integration coverage
         run: |
           uv run ruff check app tests deploy

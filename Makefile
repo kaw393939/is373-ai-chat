@@ -12,6 +12,7 @@ dev:
 check:
 	$(UV) run ruff check app tests deploy
 	$(UV) run ruff format --check app tests deploy migrations
+	npm --prefix frontend run format:check
 	npm --prefix frontend run build
 test:
 	$(UV) run pytest --cov --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml
