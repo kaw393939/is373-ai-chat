@@ -22,10 +22,13 @@ COPY app ./app
 COPY migrations ./migrations
 COPY alembic.ini ./
 COPY deploy ./deploy
+COPY VERSION ./VERSION
 ENV PATH="/app/.venv/bin:$PATH" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 STATIC_DIR=/app/frontend/dist
 ARG COMMIT_SHA=development
+ARG APP_VERSION
+RUN test -n "$APP_VERSION" && test "$(cat VERSION)" = "$APP_VERSION"
 ENV COMMIT_SHA=$COMMIT_SHA
-LABEL org.opencontainers.image.source="https://github.com/kaw393939/is373-ai-chat" org.opencontainers.image.revision=$COMMIT_SHA
+LABEL org.opencontainers.image.source="https://github.com/kaw393939/is373-ai-chat" org.opencontainers.image.revision=$COMMIT_SHA org.opencontainers.image.version=$APP_VERSION
 USER 10001:10001
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health',timeout=3)"
