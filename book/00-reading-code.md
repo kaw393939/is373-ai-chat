@@ -40,9 +40,9 @@ The [generated excerpts](generated/code-tours.md) provide small source-derived s
 |---|---|---|
 | [Security](../app/security.py) | Why specify algorithm, issuer, audience and expiry? | [Unit tests](../tests/unit/test_security.py), [pilot lab](labs/01-token-boundaries.md) |
 | [Database factory](../app/db.py) | What is shared, what belongs to one task, and what bounds connections? | [Data chapter](03-data.md) |
-| [Provider contract](../app/providers.py) | What can be substituted, and what remains provider-specific? | [Adapter tests](../tests/unit/test_providers.py); terminal-event contract work remains #12/#18 |
+| [Provider contract](../app/providers.py) | What can be substituted, and what remains provider-specific? | [Adapter tests](../tests/unit/test_providers.py) and [durable terminal-state tests](../tests/integration/test_terminal_state.py) |
 | [Admission and sessions](../app/services.py) | Why are locks and commits part of correctness? | [Concurrency and chat tests](../tests/integration/test_chat.py) |
-| [Deployment wrapper](../deploy/chat-deploy) | Why might restoring an old image be unsafe after migration? | [Delivery](08-delivery.md), [recovery](10-recovery.md); setup-failure recovery remains #13 |
+| [Deployment wrapper](../deploy/chat-deploy) | Why might restoring an old image be unsafe after migration? | [Delivery](08-delivery.md), [recovery](10-recovery.md), [setup fault tests](../tests/deployment/test_candidate.py) |
 
 The goal is readable production code with enough explanation to teach a decision, supported by a book that has room to discuss its history and consequences.
 
@@ -52,4 +52,4 @@ Read `decode_token` and write its contract before opening the surrounding routes
 
 Now supply a counterexample to each layer alone. A signed token may be expired. A valid token may identify a revoked family. An active account may request a different account's conversation. This is why “the JWT is valid” cannot substitute for the complete request trace. [Lab 01](labs/01-token-boundaries.md) makes one counterexample executable; [Lab 04](labs/04-ownership.md) investigates the resource boundary.
 
-When commenting a change, state the reason a reviewer could otherwise miss. “Refreshes are serialized” is too broad for the current client. “One tab shares an in-flight refresh promise; cross-tab coordination remains open” identifies the actual scope and its limit. Comments should help the next engineer choose a safe change, not advertise an unproved guarantee.
+When commenting a change, state the reason a reviewer could otherwise miss. “Refreshes are serialized” is too broad for the current client. “Web Locks serialize cookie mutations among cooperating same-origin contexts; an opaque epoch invalidates stale work, while bearer secrets stay in tab memory” identifies the actual scope. Unsupported locking/storage causes a visible refusal; it does not establish coordination with an unrelated client or malicious script. Comments should help the next engineer choose a safe change, not advertise an unproved guarantee.
