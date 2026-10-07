@@ -1,5 +1,7 @@
 # Durable data: preserve meaning while software changes
 
+The list API supports opt-in `page=true&limit=50&cursor=...&q=...`, returning `items` and `next_cursor`. Legacy list calls retain arrays. Cursor selection uses `(created_at,id)` descending so equal timestamps remain deterministic; signed cursors bind the account and search filter. Search is a literal substring in owned conversation titles or administrator account emails. History initially returns the most recent fifty messages/runs, with separate older-page cursors and owned `/messages` and `/runs` endpoints. Each message batch is chronological for display. New writes can appear before an existing cursor; unchanged datasets have no duplicates/skips. No index was added without representative PostgreSQL query-plan evidence; existing ownership indexes and bounded page sizes support the teaching workload.
+
 A new enrollment feature needs verified email addresses. The application already has approved users, and a deployment must not silently turn them into locked-out students. This is a data-design problem before it is a migration command.
 
 After this chapter, you should be able to distinguish an ORM model from a historical migration, explain a short transaction boundary, review a real additive migration and state which compatibility questions need a rehearsal. [Lab 03](labs/03-migration.md) applies these ideas to another synthetic change.

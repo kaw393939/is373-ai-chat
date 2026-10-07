@@ -8,7 +8,7 @@ from urllib.parse import urlparse
 from uuid import uuid4
 
 import anyio
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -35,6 +35,7 @@ from app.models import (
     User,
     now,
 )
+from app.pagination import page_rows
 from app.providers import make_provider
 from app.schemas import (
     BudgetEdit,
@@ -371,16 +372,28 @@ def create_app(config=None, provider=None):
         ]
 
     @app.get("/api/conversations")
-    async def conversations(user=Depends(current), db: AsyncSession = Depends(session)):
-        items = (
-            await db.scalars(
-                select(Conversation)
-                .where(Conversation.user_id == user.id)
-                .order_by(Conversation.created_at.desc())
-                .limit(100)
-            )
-        ).all()
-        return [{"id": c.id, "title": c.title} for c in items]
+    async def conversations(
+        page: bool = False,
+        limit: int = Query(50, ge=1, le=100),
+        cursor: str | None = Query(None, max_length=512),
+        q: str = Query("", max_length=100),
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
+    ):
+        statement = select(Conversation).where(Conversation.user_id == user.id)
+        if q:
+            statement = statement.where(Conversation.title.icontains(q, autoescape=True))
+        items, next_cursor = await page_rows(
+            db,
+            Conversation,
+            statement,
+            limit if page else 100,
+            cursor,
+            f"conversations:{user.id}:{q}",
+            config.jwt_secret,
+        )
+        views = [{"id": c.id, "title": c.title} for c in items]
+        return {"items": views, "next_cursor": next_cursor} if page else views
 
     @app.post("/api/conversations", status_code=201)
     async def create_conversation(user=Depends(current), db: AsyncSession = Depends(session)):
@@ -393,19 +406,83 @@ def create_app(config=None, provider=None):
     @app.get("/api/conversations/{cid}")
     async def conversation(cid: str, user=Depends(current), db: AsyncSession = Depends(session)):
         item = await owned(db, cid, user.id)
-        messages = (
-            await db.scalars(
-                select(Message)
-                .where(Message.conversation_id == cid)
-                .order_by(Message.created_at, Message.id)
-            )
-        ).all()
-        runs = (await db.scalars(select(Generation).where(Generation.conversation_id == cid))).all()
+        messages, messages_cursor = await page_rows(
+            db,
+            Message,
+            select(Message).where(Message.conversation_id == cid),
+            50,
+            None,
+            f"messages:{user.id}:{cid}",
+            config.jwt_secret,
+        )
+        runs, runs_cursor = await page_rows(
+            db,
+            Generation,
+            select(Generation).where(Generation.conversation_id == cid),
+            50,
+            None,
+            f"runs:{user.id}:{cid}",
+            config.jwt_secret,
+        )
         return {
             "id": item.id,
             "title": item.title,
-            "messages": [{"id": m.id, "role": m.role, "content": m.content} for m in messages],
-            "runs": [{"id": r.id, "status": r.status, "tokens": r.actual_tokens} for r in runs],
+            "messages": [
+                {"id": m.id, "role": m.role, "content": m.content} for m in reversed(messages)
+            ],
+            "runs": [
+                {"id": r.id, "status": r.status, "tokens": r.actual_tokens} for r in reversed(runs)
+            ],
+            "messages_cursor": messages_cursor,
+            "runs_cursor": runs_cursor,
+        }
+
+    @app.get("/api/conversations/{cid}/messages")
+    async def message_page(
+        cid: str,
+        limit: int = Query(50, ge=1, le=100),
+        cursor: str | None = Query(None, max_length=512),
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
+    ):
+        await owned(db, cid, user.id)
+        items, next_cursor = await page_rows(
+            db,
+            Message,
+            select(Message).where(Message.conversation_id == cid),
+            limit,
+            cursor,
+            f"messages:{user.id}:{cid}",
+            config.jwt_secret,
+        )
+        return {
+            "items": [{"id": m.id, "role": m.role, "content": m.content} for m in reversed(items)],
+            "next_cursor": next_cursor,
+        }
+
+    @app.get("/api/conversations/{cid}/runs")
+    async def run_page(
+        cid: str,
+        limit: int = Query(50, ge=1, le=100),
+        cursor: str | None = Query(None, max_length=512),
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
+    ):
+        await owned(db, cid, user.id)
+        items, next_cursor = await page_rows(
+            db,
+            Generation,
+            select(Generation).where(Generation.conversation_id == cid),
+            limit,
+            cursor,
+            f"runs:{user.id}:{cid}",
+            config.jwt_secret,
+        )
+        return {
+            "items": [
+                {"id": r.id, "status": r.status, "tokens": r.actual_tokens} for r in reversed(items)
+            ],
+            "next_cursor": next_cursor,
         }
 
     @app.patch("/api/conversations/{cid}")
@@ -451,13 +528,28 @@ def create_app(config=None, provider=None):
         await db.commit()
 
     @app.get("/api/admin/users")
-    async def users(_=Depends(admin), db: AsyncSession = Depends(session)):
-        return [
-            user_view(u)
-            for u in (
-                await db.scalars(select(User).order_by(User.created_at.desc()).limit(200))
-            ).all()
-        ]
+    async def users(
+        page: bool = False,
+        limit: int = Query(50, ge=1, le=100),
+        cursor: str | None = Query(None, max_length=512),
+        q: str = Query("", max_length=100),
+        actor=Depends(admin),
+        db: AsyncSession = Depends(session),
+    ):
+        statement = select(User)
+        if q:
+            statement = statement.where(User.email.icontains(q, autoescape=True))
+        items, next_cursor = await page_rows(
+            db,
+            User,
+            statement,
+            limit if page else 200,
+            cursor,
+            f"users:{actor.id}:{q}",
+            config.jwt_secret,
+        )
+        views = [user_view(u) for u in items]
+        return {"items": views, "next_cursor": next_cursor} if page else views
 
     @app.patch("/api/admin/users/{uid}")
     async def edit_user(
