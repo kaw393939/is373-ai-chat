@@ -4,7 +4,7 @@ from urllib.parse import parse_qs, urlparse
 
 from playwright.sync_api import expect, sync_playwright
 
-from tests.e2e.helpers import ADMIN_EMAIL, ADMIN_PASSWORD, URL, reserve_login, sign_in
+from tests.e2e.helpers import URL, reserve_login, sign_in
 
 
 def conversation(cid, title, messages=None, cursor=None):
@@ -51,6 +51,26 @@ def test_delayed_navigation_and_logout_stream_do_not_restore_old_view():
             ),
         )
         page.route("**/api/conversations/b/stream", lambda route: held_stream.append(route))
+        # A different approved account must never inherit the first owner's work.
+        from uuid import uuid4
+
+        email = f"switch-{uuid4().hex[:8]}@example.org"
+        password = "switch-learner-password-123"
+        enrollment, approval = browser.new_page(), browser.new_page()
+        enrollment.goto(URL)
+        enrollment.get_by_role("button", name="Need an account? Register").click()
+        enrollment.get_by_label("Email", exact=True).fill(email)
+        enrollment.get_by_label("Password", exact=True).fill(password)
+        enrollment.get_by_role("button", name="Request account").click()
+        expect(enrollment.get_by_role("status")).to_contain_text("administrator")
+        sign_in(approval)
+        approval.get_by_role("button", name="Administration").click()
+        approval.get_by_role("button", name=f"Edit {email}", exact=True).click()
+        approval.get_by_label("approved", exact=True).check()
+        approval.get_by_role("button", name="Save account", exact=True).click()
+        expect(approval.get_by_role("dialog")).not_to_be_visible()
+        enrollment.close()
+        approval.close()
         sign_in(page)
         nav = page.get_by_role("navigation", name="Conversations")
         nav.get_by_role("button", name="Conversation A", exact=True).click()
@@ -73,8 +93,8 @@ def test_delayed_navigation_and_logout_stream_do_not_restore_old_view():
         page.get_by_role("button", name="Sign out", exact=True).click()
         expect(page.get_by_role("heading", name="Welcome back")).to_be_visible()
         phase["fresh"] = True
-        page.get_by_label("Email", exact=True).fill(ADMIN_EMAIL)
-        page.get_by_label("Password", exact=True).fill(ADMIN_PASSWORD)
+        page.get_by_label("Email", exact=True).fill(email)
+        page.get_by_label("Password", exact=True).fill(password)
         reserve_login()
         page.get_by_role("button", name="Sign in", exact=True).click()
         expect(page.get_by_role("button", name="＋ New conversation", exact=True)).to_be_visible()
@@ -86,6 +106,7 @@ def test_delayed_navigation_and_logout_stream_do_not_restore_old_view():
         expect(nav.get_by_role("button", name="Fresh session", exact=True)).to_be_visible()
         expect(page.locator(".message")).to_have_count(0)
         expect(nav.get_by_role("button", name="Conversation B", exact=True)).not_to_be_visible()
+        expect(page.get_by_role("button", name="Administration")).not_to_be_visible()
         assert errors == []
         browser.close()
 
@@ -331,7 +352,8 @@ def test_optional_authenticator_enrollment_recovery_and_replacement():
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        student, admin = browser.new_page(), browser.new_page()
+        student_context = browser.new_context()
+        student, admin = student_context.new_page(), browser.new_page()
         email = f"factor-{uuid4().hex[:8]}@example.org"
         password = "authenticator-learner-password-123"
         student.goto(URL)
@@ -378,6 +400,9 @@ def test_optional_authenticator_enrollment_recovery_and_replacement():
         expect(
             student.get_by_role("button", name="＋ New conversation", exact=True)
         ).to_be_visible()
+        peer = student.context.new_page()
+        peer.goto(URL)
+        expect(peer.get_by_role("button", name="＋ New conversation", exact=True)).to_be_visible()
         student.get_by_role("button", name="Account", exact=False).click()
         student.get_by_label("Password to replace authenticator", exact=True).fill(password)
         student.get_by_label("Current authenticator or recovery code", exact=True).fill(
@@ -387,8 +412,22 @@ def test_optional_authenticator_enrollment_recovery_and_replacement():
         expect(secret_field).to_be_visible()
         replacement = secret_field.input_value()
         assert replacement != secret
+        stale = {"first": True}
+
+        def expire_first_confirmation(route):
+            if stale["first"]:
+                stale["first"] = False
+                route.fulfill(status=401, json={"detail": "Invalid or expired session"})
+            else:
+                route.continue_()
+
+        student.route("**/api/auth/mfa/confirm", expire_first_confirmation)
         student.get_by_label("New authenticator code", exact=True).fill(totp(replacement))
-        with student.expect_response("**/api/auth/mfa/confirm") as confirmation:
+        with student.expect_response(
+            lambda response: (
+                response.url.endswith("/api/auth/mfa/confirm") and response.status == 200
+            )
+        ) as confirmation:
             student.get_by_role("button", name="Confirm replacement", exact=True).click()
         assert confirmation.value.status == 200, confirmation.value.json().get(
             "detail", "MFA confirm failed"
@@ -396,6 +435,10 @@ def test_optional_authenticator_enrollment_recovery_and_replacement():
         expect(student.locator(".recovery-codes li")).to_have_count(10)
         replacement_codes = student.locator(".recovery-codes code").all_text_contents()
         assert replacement_codes != recovery_codes
+        expect(peer.get_by_role("heading", name="Welcome back")).to_be_visible()
+        expect(
+            peer.get_by_role("button", name="＋ New conversation", exact=True)
+        ).not_to_be_visible()
         student.get_by_role("button", name="I saved my codes", exact=True).click()
         browser.close()
 
@@ -481,4 +524,106 @@ def test_owned_export_collects_all_pages_and_cancels_private_work(tmp_path):
             page.get_by_role("button", name="Download my account data", exact=True)
         ).to_be_enabled()
         assert downloads == []
+        browser.close()
+
+
+def test_delayed_admin_mutation_preserves_the_current_server_search():
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        alice = {
+            "id": "alice",
+            "email": "alice@example.org",
+            "role": "user",
+            "active": True,
+            "approved": True,
+            "email_verified": True,
+            "daily_requests": None,
+            "daily_units": None,
+            "max_concurrent": None,
+        }
+        bob = {**alice, "id": "bob", "email": "bob@example.org"}
+        held = []
+
+        def accounts(route):
+            q = parse_qs(urlparse(route.request.url).query).get("q", [""])[0]
+            route.fulfill(
+                json={
+                    "items": [person for person in [alice, bob] if q in person["email"]],
+                    "next_cursor": None,
+                }
+            )
+
+        page.route("**/api/admin/users?*", accounts)
+        page.route("**/api/admin/budgets/user", lambda route: held.append(route))
+        sign_in(page)
+        page.get_by_role("button", name="Administration").click()
+        expect(page.get_by_role("cell", name="bob@example.org", exact=True)).to_be_visible()
+        form = page.locator(".budget-form").filter(
+            has=page.get_by_role("button", name="Save user budget")
+        )
+        form.get_by_role("button", name="Save user budget").click()
+        page.get_by_label("Search account email", exact=True).fill("alice")
+        expect(page.get_by_role("status").filter(has_text="1 accounts shown")).to_be_visible()
+        assert len(held) == 1
+        with page.expect_response(lambda response: "/api/admin/users?" in response.url):
+            held[0].fulfill(json={"message": "Budget saved"})
+        expect(page.get_by_label("Search account email", exact=True)).to_have_value("alice")
+        expect(page.get_by_role("cell", name="alice@example.org", exact=True)).to_be_visible()
+        expect(page.get_by_role("cell", name="bob@example.org", exact=True)).not_to_be_visible()
+        browser.close()
+
+
+def test_provider_markdown_cannot_execute_html_or_fetch_remote_images():
+    """Provider text is data, including hostile HTML, links and image trackers."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        remote_requests = []
+        page.on(
+            "request",
+            lambda request: (
+                remote_requests.append(request.url)
+                if request.url.startswith("https://tracking.invalid/")
+                else None
+            ),
+        )
+        page.route(
+            "**/api/conversations?*",
+            lambda route: route.fulfill(
+                json={"items": [{"id": "hostile", "title": "Untrusted reply"}], "next_cursor": None}
+            ),
+        )
+        text = (
+            '<img src="x" onerror="window.__injected = true">\n\n'
+            "<script>window.__injected = true</script>\n\n"
+            "![tracker](https://tracking.invalid/private.png)\n\n"
+            "[unsafe](javascript:alert%281%29)\n\n"
+            "[safe](https://example.org/docs)"
+        )
+        page.route(
+            "**/api/conversations/hostile",
+            lambda route: route.fulfill(
+                json=conversation(
+                    "hostile",
+                    "Untrusted reply",
+                    [{"id": "untrusted-text", "role": "assistant", "content": text}],
+                )
+            ),
+        )
+        sign_in(page)
+        page.get_by_role("navigation", name="Conversations").get_by_role(
+            "button", name="Untrusted reply", exact=True
+        ).click()
+        message = page.locator(".message.assistant")
+        expect(message).to_contain_text("External image omitted: tracker")
+        expect(message.locator("img, script, svg, iframe")).to_have_count(0)
+        assert page.evaluate("() => window.__injected") is None
+        unsafe = message.get_by_role("link", name="unsafe", exact=True)
+        assert not (unsafe.get_attribute("href") or "").lower().startswith("javascript:")
+        safe = message.get_by_role("link", name="safe", exact=True)
+        expect(safe).to_have_attribute("href", "https://example.org/docs")
+        expect(safe).to_have_attribute("rel", "noopener noreferrer")
+        expect(safe).to_have_attribute("referrerpolicy", "no-referrer")
+        assert remote_requests == []
         browser.close()

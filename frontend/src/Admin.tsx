@@ -31,6 +31,7 @@ export function Admin({
   const [editing, setEditing] = useState<User | null>(null);
   const [recovery, setRecovery] = useState("");
   const [query, setQuery] = useState("");
+  const queryRef = useRef("");
   const [cursor, setCursor] = useState<string | null>(null);
   const [listBusy, setListBusy] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -51,7 +52,11 @@ export function Admin({
     userRequest.current = controller;
     const version = ++listVersion.current;
     setListBusy(true);
-    const params = new URLSearchParams({ page: "true", limit: "50", q: query });
+    const params = new URLSearchParams({
+      page: "true",
+      limit: "50",
+      q: queryRef.current,
+    });
     if (after) params.set("cursor", after);
     try {
       const page = await api<Page<User>>(
@@ -314,7 +319,14 @@ export function Admin({
           label="Search account email"
           maxLength={100}
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            queryRef.current = event.target.value;
+            userRequest.current?.abort();
+            listVersion.current++;
+            setCursor(null);
+            setUsers([]);
+            setQuery(event.target.value);
+          }}
         />
         <div className="table-scroll">
           <table>
