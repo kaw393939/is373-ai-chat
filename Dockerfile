@@ -12,7 +12,15 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/python
 
 FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS runtime
-RUN python -m pip uninstall -y pip \
+# Vendor fixes not yet included in this pinned 3.14.7 base. No floating upgrade.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libpcre2-8-0=10.46-1~deb13u3 \
+        libssl3t64=3.5.7-1~deb13u3 \
+        openssl=3.5.7-1~deb13u3 \
+        openssl-provider-legacy=3.5.7-1~deb13u3 \
+    && rm -rf /var/lib/apt/lists/* \
+    && python -m pip uninstall -y pip \
     && groupadd --gid 10001 appuser \
     && useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin appuser
 WORKDIR /app

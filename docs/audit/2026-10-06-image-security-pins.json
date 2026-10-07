@@ -1,0 +1,71 @@
+{
+  "run_id": "37555797486",
+  "candidate_commit": "d9439dd4ccadad706d34ec8de5c2f205baec2d05",
+  "created_at": "2026-10-07T01:13:18.010841898Z",
+  "runtime_app_tree": "f4360f34b60a82d126433cfd643e5aeae5094c29",
+  "fixable_high_package_pairs": [
+    {
+      "VulnerabilityID": "CVE-2026-103111",
+      "PkgName": "libpcre2-8-0",
+      "InstalledVersion": "10.46-1~deb13u2",
+      "FixedVersion": "10.46-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-75804",
+      "PkgName": "libssl3t64",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-84782",
+      "PkgName": "libssl3t64",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-75804",
+      "PkgName": "openssl",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-84782",
+      "PkgName": "openssl",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-75804",
+      "PkgName": "openssl-provider-legacy",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    },
+    {
+      "VulnerabilityID": "CVE-2026-84782",
+      "PkgName": "openssl-provider-legacy",
+      "InstalledVersion": "3.5.7-1~deb13u2",
+      "FixedVersion": "3.5.7-1~deb13u3",
+      "Severity": "HIGH"
+    }
+  ],
+  "unfixed_high_package_pair_count": 44,
+  "unfixed_high_cves": [
+    "CVE-2025-69720",
+    "CVE-2026-16742",
+    "CVE-2026-54369",
+    "CVE-2026-76642",
+    "CVE-2026-78408",
+    "CVE-2026-78409",
+    "CVE-2026-78410",
+    "CVE-2026-9538"
+  ],
+  "prior_gates": "lint/coverage/migration/npm/build/image-browser passed",
+  "downstream_gates": "process/publish/dev/QA/attestation skipped",
+  "repair_validation": "pending fresh full CI image"
+}
