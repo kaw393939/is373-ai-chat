@@ -4,6 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 from time import perf_counter
+from typing import Literal
 from urllib.parse import urlparse
 from uuid import uuid4
 
@@ -21,6 +22,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from app.config import Settings
 from app.db import database
 from app.email import drain, enqueue, make_mailer, token_email
+from app.exports import owned_export
 from app.middleware import BodyLimit
 from app.models import (
     Audit,
@@ -290,6 +292,18 @@ def create_app(config=None, provider=None):
     @app.get("/api/auth/me")
     async def me(user=Depends(current)):
         return user_view(user)
+
+    @app.get("/api/account/export")
+    async def export_data(
+        section: Literal["conversations", "messages", "runs"] = "conversations",
+        limit: int = Query(100, ge=1, le=100),
+        cursor: str | None = Query(None, max_length=512),
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
+    ):
+        await throttle(db, "export:" + user.id, 10)
+        data = await owned_export(db, user, section, limit, cursor, config.jwt_secret)
+        return {"account": user_view(user), **data}
 
     @app.get("/api/auth/options")
     async def auth_options():
