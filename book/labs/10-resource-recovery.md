@@ -18,10 +18,10 @@ Expected checkpoints:
 
 ```text
 Verified limits: memory=256MiB pids=128 cpu=0.50
-Expected: original users=0; restored users=1; restored schema=0002
+Expected: original users=0; restored users=1; restored schema=0003
 ```
 
-Actual sampled memory varies. The fixture migrates/seeds one synthetic admin, captures a PostgreSQL custom-format dump, truncates only its new lab database, restores into a separate `restore_test` database and verifies counts/schema. The dump stays in process memory and disappears afterward. This proves a small local restoration, not encrypted off-host storage, large-data timings or disaster recovery.
+Actual sampled memory varies. The fixture migrates/seeds one synthetic admin, captures a PostgreSQL custom-format dump, truncates only its new lab database, restores into a separate `restore_test` database and verifies counts against the current migration head (`0003` in this revision). The dump stays in process memory and disappears afterward. This proves a small local restoration, not encrypted off-host storage, large-data timings or disaster recovery.
 
 ## Fixed fault and smallest repair
 

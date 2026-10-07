@@ -16,7 +16,7 @@ Consider a hypothetical release changing a column in a way an old image cannot r
 
 Compatible additive changes offer more options, but they still require verification. A migration's `downgrade` function is not proof that lost data can be reconstructed. An operator might forward-fix, use an explicitly compatible old image, or restore a compatible database into a separate target. Each choice trades recovery time against data loss and must follow the actual failure.
 
-Daily/pre-deployment dumps currently live in a protected host directory. They survive app container replacement, not droplet loss. Off-host encrypted retention and restore proof remain [#4](https://github.com/kaw393939/is373-ai-chat/issues/4). A prior local restore checked schema `0001`; it must not be presented as independent restore proof for current schema `0002` or a complete disaster rehearsal.
+Pre-deployment dumps live in a protected host directory. Daily backups now encrypt a dump, private configuration and release inventory to an age public recipient. A restricted hourly pull transfers ciphertext to the owner's existing Mac while it is awake and connected; the server never holds the decryption identity. The [backup runbook](../docs/operations/backups.md) owns retention and restore steps. A small schema-`0002` off-host restoration has been measured and compared with source rows and its matching application image; this is separate from a complete host-loss rehearsal or a future schema-`0003` release. Key-recovery custody and actionable failure alerts remain acceptance work in [#4](https://github.com/kaw393939/is373-ai-chat/issues/4).
 
 ## Read the recovery boundary
 

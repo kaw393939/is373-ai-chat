@@ -31,7 +31,7 @@ Assume a synthetic ordinary user is approved and signed in. The frontend has an 
 
 An SSE event is a protocol frame; a network chunk is merely bytes delivered together. Fetch may receive one frame in pieces or several frames in one chunk. The [streaming chapter](05-streaming.md) investigates why a parser must buffer and decode incrementally.
 
-The mock replies with `Workshop reply:` followed by the prompt, subject to its output bound. That makes a local journey deterministic. It does not prove a real provider accepts the same payload, reports complete usage or handles every termination correctly. Terminal-event contracts remain open work in issues #12/#18; the [provider code tour](generated/code-tours.md) should be read with that limitation.
+The mock replies with `Workshop reply:` followed by the prompt, subject to its output bound. That makes a local journey deterministic. It does not prove a real provider accepts the same payload or reports complete usage. Adapters now normalize typed text, usage and terminal events; unexplained EOF fails while preserving partial output. Read the [provider code tour](generated/code-tours.md) and [terminal regression tests](../tests/integration/test_terminal_state.py) to distinguish that specific contract from guarantees about every external service.
 
 ## A failure belongs to a boundary
 

@@ -1,6 +1,6 @@
 # Edition and reproducibility
 
-This is development edition **0.2.0**, prepared October 6, 2026. It is a complete
+This is development edition **0.3.0**, prepared October 6, 2026. It is a complete
 authored course path undergoing technical checks, not a classroom-validated
 textbook. The [human pilot record](instructor/pilot-record.md) defines the
 remaining learner evidence. The date of a test run belongs to its evidence;
@@ -14,10 +14,12 @@ authorship does not imply successful execution on every platform.
 | Initial case-study app source (historical) | `d65a19c8d3cd344d31b8f01103fe5e3137a8485d`; later book/test changes are not that deployed source |
 | Initial case-study image (historical) | `ghcr.io/kaw393939/is373-ai-chat@sha256:9bed602fcea38a5cc0a613e8440ce2b4663cbc6838e89c93411112e41edc4997` |
 | Guarded revision image | `sha256:1d2a4fa2671d9e0f57ad1f314d03d7aaa15ebdde17df283d5aee4d45a5b66a0b`, source `d8d11a71db3779b00463eb36c9cd6d2118d1989c`; exact image browser-tested and deployed in run 37550580435 |
-| Manuscript source | `book-v0.2.0` tag, created after revision verification; a build records the actual commit and whether the checkout was dirty |
+| Prior manuscript source | `book-v0.2.0`, recorded commit `ece094a2428aa322eeaa5bd81aa1cba17ed4af40`; its archived edition remains unchanged |
+| Current manuscript source | `book-v0.3.0` is published only after this revision's book checks pass; each build records its actual source commit and whether the checkout was dirty |
+| Current application contract | [`VERSION`](../VERSION) declares 2.0.0; migration head is `0003`. A declared version is separate from accepted CI and production deployment evidence |
 | Built content fingerprint | `artifacts/book-build.json` records SHA-256 over the ordered book paths and contents; included in the edition bundle |
 | Python/dependency/build locks | Python 3.14.7; `uv.lock`; `frontend/package-lock.json`; MkDocs 1.6.1 in the optional `book` group |
-| Required database semantics | PostgreSQL 17 for locking/admission; temporary SQLite provides a quick path with two explicitly skipped lock tests |
+| Required database semantics | PostgreSQL 17 for locking/admission; temporary SQLite provides a quick path with PostgreSQL lock cases explicitly skipped |
 | Browser | Python Playwright uses its locked package and installed Chromium revision; save `uv run playwright --version` in lab evidence |
 | Verified local platform | macOS arm64; Linux amd64 container checks belong to the cited CI run, not an inference from local tests |
 
