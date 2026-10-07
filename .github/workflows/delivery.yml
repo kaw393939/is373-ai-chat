@@ -149,6 +149,10 @@ jobs:
       RELEASE_VERSION: ${{ needs.publish.outputs.version }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - name: Require the footer's downloadable immutable book edition
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 deploy/check_book_release.py
       - name: Deploy exact tested preview
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
