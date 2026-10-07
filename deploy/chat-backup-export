@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""Root-owned narrow export: encrypted archives only, never .env or plaintext dumps."""
+
+import hashlib
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+ROOT = Path("/opt/is373-ai-chat/backups")
+NAME = re.compile(r"daily-\d{8}T\d{6}Z\.tar\.age\Z")
+
+
+def checked(name):
+    if not NAME.fullmatch(name):
+        raise ValueError("Invalid encrypted backup name")
+    path = ROOT / name
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Backup is unavailable")
+    return path
+
+
+def metadata(path):
+    with path.open("rb") as file:
+        digest = hashlib.file_digest(file, "sha256").hexdigest()
+    return {"name": path.name, "bytes": path.stat().st_size, "sha256": digest}
+
+
+def execute(args):
+    if args == ["list"]:
+        paths = sorted((p for p in ROOT.glob("*.tar.age") if NAME.fullmatch(p.name)), reverse=True)
+        print(json.dumps([metadata(checked(p.name)) for p in paths[:30]]))
+    elif len(args) == 2 and args[0] == "fetch":
+        path = checked(args[1])
+        with os.fdopen(os.open(path, os.O_RDONLY | os.O_NOFOLLOW), "rb") as file:
+            while chunk := file.read(1024 * 1024):
+                sys.stdout.buffer.write(chunk)
+    elif len(args) == 3 and args[0] == "ack":
+        value = metadata(checked(args[1]))
+        if value["sha256"] != args[2]:
+            raise ValueError("Backup receipt checksum mismatch")
+        value["received_at"] = datetime.now(timezone.utc).isoformat()
+        temp = ROOT / ".off-host-status.partial"
+        with temp.open("w") as file:
+            json.dump(value, file)
+        temp.chmod(0o600)
+        temp.replace(ROOT / "off-host-status.json")
+        print("Encrypted backup receipt recorded")
+    else:
+        raise ValueError("Expected list, fetch NAME or ack NAME SHA256")
+
+
+if __name__ == "__main__":
+    os.umask(0o077)
+    try:
+        execute(sys.argv[1:])
+    except (ValueError, OSError):
+        raise SystemExit("Encrypted backup export rejected") from None

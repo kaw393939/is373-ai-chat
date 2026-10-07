@@ -8,6 +8,8 @@ import subprocess
 import time
 from pathlib import Path
 
+from backup_status import backup_status
+
 root = Path("/var/lib/chat-metrics")
 root.mkdir(mode=0o755, exist_ok=True)
 path = root / "host.json"
@@ -60,7 +62,12 @@ sample = {
     "disk_used": disk.used,
     "containers": containers,
 }
-output = {"status": "ok", "cpu": [total, idle], "samples": (previous["samples"] + [sample])[-60:]}
+output = {
+    "status": "ok",
+    "cpu": [total, idle],
+    "samples": (previous["samples"] + [sample])[-60:],
+    "backups": backup_status(Path("/opt/is373-ai-chat/backups"), time.time()),
+}
 tmp = root / "host.json.tmp"
 tmp.write_text(json.dumps(output))
 os.chmod(tmp, 0o644)

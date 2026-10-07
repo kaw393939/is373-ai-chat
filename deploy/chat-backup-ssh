@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+"""Forced SSH command with no shell evaluation or interactive access."""
+
+import os
+import shlex
+
+try:
+    args = shlex.split(os.environ.get("SSH_ORIGINAL_COMMAND", ""))
+except ValueError:
+    raise SystemExit("Invalid backup command") from None
+if not args or args[0] not in {"list", "fetch", "ack"}:
+    raise SystemExit("Only encrypted backup export is permitted")
+os.execv("/usr/bin/sudo", ["sudo", "-n", "/usr/local/sbin/chat-backup-export", *args])
