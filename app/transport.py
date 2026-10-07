@@ -1,8 +1,12 @@
 """Translate application outcomes into HTTP status codes and SSE frames."""
 
 import json
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
+from contextlib import aclosing
 from dataclasses import asdict
+
+import anyio
+from starlette.responses import StreamingResponse
 
 from app.errors import Failure
 from app.events import AppEvent
@@ -23,6 +27,18 @@ def encode_event(event: AppEvent) -> str:
     return f"event: {event.kind}\ndata: {json.dumps(asdict(event))}\n\n"
 
 
-async def encode_stream(events: AsyncIterator[AppEvent]) -> AsyncIterator[str]:
-    async for event in events:
-        yield encode_event(event)
+async def encode_stream(events: AsyncGenerator[AppEvent, None]) -> AsyncGenerator[str, None]:
+    async with aclosing(events):
+        async for event in events:
+            yield encode_event(event)
+
+
+class GenerationResponse(StreamingResponse):
+    """Close suspended generators even when cancellation interrupts send()."""
+
+    async def stream_response(self, send):
+        try:
+            await super().stream_response(send)
+        finally:
+            with anyio.CancelScope(shield=True):
+                await self.body_iterator.aclose()

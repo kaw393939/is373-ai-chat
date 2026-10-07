@@ -220,11 +220,14 @@ async def prepare_run(session, user, conversation_id, prompt, config, family_id=
     return run, messages, budget.max_output
 
 
-async def generate(factory, provider, run, messages, max_output):
+async def generate(factory, provider, run, messages, max_output, tasks=None):
     content, status, tokens = "", GenerationState.FAILED, None
     ended = False
-    yield Started(run.id, run.message_id)
+    task = asyncio.current_task()
+    if tasks is not None:
+        tasks.add(task)
     try:
+        yield Started(run.id, run.message_id)
         async with asyncio.timeout(120):
             async for chunk in provider.stream(messages, max_output):
                 async with factory() as session:
@@ -247,25 +250,29 @@ async def generate(factory, provider, run, messages, max_output):
                     raise RuntimeError("Provider emitted an invalid event")
             if not ended and status != GenerationState.CANCELLED:
                 raise RuntimeError("Provider stream ended without completion")
-    except asyncio.CancelledError:  # pragma: no cover - ASGI disconnect exercised in browser tests
+    except (asyncio.CancelledError, GeneratorExit):
         status = GenerationState.CANCELLED
         raise
     except Exception:
         status = GenerationState.FAILED
         yield Error("Provider unavailable. Your conversation was saved.")
     finally:
-        # Starlette cancels response tasks on disconnect. Shield durable cleanup.
-        with anyio.CancelScope(shield=True):
-            async with factory() as session:
-                await session.execute(
-                    update(Message).where(Message.id == run.message_id).values(content=content)
-                )
-                await session.execute(
-                    update(Generation)
-                    .where(Generation.id == run.id)
-                    .values(status=status, actual_tokens=tokens)
-                )
-                await session.commit()
+        try:
+            # Starlette cancels response tasks on disconnect. Shield durable cleanup.
+            with anyio.CancelScope(shield=True):
+                async with factory() as session:
+                    await session.execute(
+                        update(Message).where(Message.id == run.message_id).values(content=content)
+                    )
+                    await session.execute(
+                        update(Generation)
+                        .where(Generation.id == run.id)
+                        .values(status=status, actual_tokens=tokens)
+                    )
+                    await session.commit()
+        finally:
+            if tasks is not None:
+                tasks.discard(task)
     yield Completed(status, tokens)
 
 

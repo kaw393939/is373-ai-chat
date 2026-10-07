@@ -11,7 +11,7 @@ from uuid import uuid4
 import anyio
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import delete, func, select, text
@@ -87,7 +87,7 @@ from app.services import (
     user_view,
 )
 from app.throttling import throttle
-from app.transport import HTTP_STATUS, encode_stream
+from app.transport import HTTP_STATUS, GenerationResponse, encode_stream
 
 log = logging.getLogger("uvicorn.error")
 
@@ -98,6 +98,7 @@ def create_app(config=None, provider=None):
     adapter = provider or make_provider(config)
     mailer = make_mailer(config)
     password_limiter = anyio.CapacityLimiter(2)
+    stream_tasks = set()
 
     async def password_hash(value):
         return await anyio.to_thread.run_sync(hash_password, value, limiter=password_limiter)
@@ -127,6 +128,10 @@ def create_app(config=None, provider=None):
                     await task
                 except asyncio.CancelledError:
                     pass
+            # Uvicorn cancels overdue HTTP tasks before starting lifespan
+            # shutdown. Join their durable finalizers before closing the pool.
+            if stream_tasks:
+                await asyncio.gather(*tuple(stream_tasks), return_exceptions=True)
             await engine.dispose()
 
     app = FastAPI(
@@ -134,6 +139,7 @@ def create_app(config=None, provider=None):
     )
     app.state.engine, app.state.factory, app.state.config = engine, factory, config
     app.state.mailer = mailer
+    app.state.stream_tasks = stream_tasks
     app.add_middleware(BodyLimit)
     app.add_middleware(
         TrustedHostMiddleware,
@@ -557,8 +563,8 @@ def create_app(config=None, provider=None):
         run, history, max_output = await prepare_run(
             db, user, cid, body, config, request.state.family_id
         )
-        return StreamingResponse(
-            encode_stream(generate(factory, adapter, run, history, max_output)),
+        return GenerationResponse(
+            encode_stream(generate(factory, adapter, run, history, max_output, stream_tasks)),
             media_type="text/event-stream",
             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
         )
