@@ -421,6 +421,12 @@ def admission():
 
 
 def recovery():
+    from alembic.config import Config
+    from alembic.script import ScriptDirectory
+
+    expected_schema = ScriptDirectory.from_config(
+        Config(str(ROOT / "alembic.ini"))
+    ).get_current_head()
     with postgres() as (container, env):
         run(sys.executable, "-m", "alembic", "upgrade", "head", env=env)
         run(
@@ -506,7 +512,7 @@ def recovery():
         assert scalar("lab_test", "SELECT count(*) FROM users") == "0"
         assert scalar("restore_test", "SELECT count(*) FROM users") == "1"
         schema = scalar("restore_test", "SELECT version_num FROM alembic_version")
-        assert schema == "0002"
+        assert schema == expected_schema
         print(f"Expected: original users=0; restored users=1; restored schema={schema}")
         print("Local restoration evidence does not prove off-host disaster recovery.")
 

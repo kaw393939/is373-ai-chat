@@ -37,4 +37,4 @@ Transfer: in a private branch, propose a provider-neutral terminal event and one
 
 ## Troubleshooting, cleanup and status
 
-If a real network error appears, stop: the documented fixture patches the adapter's HTTPX client and should make no external request. Missing output indicates a fixture/runtime error, not evidence about a provider account. Temporary fixtures require no teardown. Both contained fault demonstrations were maintainer-executed on October 6, 2026; reader success and a completed app-wide terminal contract remain pending.
+If a real network error appears, stop: the documented fixture patches the adapter's HTTPX client and should make no external request. Missing output indicates a fixture/runtime error, not evidence about a provider account. Temporary fixtures require no teardown. Both contained fault demonstrations were maintainer-executed on October 6, 2026; the current adapter/domain terminal contract has passed maintainer unit/integration checks with synthetic providers. Human reader validation remains pending.
