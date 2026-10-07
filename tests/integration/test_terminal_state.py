@@ -35,12 +35,12 @@ async def test_terminal_state_preserves_partial_text(client, application, events
             for item in events:
                 yield item
 
-    output = "".join(
-        [event async for event in generate(application.state.factory, Fake(), run, history, limit)]
-    )
-    assert f'"status": "{expected}"' in output
+    output = [
+        event async for event in generate(application.state.factory, Fake(), run, history, limit)
+    ]
+    assert output[-1].status == expected
     async with application.state.factory() as db:
         saved = await db.get(Message, run.message_id)
         assert saved.content == ("partial" if events and events[0] == TextDelta("partial") else "")
     if expected == "failed":
-        assert "event: error" in output
+        assert any(event.kind == "error" for event in output)

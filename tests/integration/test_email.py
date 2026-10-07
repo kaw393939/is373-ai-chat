@@ -4,13 +4,14 @@ import os
 
 import pytest
 from cryptography.fernet import Fernet
-from fastapi import HTTPException
 from sqlalchemy import select
 
 from app.email import drain, enqueue
+from app.errors import DomainError
 from app.models import EmailOutbox, Recovery, User, now
 from app.security import digest
 from app.services import consume_link
+from app.transport import HTTP_STATUS
 from tests.conftest import PASSWORD, login
 
 
@@ -177,9 +178,8 @@ async def test_batch_bound_and_rolling_month_quota(application):
             )
         await db.commit()
         import pytest
-        from fastapi import HTTPException
 
-        with pytest.raises(HTTPException):
+        with pytest.raises(DomainError):
             await enqueue(db, config, "learner@example.org", "Test", "Test")
 
 
@@ -205,7 +205,7 @@ async def test_sibling_links_only_one_redemption(application):
                 await asyncio.sleep(0.05)
                 await db.commit()
                 return 204
-            except HTTPException as exc:
-                return exc.status_code
+            except DomainError as exc:
+                return HTTP_STATUS[exc.kind]
 
     assert sorted(await asyncio.gather(redeem("first-link"), redeem("second-link"))) == [204, 400]

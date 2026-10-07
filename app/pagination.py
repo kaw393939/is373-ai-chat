@@ -6,8 +6,9 @@ import hmac
 import json
 import math
 
-from fastapi import HTTPException
 from sqlalchemy import and_, or_
+
+from app.errors import DomainError, Failure
 
 
 def signature(body, scope, secret):
@@ -41,7 +42,7 @@ def decode_cursor(value, scope, secret):
             raise ValueError("shape")
         return at, identifier
     except (ValueError, TypeError):
-        raise HTTPException(400, "Invalid page cursor") from None
+        raise DomainError(Failure.INVALID, "Invalid page cursor") from None
 
 
 async def page_rows(db, model, statement, limit, cursor, scope, secret):

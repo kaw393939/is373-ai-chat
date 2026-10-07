@@ -73,3 +73,72 @@ class MfaReplace(BaseModel):
 
 class MfaCode(BaseModel):
     code: str = Field(min_length=1, max_length=64)
+
+
+class ModelView(BaseModel):
+    id: str
+    name: str
+    provider: str
+    enabled: bool
+
+
+class BudgetView(BudgetEdit):
+    role: Literal["user", "admin"]
+
+
+class ContainerMetric(BaseModel):
+    name: str
+    cpu: str
+    memory: str
+    status: str
+
+
+class HostSample(BaseModel):
+    at: float
+    cpu_percent: float
+    memory_used: int = 0
+    memory_total: int = 0
+    disk_used: int = 0
+    disk_total: int = 0
+    containers: list[ContainerMetric]
+
+
+class BackupMetric(BaseModel):
+    status: Literal["ok", "stale", "missing"]
+    created_at: float | None = None
+    received_at: float | None = None
+
+
+class BackupMetrics(BaseModel):
+    local: BackupMetric
+    off_host: BackupMetric
+
+
+class HostMetrics(BaseModel):
+    status: str = "ok"
+    samples: list[HostSample] = Field(default_factory=list)
+    cpu: list[int] = Field(default_factory=list)
+    backups: BackupMetrics | None = None
+
+
+class AdminTotals(BaseModel):
+    users: int
+    active_streams: int
+    failed_runs: int
+    requests: int
+    reserved_units: int
+    email_pending: int
+    email_failed: int
+    email_sent: int
+
+
+class AuditView(BaseModel):
+    action: str
+    target: str
+    at: float
+
+
+class AdminOverview(BaseModel):
+    totals: AdminTotals
+    host: HostMetrics
+    audit: list[AuditView]

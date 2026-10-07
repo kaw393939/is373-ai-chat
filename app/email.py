@@ -5,18 +5,18 @@ from typing import Protocol
 
 import httpx
 from cryptography.fernet import Fernet
-from fastapi import HTTPException
 from sqlalchemy import func, select, text
 
+from app.errors import DomainError, Failure
 from app.models import EmailOutbox, Recovery, now
 from app.security import digest, secret_token
 
 
-class MailCapacityExceeded(HTTPException):
+class MailCapacityExceeded(DomainError):
     """Internal admission refusal; public routes conceal account eligibility."""
 
     def __init__(self):
-        super().__init__(503, "Email delivery capacity reached; try again later")
+        super().__init__(Failure.UNAVAILABLE, "Email delivery capacity reached; try again later")
 
 
 class Mailer(Protocol):

@@ -111,7 +111,7 @@ async def test_cancel_and_provider_failure_preserve_state(client, application):
     events = [
         e async for e in generate(application.state.factory, MockProvider(), run, history, limit)
     ]
-    assert "cancelled" in events[-1]
+    assert events[-1].status == "cancelled"
 
     class Broken:
         async def stream(self, *args):
@@ -126,14 +126,17 @@ async def test_cancel_and_provider_failure_preserve_state(client, application):
             application.state.config,
         )
     events = [e async for e in generate(application.state.factory, Broken(), run, history, limit)]
-    assert "Provider unavailable" in "".join(events) and "failed" in events[-1]
+    assert any(getattr(event, "message", "").startswith("Provider unavailable") for event in events)
+    assert events[-1].status == "failed"
 
 
 async def test_parallel_admission_is_atomic(client, application):
     import asyncio
 
     import pytest
-    from fastapi import HTTPException
+
+    from app.errors import DomainError
+    from app.transport import HTTP_STATUS
 
     if application.state.engine.dialect.name != "postgresql":
         pytest.skip("PostgreSQL row-lock semantics; exercised in CI and server verification")
@@ -148,8 +151,8 @@ async def test_parallel_admission_is_atomic(client, application):
                     db, current, cid, Prompt(**prompt(key=key)), application.state.config
                 )
                 return result[0].id
-            except HTTPException as e:
-                return e.status_code
+            except DomainError as e:
+                return HTTP_STATUS[e.kind]
 
     outcomes = await asyncio.gather(admit("parallel-one"), admit("parallel-two"))
     assert outcomes.count(429) == 1 and sum(isinstance(x, str) for x in outcomes) == 1

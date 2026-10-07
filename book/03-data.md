@@ -88,6 +88,24 @@ The [database factory](../app/db.py) bounds its PostgreSQL pool at five connecti
 
 SQLite is useful for fast isolated tests. Its behavior cannot establish PostgreSQL row-lock correctness. Use PostgreSQL integration/concurrency evidence for that claim.
 
+## Who owns each unit of work?
+
+The route validates transport inputs and translates `DomainError` kinds to HTTP status codes. `accounts.py` owns registration, link verification, password changes and administrative access edits. `mfa.py` owns factor/challenge state; `services.py` owns session/admission/generation operations. Helpers such as `revoke_all`, `owned` and `consume_link` participate in their caller’s unit rather than committing independently. This is a function-based unit of work using SQLAlchemy’s session, without a generic repository hierarchy.
+
+| Unit | Commit owner | Failure boundary |
+|---|---|---|
+| Attempt throttling | A separate short factory/session in `throttling.py`. | Rejected attempts persist; unrelated caller mutations cannot be committed. |
+| Authentication read | `current` finishes its read-only unit. | Releases the pooled connection before independent throttling. |
+| Registration | `register_account`. | User, link and outbox roll back together. |
+| Approval/access edit | `edit_account`. | Actor revalidation, edited access, revocations, notice and audit share one commit. |
+| Refresh | `rotate`. | Replacement commits; reuse revocation deliberately commits before refusal. |
+| MFA verification | `verify_challenge`, then `new_session`. | Consumed factor and assured session commit together; rejected guesses commit only attempt count. |
+| Password/link changes | Account use case. | Token use, account mutation, session revocation and audit share one commit. |
+| Chat admission | `prepare_run`. | Fresh locked account/session authority, reservation and initial transcript commit before external I/O. |
+| Streaming finalization | `generate`. | A shielded later short unit persists terminal state and partial text. |
+
+The [transaction-boundary tests](../tests/integration/test_transaction_boundaries.py) prove independent attempts cannot commit pending account work and exhausted approval mail rolls back approval, revocation and audit together. PostgreSQL races prove the lock-based claims; SQLite alone does not.
+
 ## Compatibility and recovery are separate decisions
 
 Adding columns and a table often supports an expand-first release: old code ignores additions while new code uses them. That is a hypothesis to test, not a blanket guarantee. Compare old writers, new defaults, verification policy and outbox-worker behavior. An old binary may ignore pending mail even if its queries still run.

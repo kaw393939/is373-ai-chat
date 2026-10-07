@@ -2,8 +2,8 @@ import base64
 import json
 
 import pytest
-from fastapi import HTTPException
 
+from app.errors import DomainError
 from app.pagination import decode_cursor, signature
 
 
@@ -12,5 +12,5 @@ from app.pagination import decode_cursor, signature
 )
 def test_signed_but_malformed_cursor(value):
     body = base64.urlsafe_b64encode(json.dumps(value).encode()).decode().rstrip("=")
-    with pytest.raises(HTTPException):
+    with pytest.raises(DomainError):
         decode_cursor(body + "." + signature(body, "scope", "secret"), "scope", "secret")

@@ -15,14 +15,21 @@ from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy import delete, func, select, text
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from app.accounts import edit_account
+from app.accounts import (
+    edit_account,
+    register_account,
+    request_link,
+    reset_account_password,
+    set_password,
+    verify_address,
+)
 from app.config import Settings
 from app.db import database
-from app.email import MailCapacityExceeded, drain, make_mailer, token_email
+from app.email import drain, make_mailer
+from app.errors import DomainError
 from app.exports import owned_export
 from app.mfa import (
     begin_replacement,
@@ -49,15 +56,19 @@ from app.pagination import page_rows
 from app.policies import requires_mfa
 from app.providers import make_provider
 from app.schemas import (
+    AdminOverview,
     BudgetEdit,
+    BudgetView,
     ChangePassword,
     Credentials,
     EmailAddress,
+    HostMetrics,
     Login,
     MfaChallengeInput,
     MfaCode,
     MfaReplace,
     MfaVerify,
+    ModelView,
     Prompt,
     ResetPassword,
     Title,
@@ -66,7 +77,6 @@ from app.schemas import (
 )
 from app.security import DUMMY_HASH, decode_token, digest, hash_password, verify_password
 from app.services import (
-    consume_link,
     generate,
     issue_recovery,
     new_session,
@@ -74,14 +84,12 @@ from app.services import (
     prepare_run,
     revoke_all,
     rotate,
-    throttle,
     user_view,
 )
+from app.throttling import throttle
+from app.transport import HTTP_STATUS, encode_stream
 
 log = logging.getLogger("uvicorn.error")
-PUBLIC_REGISTRATION = {
-    "message": "If registration is available, check your inbox for the next steps."
-}
 
 
 def create_app(config=None, provider=None):
@@ -137,6 +145,10 @@ def create_app(config=None, provider=None):
         # Pydantic's default error contains submitted inputs, including passwords.
         return JSONResponse({"detail": "Invalid request inputs"}, status_code=422)
 
+    @app.exception_handler(DomainError)
+    async def domain_failure(_, exc):
+        return JSONResponse({"detail": exc.detail}, status_code=HTTP_STATUS[exc.kind])
+
     async def session():
         async with factory() as db:
             yield db
@@ -169,6 +181,9 @@ def create_app(config=None, provider=None):
         ):
             raise HTTPException(401, "Session is no longer active")
         request.state.family_id = family.id
+        # Authentication is a read-only unit. Release its connection before an
+        # independent attempt-counter session; mutations re-lock their invariant.
+        await db.commit()
         return user
 
     async def admin(user=Depends(current)):
@@ -234,44 +249,10 @@ def create_app(config=None, provider=None):
 
     @app.post("/api/auth/register", status_code=201)
     async def register(body: Credentials, request: Request, db: AsyncSession = Depends(session)):
-        await throttle(db, "register:" + request.client.host, 5)
+        await throttle(factory, "register:" + request.client.host, 5)
         email = str(body.email).lower()
         hashed = await password_hash(body.password)
-        if config.email_provider != "disabled" and await db.scalar(
-            select(User).where(User.email == email)
-        ):
-            return PUBLIC_REGISTRATION
-        user = User(
-            email=email,
-            password_hash=hashed,
-            approved=config.registration_policy == "open",
-            email_verified=config.email_provider == "disabled",
-        )
-        db.add(user)
-        try:
-            await db.flush()
-            if config.email_provider != "disabled":
-                await token_email(db, config, user, "verify")
-            await db.commit()
-        except IntegrityError:
-            await db.rollback()
-            if config.email_provider != "disabled":
-                return PUBLIC_REGISTRATION
-            raise HTTPException(409, "Account cannot be registered")
-        except MailCapacityExceeded:
-            # The account, link and outbox are one unit; no undeliverable account
-            # survives. Anonymous callers see the same receipt as duplicates.
-            await db.rollback()
-            return PUBLIC_REGISTRATION
-        return (
-            PUBLIC_REGISTRATION
-            if not user.email_verified
-            else {
-                "message": "Account created. Sign in."
-                if user.approved
-                else "Account created. An administrator must approve it."
-            }
-        )
+        return await register_account(db, email, hashed, config)
 
     @app.post("/api/auth/login")
     async def login(
@@ -279,8 +260,8 @@ def create_app(config=None, provider=None):
     ):
         if request.headers.get("origin"):
             same_origin(request)
-        await throttle(db, "login:" + request.client.host, 10)
-        await throttle(db, "login-account:" + str(body.email).lower(), 10)
+        await throttle(factory, "login:" + request.client.host, 10)
+        await throttle(factory, "login-account:" + str(body.email).lower(), 10)
         user = await db.scalar(select(User).where(User.email == str(body.email).lower()))
         valid = await password_valid(body.password, user.password_hash if user else DUMMY_HASH)
         if not valid or not user or not user.active or not user.approved or not user.email_verified:
@@ -298,14 +279,14 @@ def create_app(config=None, provider=None):
     async def mfa_enroll(
         body: MfaChallengeInput, request: Request, db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "mfa-enroll:" + request.client.host, 5)
+        await throttle(factory, "mfa-enroll:" + request.client.host, 5)
         return await enroll_challenge(db, body.challenge, config)
 
     @app.post("/api/auth/mfa/verify")
     async def mfa_verify(
         body: MfaVerify, request: Request, response: Response, db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "mfa-verify:" + request.client.host, 10)
+        await throttle(factory, "mfa-verify:" + request.client.host, 10)
         user, codes = await verify_challenge(db, body.challenge, body.code, config)
         access, refresh = await new_session(db, user, config, mfa_verified=True)
         set_refresh(response, refresh)
@@ -322,7 +303,7 @@ def create_app(config=None, provider=None):
     async def mfa_replace(
         body: MfaReplace, user=Depends(current), db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "mfa-replace:" + user.id, 5)
+        await throttle(factory, "mfa-replace:" + user.id, 5)
         if not await password_valid(body.current_password, user.password_hash):
             raise HTTPException(401, "Current password is incorrect")
         return await begin_replacement(db, user, body.code, config)
@@ -331,7 +312,7 @@ def create_app(config=None, provider=None):
     async def mfa_confirm(
         body: MfaCode, user=Depends(current), db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "mfa-confirm:" + user.id, 5)
+        await throttle(factory, "mfa-confirm:" + user.id, 5)
         return await confirm_replacement(db, user, body.code, config)
 
     @app.post("/api/auth/refresh")
@@ -369,7 +350,7 @@ def create_app(config=None, provider=None):
         user=Depends(current),
         db: AsyncSession = Depends(session),
     ):
-        await throttle(db, "export:" + user.id, 10)
+        await throttle(factory, "export:" + user.id, 10)
         data = await owned_export(db, user, section, limit, cursor, config.jwt_secret)
         return {"account": user_view(user), **data}
 
@@ -391,64 +372,32 @@ def create_app(config=None, provider=None):
             raise HTTPException(503, "Contact your administrator for a recovery link")
         if purpose not in {"verify", "reset"}:
             raise HTTPException(400, "Unsupported email request")
-        await throttle(db, "email-ip:" + request.client.host, 5)
-        await throttle(db, "email-account:" + str(body.email).lower(), 1)
-        user = await db.scalar(select(User).where(User.email == str(body.email).lower()))
-        if (
-            user
-            and user.active
-            and (
-                (purpose == "verify" and not user.email_verified)
-                or (purpose == "reset" and user.approved and user.email_verified)
-            )
-        ):
-            try:
-                await token_email(db, config, user, purpose)
-                await db.commit()
-            except MailCapacityExceeded:
-                await db.rollback()
-        return {
-            "message": "If the account is eligible, an email will arrive shortly. Check spam too."
-        }
+        await throttle(factory, "email-ip:" + request.client.host, 5)
+        await throttle(factory, "email-account:" + str(body.email).lower(), 1)
+        return await request_link(db, str(body.email).lower(), purpose, config)
 
     @app.post("/api/auth/verify")
     async def verify_email(
         body: VerifyEmail, request: Request, db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "verify:" + request.client.host, 5)
-        user = await consume_link(db, body.token, "verify")
-        user.email_verified = True
-        db.add(Audit(actor_id=user.id, action="email.verified", target_id=user.id))
-        await db.commit()
-        return {
-            "message": "Email verified. You can sign in."
-            if user.approved
-            else "Email verified. Sign in once your administrator approves the account."
-        }
+        await throttle(factory, "verify:" + request.client.host, 5)
+        return await verify_address(db, body.token)
 
     @app.post("/api/auth/reset", status_code=204)
     async def reset(body: ResetPassword, request: Request, db: AsyncSession = Depends(session)):
-        await throttle(db, "reset:" + request.client.host, 5)
-        user = await consume_link(db, body.token, "reset")
-        user.password_hash = await password_hash(body.password)
-        await revoke_all(db, user.id)
-        db.add(Audit(actor_id=user.id, action="password.reset", target_id=user.id))
-        await db.commit()
+        await throttle(factory, "reset:" + request.client.host, 5)
+        await reset_account_password(db, body.token, await password_hash(body.password))
 
     @app.post("/api/auth/password", status_code=204)
     async def change_password(
         body: ChangePassword, user=Depends(current), db: AsyncSession = Depends(session)
     ):
-        await throttle(db, "password:" + user.id, 5)
+        await throttle(factory, "password:" + user.id, 5)
         if not await password_valid(body.current_password, user.password_hash):
             raise HTTPException(400, "Current password is incorrect")
-        user.password_hash = await password_hash(body.password)
-        db.add(user)
-        await revoke_all(db, user.id)
-        db.add(Audit(actor_id=user.id, action="password.changed", target_id=user.id))
-        await db.commit()
+        await set_password(db, user, await password_hash(body.password), "password.changed")
 
-    @app.get("/api/models")
+    @app.get("/api/models", response_model=list[ModelView])
     async def models(user=Depends(current), db: AsyncSession = Depends(session)):
         budget = await db.get(RoleBudget, user.role)
         return [
@@ -486,7 +435,7 @@ def create_app(config=None, provider=None):
 
     @app.post("/api/conversations", status_code=201)
     async def create_conversation(user=Depends(current), db: AsyncSession = Depends(session)):
-        await throttle(db, "conversation:" + user.id, 20)
+        await throttle(factory, "conversation:" + user.id, 20)
         item = Conversation(user_id=user.id)
         db.add(item)
         await db.commit()
@@ -599,11 +548,17 @@ def create_app(config=None, provider=None):
 
     @app.post("/api/conversations/{cid}/stream")
     async def stream(
-        cid: str, body: Prompt, user=Depends(current), db: AsyncSession = Depends(session)
+        cid: str,
+        body: Prompt,
+        request: Request,
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
     ):
-        run, history, max_output = await prepare_run(db, user, cid, body, config)
+        run, history, max_output = await prepare_run(
+            db, user, cid, body, config, request.state.family_id
+        )
         return StreamingResponse(
-            generate(factory, adapter, run, history, max_output),
+            encode_stream(generate(factory, adapter, run, history, max_output)),
             media_type="text/event-stream",
             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
         )
@@ -661,7 +616,7 @@ def create_app(config=None, provider=None):
         db.add(Audit(actor_id=actor.id, action="sessions.revoked", target_id=uid))
         await db.commit()
 
-    @app.get("/api/admin/budgets")
+    @app.get("/api/admin/budgets", response_model=list[BudgetView])
     async def budgets(_=Depends(admin), db: AsyncSession = Depends(session)):
         return [
             {"role": b.role, **{k: getattr(b, k) for k in BudgetEdit.model_fields}}
@@ -681,12 +636,12 @@ def create_app(config=None, provider=None):
         await db.commit()
         return {"message": "Budget saved"}
 
-    @app.get("/api/admin/overview")
+    @app.get("/api/admin/overview", response_model=AdminOverview)
     async def overview(_=Depends(admin), db: AsyncSession = Depends(session)):
         try:
-            metrics = json.loads(Path(config.metrics_path).read_text())
+            metrics = HostMetrics.model_validate(json.loads(Path(config.metrics_path).read_text()))
         except (OSError, ValueError):
-            metrics = {"status": "collector unavailable", "samples": []}
+            metrics = HostMetrics(status="collector unavailable")
         totals = {
             "users": await db.scalar(select(func.count()).select_from(User)),
             "active_streams": await db.scalar(

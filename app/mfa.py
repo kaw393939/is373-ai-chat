@@ -13,9 +13,9 @@ import struct
 from urllib.parse import quote, urlencode
 
 from cryptography.fernet import Fernet
-from fastapi import HTTPException
 from sqlalchemy import delete
 
+from app.errors import DomainError, Failure
 from app.models import Audit, MfaChallenge, MfaRecovery, User, now
 from app.security import digest, secret_token
 from app.services import revoke_all
@@ -43,7 +43,9 @@ def valid_counter(secret, code, instant, last=-1):
 
 def cipher(config):
     if not config.mfa_encryption_key:
-        raise HTTPException(503, "MFA configuration is unavailable; contact the administrator")
+        raise DomainError(
+            Failure.UNAVAILABLE, "MFA configuration is unavailable; contact the administrator"
+        )
     return Fernet(config.mfa_encryption_key.encode())
 
 
@@ -88,7 +90,7 @@ async def password_challenge(db, user):
 async def locked_challenge(db, value):
     candidate = await db.get(MfaChallenge, digest(value))
     if not candidate:
-        raise HTTPException(401, "Invalid or expired MFA challenge")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid or expired MFA challenge")
     user = await db.get(User, candidate.user_id, with_for_update=True)
     await db.refresh(candidate, with_for_update=True)
     if (
@@ -97,14 +99,14 @@ async def locked_challenge(db, value):
         or candidate.attempts >= 5
         or not (user.active and user.approved and user.email_verified)
     ):
-        raise HTTPException(401, "Invalid or expired MFA challenge")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid or expired MFA challenge")
     return user, candidate
 
 
 async def enroll_challenge(db, value, config):
     user, challenge = await locked_challenge(db, value)
     if user.mfa_secret:
-        raise HTTPException(400, "MFA is already enrolled")
+        raise DomainError(Failure.INVALID, "MFA is already enrolled")
     _, encrypted, view = setup_secret(config, user, challenge.enrollment_secret)
     challenge.enrollment_secret = encrypted
     await db.commit()
@@ -151,7 +153,7 @@ async def verify_challenge(db, value, code, config):
     if not valid:
         challenge.attempts += 1
         await db.commit()  # Rejected guesses consume the challenge's durable budget.
-        raise HTTPException(401, "Invalid MFA code")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid MFA code")
     challenge.used = True
     return user, codes  # The route's new_session commits factor + session together.
 
@@ -159,7 +161,7 @@ async def verify_challenge(db, value, code, config):
 async def begin_replacement(db, user, code, config):
     await db.refresh(user, with_for_update=True)
     if user.mfa_secret and not await consume_factor(db, user, code, config):
-        raise HTTPException(401, "Invalid MFA code")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid MFA code")
     _, encrypted, view = setup_secret(config, user)
     user.mfa_pending_secret, user.mfa_pending_expires_at = encrypted, now() + 300
     await db.commit()
@@ -169,11 +171,11 @@ async def begin_replacement(db, user, code, config):
 async def confirm_replacement(db, user, code, config):
     await db.refresh(user, with_for_update=True)
     if not user.mfa_pending_secret or user.mfa_pending_expires_at <= now():
-        raise HTTPException(400, "MFA setup expired; verify your password again")
+        raise DomainError(Failure.INVALID, "MFA setup expired; verify your password again")
     secret = cipher(config).decrypt(user.mfa_pending_secret.encode()).decode()
     counter = valid_counter(secret, code, now())
     if counter is None:
-        raise HTTPException(401, "Invalid MFA code")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid MFA code")
     user.mfa_secret, user.mfa_last_counter = user.mfa_pending_secret, counter
     user.mfa_pending_secret, user.mfa_pending_expires_at = None, None
     codes = await recovery_codes(db, user)

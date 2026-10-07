@@ -1,13 +1,11 @@
 import asyncio
-import json
 from datetime import datetime, timezone
 
 import anyio
-from fastapi import HTTPException
 from sqlalchemy import delete, func, select, update
-from sqlalchemy.dialects.postgresql import insert as pg_insert
-from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
+from app.errors import DomainError, Failure
+from app.events import Completed, Delta, Error, GenerationState, Started, provider_outcome
 from app.models import (
     Audit,
     Conversation,
@@ -19,11 +17,10 @@ from app.models import (
     Recovery,
     Refresh,
     RoleBudget,
-    Throttle,
     User,
     now,
 )
-from app.policies import requires_mfa
+from app.policies import eligible_account, requires_mfa
 from app.providers import StreamEnd, TextDelta, TokenUsage
 from app.security import access_token, digest, secret_token
 
@@ -45,20 +42,6 @@ def user_view(user):
     }
 
 
-async def throttle(session, identity, limit=10):
-    bucket = int(now() // 60)
-    key = digest(f"{identity}:{bucket}")
-    insert = pg_insert if session.bind.dialect.name == "postgresql" else sqlite_insert
-    statement = insert(Throttle).values(key=key, count=1, expires_at=now() + 120)
-    statement = statement.on_conflict_do_update(
-        index_elements=[Throttle.key], set_={"count": Throttle.count + 1}
-    ).returning(Throttle.count)
-    count = (await session.execute(statement)).scalar_one()
-    await session.commit()  # Rejected attempts still count.
-    if count > limit:
-        raise HTTPException(429, "Too many attempts; try again in a minute")
-
-
 async def new_session(session, user, config, mfa_verified=False):
     family = Family(
         user_id=user.id, expires_at=now() + config.refresh_days * 86400, mfa_verified=mfa_verified
@@ -75,7 +58,7 @@ async def rotate(session, value, config):
     # Family lock serializes rotation and reuse detection across workers.
     token = await session.get(Refresh, digest(value))
     if not token:
-        raise HTTPException(401, "Invalid refresh session")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid refresh session")
     family = (
         await session.scalars(select(Family).where(Family.id == token.family_id).with_for_update())
     ).one()
@@ -83,7 +66,7 @@ async def rotate(session, value, config):
     if token.used:
         family.revoked = True
         await session.commit()
-        raise HTTPException(401, "Refresh reuse detected; sign in again")
+        raise DomainError(Failure.UNAUTHENTICATED, "Refresh reuse detected; sign in again")
     user = await session.get(User, family.user_id)
     if (
         family.revoked
@@ -93,7 +76,7 @@ async def rotate(session, value, config):
         or not user.email_verified
         or (requires_mfa(user, config) and not family.mfa_verified)
     ):
-        raise HTTPException(401, "Session revoked or expired")
+        raise DomainError(Failure.UNAUTHENTICATED, "Session revoked or expired")
     token.used = True
     fresh = secret_token()
     session.add(Refresh(digest=digest(fresh), family_id=family.id))
@@ -123,26 +106,43 @@ async def owned(session, conversation_id, user_id):
     # an unrelated account which conversation identifiers exist.
     item = await session.get(Conversation, conversation_id, with_for_update=True)
     if not item or item.user_id != user_id:
-        raise HTTPException(404, "Conversation not found")
+        raise DomainError(Failure.MISSING, "Conversation not found")
     return item
 
 
-async def prepare_run(session, user, conversation_id, prompt, config):
+async def prepare_run(session, user, conversation_id, prompt, config, family_id=None):
     # One shared row is a lightweight global admission lock; no in-process semaphore.
     await session.scalars(select(RoleBudget).where(RoleBudget.role == "user").with_for_update())
     current = (
-        await session.scalars(select(User).where(User.id == user.id).with_for_update())
-    ).one()
+        await session.scalars(
+            select(User)
+            .where(User.id == user.id)
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+    ).one_or_none()
+    if not eligible_account(current):
+        raise DomainError(Failure.UNAUTHENTICATED, "Account access is no longer active")
+    if family_id:
+        family = await session.get(Family, family_id, with_for_update=True, populate_existing=True)
+        if (
+            not family
+            or family.user_id != current.id
+            or family.revoked
+            or family.expires_at <= now()
+            or (requires_mfa(current, config) and not family.mfa_verified)
+        ):
+            raise DomainError(Failure.UNAUTHENTICATED, "Session is no longer active")
     budget = await session.get(RoleBudget, current.role)
     if not budget.model_enabled or prompt.model != "default":
-        raise HTTPException(403, "Model is not available for this role")
+        raise DomainError(Failure.FORBIDDEN, "Model is not available for this role")
     conversation = await owned(session, conversation_id, user.id)
     if await session.scalar(
         select(Generation.id).where(
             Generation.user_id == user.id, Generation.request_key == prompt.request_key
         )
     ):
-        raise HTTPException(409, "This request already exists; reload its conversation")
+        raise DomainError(Failure.CONFLICT, "This request already exists; reload its conversation")
     await session.execute(
         update(Generation)
         .where(Generation.status == "streaming", Generation.expires_at <= now())
@@ -166,7 +166,9 @@ async def prepare_run(session, user, conversation_id, prompt, config):
         or personal >= (current.max_concurrent or budget.max_concurrent)
         or same_chat
     ):
-        raise HTTPException(429, "Generation limit reached; wait or stop the active reply")
+        raise DomainError(
+            Failure.LIMITED, "Generation limit reached; wait or stop the active reply"
+        )
     history = list(
         (
             await session.scalars(
@@ -180,7 +182,9 @@ async def prepare_run(session, user, conversation_id, prompt, config):
     messages.append({"role": "user", "content": prompt.content})
     input_units = sum(len(m["content"].encode()) for m in messages)
     if input_units > 32000:
-        raise HTTPException(413, "Conversation context is full; start a new conversation")
+        raise DomainError(
+            Failure.TOO_LARGE, "Conversation context is full; start a new conversation"
+        )
     reservation = input_units + budget.max_output
     today = datetime.now(timezone.utc).date().isoformat()
     usage = await session.scalar(
@@ -192,7 +196,7 @@ async def prepare_run(session, user, conversation_id, prompt, config):
     if usage.requests >= (
         current.daily_requests or budget.daily_requests
     ) or usage.units + reservation > (current.daily_units or budget.daily_units):
-        raise HTTPException(429, "Daily budget reached")
+        raise DomainError(Failure.LIMITED, "Daily budget reached")
     usage.requests += 1
     usage.units += reservation
     session.add(Message(conversation_id=conversation_id, role="user", content=prompt.content))
@@ -216,21 +220,17 @@ async def prepare_run(session, user, conversation_id, prompt, config):
     return run, messages, budget.max_output
 
 
-def event(kind, data):
-    return f"event: {kind}\ndata: {json.dumps(data)}\n\n"
-
-
 async def generate(factory, provider, run, messages, max_output):
-    content, status, tokens = "", "failed", None
+    content, status, tokens = "", GenerationState.FAILED, None
     ended = False
-    yield event("started", {"run_id": run.id, "message_id": run.message_id})
+    yield Started(run.id, run.message_id)
     try:
         async with asyncio.timeout(120):
             async for chunk in provider.stream(messages, max_output):
                 async with factory() as session:
                     current = await session.get(Generation, run.id)
                     if current.cancel_requested:
-                        status = "cancelled"
+                        status = GenerationState.CANCELLED
                         break
                 if ended:
                     raise RuntimeError("Provider emitted output after completion")
@@ -238,21 +238,21 @@ async def generate(factory, provider, run, messages, max_output):
                     content += chunk.text
                     if len(content.encode()) > max_output * 16:  # Adapter output safety ceiling.
                         raise RuntimeError("Provider output exceeded safety ceiling")
-                    yield event("delta", {"text": chunk.text})
+                    yield Delta(chunk.text)
                 elif isinstance(chunk, TokenUsage):
                     tokens = chunk.tokens
                 elif isinstance(chunk, StreamEnd):
-                    status, ended = chunk.status, True
+                    status, ended = provider_outcome(chunk.status), True
                 else:
                     raise RuntimeError("Provider emitted an invalid event")
-            if not ended and status != "cancelled":
+            if not ended and status != GenerationState.CANCELLED:
                 raise RuntimeError("Provider stream ended without completion")
     except asyncio.CancelledError:  # pragma: no cover - ASGI disconnect exercised in browser tests
-        status = "cancelled"
+        status = GenerationState.CANCELLED
         raise
     except Exception:
-        status = "failed"
-        yield event("error", {"message": "Provider unavailable. Your conversation was saved."})
+        status = GenerationState.FAILED
+        yield Error("Provider unavailable. Your conversation was saved.")
     finally:
         # Starlette cancels response tasks on disconnect. Shield durable cleanup.
         with anyio.CancelScope(shield=True):
@@ -266,7 +266,7 @@ async def generate(factory, provider, run, messages, max_output):
                     .values(status=status, actual_tokens=tokens)
                 )
                 await session.commit()
-    yield event("completed", {"status": status, "tokens": tokens})
+    yield Completed(status, tokens)
 
 
 async def issue_recovery(session, user, actor_id):
@@ -281,13 +281,13 @@ async def issue_recovery(session, user, actor_id):
 async def consume_link(session, value, purpose):
     token = await session.get(Recovery, digest(value))
     if not token or token.purpose != purpose:
-        raise HTTPException(400, "Invalid or expired link")
+        raise DomainError(Failure.INVALID, "Invalid or expired link")
     # Lock the user before token rows: different links for one owner cannot
     # deadlock while invalidating siblings, or both change the account.
     user = await session.get(User, token.user_id, with_for_update=True)
     await session.refresh(token)
     if token.used or token.expires_at <= now():
-        raise HTTPException(400, "Invalid or expired link")
+        raise DomainError(Failure.INVALID, "Invalid or expired link")
     await session.execute(
         update(Recovery)
         .where(Recovery.user_id == user.id, Recovery.purpose == purpose)

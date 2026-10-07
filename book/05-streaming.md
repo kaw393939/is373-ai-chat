@@ -23,7 +23,7 @@ The mock adapter yields deterministic text. The OpenAI adapter uses Responses wi
 | Symbol | Decision to investigate |
 |---|---|
 | [`consume`](../frontend/src/api.ts) | Why buffer both decoded text and frames? What does EOF establish? |
-| [`prepare_run`, `event`, `generate`](../app/services.py) | Which state is committed before output, and which failures persist partial text? |
+| [`prepare_run`, `generate`](../app/services.py) | Which state is committed before output, and which failures persist partial text? |
 | [`Provider`, `HTTPProvider.stream`, `make_provider`](../app/providers.py) | Where are vendor payloads translated into the shared boundary? |
 | [`send`, `stop`, Markdown rendering](../frontend/src/main.tsx) | How do browser aborts, server cancellation and safe display cooperate? |
 | [Provider tests](../tests/unit/test_providers.py), [chat tests](../tests/integration/test_chat.py) | Which success, failure and cancellation cases are actually asserted? |
@@ -37,3 +37,8 @@ Polling can simplify short jobs at the cost of repeated requests and delay. Nati
 Model output is untrusted input. React's constrained Markdown renderer disables raw HTML, omits remote images and restricts link protocols. That is a deliberate feature boundary, not a universal guarantee for future renderer changes. Browser state races and cross-tab sessions also remain separate concerns.
 
 **Laboratory:** [Lab 05 — stream contracts](labs/05-stream-contract.md); use mock transport and a disposable local environment. **Evaluate:** specify the observation that distinguishes provider success from transport EOF, and reject one unsafe retry policy. For user-interface evidence, continue with [Lab 06 — browser accessibility](labs/06-browser-accessibility.md).
+
+
+## Keep transport at its boundary
+
+`generate` now emits typed application notifications (`Started`, `Delta`, `Error`, `Completed`) from [events.py](../app/events.py); [transport.py](../app/transport.py) translates them into the existing SSE event names and JSON data. The provider outcome mapping admits only complete, incomplete and refused terminals. An unsupported terminal cannot become a persisted success. Use-case failures carry domain kinds, and the HTTP adapter selects status codes. Provider normalization, durable generation state and browser frame encoding can change independently without copying HTTP concerns into every service.

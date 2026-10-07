@@ -40,3 +40,19 @@ async def test_monitoring_collector_data(client, application):
     data = (await client.get("/api/admin/overview")).json()
     assert data["host"]["samples"][0]["cpu_percent"] == 5
     assert (await client.get("/api/models")).json()[0]["id"] == "default"
+
+
+async def test_malformed_metrics_are_unavailable_and_unknown_fields_are_excluded(
+    client, application
+):
+    await login(client)
+    path = Path(application.state.config.metrics_path)
+    path.write_text('{"samples": [{"at": "bad", "cpu_percent": 5, "containers": []}]}')
+    assert (await client.get("/api/admin/overview")).json()["host"][
+        "status"
+    ] == "collector unavailable"
+    path.write_text(
+        '{"status":"ok", "samples": [], "private_config":"synthetic-should-not-escape"}'
+    )
+    data = (await client.get("/api/admin/overview")).json()
+    assert "private_config" not in data["host"]
