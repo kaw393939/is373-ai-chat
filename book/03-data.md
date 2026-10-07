@@ -19,6 +19,8 @@ Read the [models](../app/models.py) as promises about durable state:
 
 Constraints protect relationships even when an application path is wrong. Server authorization protects which actor may request an operation. They are complementary boundaries.
 
+<a id="migration-0002"></a>
+
 ## Worked change: migration 0001 → 0002
 
 The real [migration 0002](../migrations/versions/0002_verified_email_and_outbox.py) introduces email verification, purpose-bound recovery links and an outbox. Its predecessor is explicitly `0001`. It contains schema operations rather than importing today's models and recreating them. Otherwise a model edit could silently change what replaying an old migration means.

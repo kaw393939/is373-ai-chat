@@ -69,3 +69,7 @@ This is a single-server teaching deployment. It does not claim high availability
 [Low-cost email options](docs/email-options.md) explains Google aliases, a free transactional sender and the Google-only API alternative.
 
 Public dev/QA hosting: [environment runbook](docs/environments.md) and [DNS audit](docs/audit/2026-10-06-dns.md).
+
+## Reuse
+
+Original software is [MIT licensed](LICENSE). Original book prose and diagrams and educational prose in `docs/` use [CC BY 4.0](LICENSE-CONTENT); source excerpts and fixture programs remain MIT. See [NOTICE](NOTICE) and [publication notes](book/publication.md) for attribution, AI-assistance disclosure and third-party boundaries.

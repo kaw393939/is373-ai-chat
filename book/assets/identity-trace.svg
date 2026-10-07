@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" role="img" aria-labelledby="title desc">
+<title id="title">Two stages of identity and authorization</title>
+<desc id="desc">Login verifies a password and creates a family and signed JWT. A later protected request validates claims, checks the current user and family, then filters the conversation by owner before responding.</desc>
+<rect width="760" height="330" fill="#fff"/>
+<g fill="#102a43" font-family="sans-serif" font-size="17">
+<text x="25" y="35">Login</text><text x="25" y="205">Protected request</text></g>
+<g fill="#e7f0f8" stroke="#29465b" stroke-width="2">
+<rect x="25" y="60" width="195" height="65" rx="6"/><rect x="280" y="60" width="195" height="65" rx="6"/><rect x="535" y="60" width="195" height="65" rx="6"/>
+<rect x="25" y="230" width="195" height="65" rx="6"/><rect x="280" y="230" width="195" height="65" rx="6"/><rect x="535" y="230" width="195" height="65" rx="6"/>
+</g>
+<g stroke="#29465b" stroke-width="3" fill="none"><path d="M220 92h54l-10-7m10 7-10 7"/><path d="M475 92h54l-10-7m10 7-10 7"/><path d="M220 262h54l-10-7m10 7-10 7"/><path d="M475 262h54l-10-7m10 7-10 7"/></g>
+<g fill="#102a43" font-family="sans-serif" font-size="16" text-anchor="middle">
+<text x="122" y="98">Verify password</text><text x="377" y="88">Persist family</text><text x="377" y="109">Issue JWT</text><text x="632" y="98">Return to browser</text>
+<text x="122" y="258">Validate JWT</text><text x="122" y="280">claims and expiry</text><text x="377" y="258">Current family</text><text x="377" y="280">and active user</text><text x="632" y="258">Owned lookup</text><text x="632" y="280">then response</text></g>
+</svg>

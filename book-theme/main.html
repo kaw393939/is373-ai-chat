@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ page.title }} · {{ config.site_name }}</title>
+<link rel="stylesheet" href="{{ 'assets/book.css' | url }}">
+</head>
+<body>
+<a class="skip" href="#content">Skip to chapter</a>
+<header><a href="{{ nav.homepage.url | url }}">{{ config.site_name }}</a><p>Development edition · working case study and laboratory</p></header>
+{% macro links(items) %}<ul>{% for item in items %}<li>{% if item.children %}<details{% if item.active %} open{% endif %}><summary>{{ item.title }}</summary>{{ links(item.children) }}</details>{% else %}<a href="{{ item.url | url }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.title }}</a>{% endif %}</li>{% endfor %}</ul>{% endmacro %}
+<div class="layout"><nav aria-label="Book contents">{{ links(nav) }}</nav>
+<main id="content" tabindex="-1">{{ page.content }}
+<nav aria-label="Chapter pagination"><p>{% if page.previous_page %}<a href="{{ page.previous_page.url | url }}">← {{ page.previous_page.title }}</a>{% endif %} {% if page.next_page %}<a href="{{ page.next_page.url | url }}">{{ page.next_page.title }} →</a>{% endif %}</p></nav>
+</main></div>
+<footer><p>Keith Williams and contributors · original prose CC BY 4.0 · code MIT. <a href="{{ 'publication/' | url }}">Reuse and verification</a></p></footer>
+</body></html>

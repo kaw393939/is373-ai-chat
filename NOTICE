@@ -1,7 +1,9 @@
 License scope
 =============
 Original software, configuration and code examples: MIT (LICENSE).
-Original educational prose in book/ and docs/: CC BY 4.0 (LICENSE-CONTENT).
+Original book prose/diagrams and educational prose in docs/: CC BY 4.0
+(LICENSE-CONTENT). Code and configuration, including book fixture programs
+and stylesheets, remain MIT.
 Embedded source excerpts remain MIT even when included in the book.
 Copyright 2026 Keith Williams and credited contributors.
 

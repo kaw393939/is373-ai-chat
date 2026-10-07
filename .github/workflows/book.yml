@@ -1,0 +1,40 @@
+name: Build and check teaching edition
+on:
+  pull_request:
+    paths: ['book/**', 'book-theme/**', 'docs/**', 'scripts/book*', 'scripts/check-book.py', 'mkdocs.yml', 'pyproject.toml', 'uv.lock', 'Makefile', '.github/workflows/book.yml']
+  push:
+    branches: [main]
+    paths: ['book/**', 'book-theme/**', 'docs/**', 'scripts/book*', 'scripts/check-book.py', 'mkdocs.yml', 'pyproject.toml', 'uv.lock', 'Makefile', '.github/workflows/book.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  book:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install locked book tools
+        run: |
+          python3 -m pip install uv==0.12.15
+          uv sync --frozen --group book --python 3.14.7
+          uv run playwright install --with-deps chromium
+      - name: Execute bounded laboratory experiments
+        run: |
+          for experiment in migration stream coverage promotion admission recovery environments image; do
+            uv run python book/labs/fixtures.py "$experiment"
+          done
+      - name: Source and rendered edition checks
+        env:
+          BOOK_SOURCE_REF: ${{ github.sha }}
+        run: |
+          uv run ruff check scripts/book_hooks.py scripts/book_snippets.py scripts/check-book.py
+          make book-check
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: teaching-edition-${{ github.sha }}
+          path: |
+            artifacts/book-html/
+            artifacts/book-build.json
+            artifacts/book-mobile.png
+          retention-days: 90

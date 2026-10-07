@@ -75,7 +75,7 @@ HttpOnly prevents JavaScript from reading that cookie. It does not prevent malic
 
 ## Enrollment, ownership and administrative limits
 
-Default registration creates an ordinary account awaiting approval. With delivery disabled in local labs, registration does not prove inbox control. When enabled, new users also verify their address. Approval grants access; verification demonstrates address control. [Migration 0002](03-data.md#worked-change-migration-0001--0002) preserves old accounts' verification policy rather than retroactively verifying their inboxes.
+Default registration creates an ordinary account awaiting approval. With delivery disabled in local labs, registration does not prove inbox control. When enabled, new users also verify their address. Approval grants access; verification demonstrates address control. [Migration 0002](03-data.md#migration-0002) preserves old accounts' verification policy rather than retroactively verifying their inboxes.
 
 `owned` returns 404 for both missing and unrelated conversations. It locks/loads the row and compares its owner with authenticated user ID; callers do not use an owner supplied in the request body. Returning a common result limits this lookup's disclosure of whether another user's identifier exists. It is not a guarantee that all possible side channels are absent.
 

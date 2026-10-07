@@ -25,3 +25,11 @@ up:
 	docker compose run --rm app alembic upgrade head
 	docker compose run --rm app python -m app.cli seed
 	docker compose up -d --wait app
+
+.PHONY: book book-check
+book:
+	$(UV) run --group book python scripts/book_snippets.py --check
+	$(UV) run --group book mkdocs build --strict
+	$(UV) run --group book python scripts/check-book.py
+book-check: book
+	$(UV) run --group book python scripts/check-book.py --browser

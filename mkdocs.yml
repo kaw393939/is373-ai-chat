@@ -1,0 +1,65 @@
+site_name: From Request to Release
+site_author: Keith Williams and contributors
+docs_dir: book
+site_dir: artifacts/book-html
+use_directory_urls: true
+strict: true
+theme:
+  name: null
+  custom_dir: book-theme
+plugins: []
+hooks: [scripts/book_hooks.py]
+markdown_extensions: [tables, fenced_code, toc, sane_lists]
+validation:
+  nav:
+    omitted_files: info
+  links:
+    not_found: warn
+    anchors: warn
+nav:
+  - Course: README.md
+  - Start here: start-here.md
+  - Foundations bridge: foundations.md
+  - Reading code: 00-reading-code.md
+  - Origins and ideas:
+    - History: 12-history.md
+    - Engineering ideas: 13-engineering-ideas.md
+    - Agile and community: 14-agile-and-community.md
+    - Architecture and twelve factors: 15-architecture-and-twelve-factors.md
+  - Build and explain:
+    - System: 01-system.md
+    - Local request: 02-local.md
+    - Data: 03-data.md
+    - Identity: 04-auth.md
+    - Streaming: 05-streaming.md
+    - Email: 11-email.md
+  - Verify and operate:
+    - Testing: 07-testing.md
+    - Delivery: 08-delivery.md
+    - Hosting: 09-hosting.md
+    - Operations: 06-operations.md
+    - Recovery: 10-recovery.md
+  - Judgment and strategy: 16-human-judgment-and-ai.md
+  - Laboratories:
+    - Lab preflight: labs/README.md
+    - 01 Token boundaries: labs/01-token-boundaries.md
+    - 02 Request trace: labs/02-request-trace.md
+    - 03 Migration: labs/03-migration.md
+    - 04 Ownership: labs/04-ownership.md
+    - 05 Stream contract: labs/05-stream-contract.md
+    - 06 Browser accessibility: labs/06-browser-accessibility.md
+    - 07 Admission and coverage: labs/07-admission-and-coverage.md
+    - 08 Image delivery: labs/08-image-delivery.md
+    - 09 Environment promotion: labs/09-environment-promotion.md
+    - 10 Resources and recovery: labs/10-resource-recovery.md
+    - 11 Email outbox: labs/11-email-outbox.md
+    - 12 Strategy: labs/12-strategy-capstone.md
+  - Resources:
+    - Canonical code listings: generated/code-tours.md
+    - Glossary: glossary.md
+    - References: references.md
+    - Edition: edition.md
+    - Publication: publication.md
+    - Instructor guide: instructor/README.md
+    - Human pilot record: instructor/pilot-record.md
+    - Revision evidence: evidence/2026-10-06-revision.md
