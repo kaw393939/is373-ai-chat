@@ -27,7 +27,15 @@ def isolated_configuration(monkeypatch):
 async def application(tmp_path):
     url = os.environ.get("TEST_DATABASE_URL", f"sqlite+aiosqlite:///{tmp_path}/test.db")
     disposable_database(url, tmp_path, os.environ.get("TEST_ALLOW_RESET"))
-    env = {**os.environ, "DATABASE_URL": url, "APP_ENV": "development"}
+    # A child process does not inherit the parent's model_config mutation. Fill
+    # every field so Alembic cannot read real provider/mail values from .env.
+    defaults = Settings.model_construct().model_dump()
+    env = {
+        **os.environ,
+        **{name.upper(): str(value) for name, value in defaults.items()},
+        "DATABASE_URL": url,
+        "APP_ENV": "development",
+    }
     subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], env=env, check=True)
     assets = tmp_path / "dist"
     (assets / "assets").mkdir(parents=True)

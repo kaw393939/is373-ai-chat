@@ -32,6 +32,28 @@ async def test_fixture_refuses_before_migration_or_application(monkeypatch, tmp_
     assert calls == []
 
 
+async def test_migration_child_overrides_inherited_integration_credentials(monkeypatch, tmp_path):
+    class Inspected(Exception):
+        pass
+
+    def inspect(*args, env, **kwargs):
+        assert env["PROVIDER"] == "mock"
+        assert env["EMAIL_PROVIDER"] == "disabled"
+        assert env["OPENAI_API_KEY"] == env["RESEND_API_KEY"] == ""
+        assert env["DATABASE_URL"] == f"sqlite+aiosqlite:///{tmp_path}/test.db"
+        assert env["APP_ENV"] == "development"
+        raise Inspected
+
+    monkeypatch.delenv("TEST_DATABASE_URL", raising=False)
+    monkeypatch.setenv("PROVIDER", "openai")
+    monkeypatch.setenv("EMAIL_PROVIDER", "resend")
+    monkeypatch.setenv("OPENAI_API_KEY", "synthetic-secret-not-to-inherit")
+    monkeypatch.setenv("RESEND_API_KEY", "synthetic-secret-not-to-inherit")
+    monkeypatch.setattr(conftest.subprocess, "run", inspect)
+    with pytest.raises(Inspected):
+        await anext(conftest.application.__wrapped__(tmp_path))
+
+
 @pytest.mark.parametrize(
     "url",
     [
