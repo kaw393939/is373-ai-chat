@@ -30,6 +30,10 @@ Fernet authenticated encryption protects pending recipient/link payloads at rest
 | [Email tests](../tests/integration/test_email.py) | Which fake transport, quota, retry and concurrent redemption cases are asserted? |
 | [DNS audit](../docs/audit/2026-10-06-dns.md), [email options](../docs/email-options.md) | Which receiving and sender-authentication facts remain external? |
 
+Public registration with email enabled returns the same 201 receipt for a new address, an existing address, a uniqueness race and exhausted delivery capacity. Recovery requests likewise return the same 200 receipt for eligible and unknown accounts when the outbox is full. Independent throttles still count attempts. A delivery-capacity failure rolls back the account/link/outbox unit; it does not leave an account that cannot receive its verification link. This controls these response disclosures, without claiming constant-time behavior. The [privacy/state tests](../tests/integration/test_email_privacy.py) cover receipts and both approval/verification orderings.
+
+Approval before verification sends instructions to verify; verification before approval sends instructions to await approval; open enrollment and already-approved verification permit sign-in. The copy follows current policy and account state.
+
 Verification proves access to an address; admin approval grants use of the app. Existing approved accounts survive migration `0002`; new accounts verify when email is enabled. Recovery links expire in 30 minutes and use URL fragments to avoid putting bearer values in ordinary request paths/access logs. Origin, single-use and authorization protections remain necessary.
 
 Quotas permit 80 queued messages per UTC day and 2,000 over a rolling 30 days, with anonymous IP/address limits. Generic recovery responses reduce account disclosure, but saturation/eligibility response ordering remains [#15](https://github.com/kaw393939/is373-ai-chat/issues/15). Do not infer complete enumeration resistance from one generic success message.

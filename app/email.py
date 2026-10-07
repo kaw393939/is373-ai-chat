@@ -12,6 +12,13 @@ from app.models import EmailOutbox, Recovery, now
 from app.security import digest, secret_token
 
 
+class MailCapacityExceeded(HTTPException):
+    """Internal admission refusal; public routes conceal account eligibility."""
+
+    def __init__(self):
+        super().__init__(503, "Email delivery capacity reached; try again later")
+
+
 class Mailer(Protocol):
     async def send(self, payload: dict, key: str) -> str: ...
 
@@ -58,7 +65,7 @@ async def enqueue(db, config, recipient, subject, message, ttl=1800):
             select(func.count()).select_from(EmailOutbox).where(EmailOutbox.created_at >= start)
         )
         if count >= limit:
-            raise HTTPException(503, "Email delivery capacity reached; try again later")
+            raise MailCapacityExceeded()
     payload = {
         "from": config.email_from,
         "to": [recipient],
@@ -78,6 +85,15 @@ async def token_email(db, config, user, purpose):
         Recovery(digest=digest(value), user_id=user.id, purpose=purpose, expires_at=now() + 1800)
     )
     label = "Verify your email" if purpose == "verify" else "Reset your password"
+    approval = (
+        (
+            "Registration also requires administrator approval."
+            if config.registration_policy == "approval" and not user.approved
+            else "After verification, you can sign in."
+        )
+        if purpose == "verify"
+        else "Use your new password to sign in after resetting it."
+    )
     await enqueue(
         db,
         config,
@@ -85,7 +101,7 @@ async def token_email(db, config, user, purpose):
         label + " · Firehose360",
         f"{label}: {config.base_url}/#{purpose}={value}\n\n"
         "This link expires in 30 minutes and works once. Ignore it if you did not request it.\n"
-        "Registration also requires administrator approval.",
+        + approval,
     )
 
 

@@ -30,13 +30,16 @@ async def edit_account(db, actor, target_id, changes, config):
     # The eligible actor cannot edit their own access. After serialization and
     # revalidation, that actor remains an eligible administrator after this edit.
     await revoke_all(db, target_id)
-    if newly_approved and user.email_verified:
+    if newly_approved:
         await enqueue(
             db,
             config,
             user.email,
             "Your Firehose360 account is approved",
-            "You can now sign in at " + config.base_url + ".",
+            "You can now sign in at " + config.base_url + "."
+            if user.email_verified
+            else "Your account is approved. Verify your email using the registration link before signing in. "
+            "If it expired, request another verification link at " + config.base_url + ".",
         )
     db.add(Audit(actor_id=actor.id, action="user.updated", target_id=target_id))
     await db.commit()

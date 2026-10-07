@@ -22,7 +22,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from app.accounts import edit_account
 from app.config import Settings
 from app.db import database
-from app.email import drain, make_mailer, token_email
+from app.email import MailCapacityExceeded, drain, make_mailer, token_email
 from app.exports import owned_export
 from app.middleware import BodyLimit
 from app.models import (
@@ -67,6 +67,9 @@ from app.services import (
 )
 
 log = logging.getLogger("uvicorn.error")
+PUBLIC_REGISTRATION = {
+    "message": "If registration is available, check your inbox for the next steps."
+}
 
 
 def create_app(config=None, provider=None):
@@ -223,9 +226,7 @@ def create_app(config=None, provider=None):
         if config.email_provider != "disabled" and await db.scalar(
             select(User).where(User.email == email)
         ):
-            return {
-                "message": "Check your inbox for verification instructions; administrator approval is also required."
-            }
+            return PUBLIC_REGISTRATION
         user = User(
             email=email,
             password_hash=hashed,
@@ -240,14 +241,23 @@ def create_app(config=None, provider=None):
             await db.commit()
         except IntegrityError:
             await db.rollback()
+            if config.email_provider != "disabled":
+                return PUBLIC_REGISTRATION
             raise HTTPException(409, "Account cannot be registered")
-        return {
-            "message": "Check your inbox for verification instructions; administrator approval is also required."
+        except MailCapacityExceeded:
+            # The account, link and outbox are one unit; no undeliverable account
+            # survives. Anonymous callers see the same receipt as duplicates.
+            await db.rollback()
+            return PUBLIC_REGISTRATION
+        return (
+            PUBLIC_REGISTRATION
             if not user.email_verified
-            else "Account created. Sign in."
-            if user.approved
-            else "Account created. An administrator must approve it."
-        }
+            else {
+                "message": "Account created. Sign in."
+                if user.approved
+                else "Account created. An administrator must approve it."
+            }
+        )
 
     @app.post("/api/auth/login")
     async def login(
@@ -335,8 +345,11 @@ def create_app(config=None, provider=None):
                 or (purpose == "reset" and user.approved and user.email_verified)
             )
         ):
-            await token_email(db, config, user, purpose)
-            await db.commit()
+            try:
+                await token_email(db, config, user, purpose)
+                await db.commit()
+            except MailCapacityExceeded:
+                await db.rollback()
         return {
             "message": "If the account is eligible, an email will arrive shortly. Check spam too."
         }
@@ -350,7 +363,11 @@ def create_app(config=None, provider=None):
         user.email_verified = True
         db.add(Audit(actor_id=user.id, action="email.verified", target_id=user.id))
         await db.commit()
-        return {"message": "Email verified. Sign in once your administrator approves the account."}
+        return {
+            "message": "Email verified. You can sign in."
+            if user.approved
+            else "Email verified. Sign in once your administrator approves the account."
+        }
 
     @app.post("/api/auth/reset", status_code=204)
     async def reset(body: ResetPassword, request: Request, db: AsyncSession = Depends(session)):

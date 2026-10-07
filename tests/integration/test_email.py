@@ -123,7 +123,7 @@ async def test_resend_eligibility_expiration_and_limits(client, application):
         await client.post(
             "/api/auth/register", json={"email": "over-quota@example.org", "password": PASSWORD}
         )
-    ).status_code == 503
+    ).status_code == 201
     async with application.state.factory() as db:
         assert not await db.scalar(select(User).where(User.email == "over-quota@example.org"))
 
