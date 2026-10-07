@@ -2,6 +2,8 @@
 
 An engineer reads code to understand a promise: what enters, what is allowed, what changes, what can fail and what leaves. Syntax is only part of that explanation. In this repository, start with a business question, follow the request, and inspect the boundary that makes the answer trustworthy.
 
+Use the [reader's guide](start-here.md) to check prerequisites and choose a route. This chapter teaches a reading method; [the foundations bridge](foundations.md) introduces the vocabulary needed to apply it.
+
 For example, “May this user read this conversation?” is answered by current authentication and a database ownership check. A valid JWT is one step in the answer. A hidden frontend button is not the answer. Read [token validation](../app/security.py), the `current` dependency in [routes](../app/main.py), and `owned` in [services](../app/services.py), then inspect [cross-account tests](../tests/integration/test_web_security.py).
 
 ## Where explanations belong
@@ -32,6 +34,8 @@ Comments are maintained code. When changing behavior, update the explanation in 
 
 ## Annotated reading tour
 
+The [generated excerpts](generated/code-tours.md) provide small source-derived selections beside their explanations. Use them to enter the actual functions, not to replace reading their callers and tests. Record the checkout with your evidence: an excerpt from one source revision cannot establish a later deployment's behavior.
+
 | Read | Question | Evidence |
 |---|---|---|
 | [Security](../app/security.py) | Why specify algorithm, issuer, audience and expiry? | [Unit tests](../tests/unit/test_security.py), [pilot lab](labs/01-token-boundaries.md) |
@@ -41,3 +45,11 @@ Comments are maintained code. When changing behavior, update the explanation in 
 | [Deployment wrapper](../deploy/chat-deploy) | Why might restoring an old image be unsafe after migration? | [Delivery](08-delivery.md), [recovery](10-recovery.md); setup-failure recovery remains #13 |
 
 The goal is readable production code with enough explanation to teach a decision, supported by a book that has room to discuss its history and consequences.
+
+## Worked reading question
+
+Read `decode_token` and write its contract before opening the surrounding routes: which algorithm is accepted, which issuer/audience are expected, which claims are required, and which failures become HTTP 401? Then read `current`. Its database checks answer a different question: is that signed identity still allowed now? Finally read `owned`: which actor may use this particular conversation?
+
+Now supply a counterexample to each layer alone. A signed token may be expired. A valid token may identify a revoked family. An active account may request a different account's conversation. This is why “the JWT is valid” cannot substitute for the complete request trace. [Lab 01](labs/01-token-boundaries.md) makes one counterexample executable; [Lab 04](labs/04-ownership.md) investigates the resource boundary.
+
+When commenting a change, state the reason a reviewer could otherwise miss. “Refreshes are serialized” is too broad for the current client. “One tab shares an in-flight refresh promise; cross-tab coordination remains open” identifies the actual scope and its limit. Comments should help the next engineer choose a safe change, not advertise an unproved guarantee.

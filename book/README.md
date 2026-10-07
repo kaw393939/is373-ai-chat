@@ -4,29 +4,46 @@
 
 This book studies how people build useful software that survives change. The chat application is our continuing case study: a user need becomes an interface, an authenticated request, a transaction, an external integration, a tested artifact and an operated service. Tools matter because they change that journey. We study their origins, alternatives and limitations alongside their APIs.
 
-Start with [how to read the code](00-reading-code.md), [the historical foundations](12-history.md) and [the people and ideas](13-engineering-ideas.md). Continue with [Agile and its seventeen signatories](14-agile-and-community.md), [Fielding/REST/HATEOAS and twelve-factor design](15-architecture-and-twelve-factors.md), and [human judgment, Bloom's taxonomy and AI](16-human-judgment-and-ai.md). Then follow the eleven technical chapters listed in the [repository index](../README.md#read-the-textbook). Readers who need a working installation first can start with [local development](02-local.md) and return to the historical material afterward.
+Start with [the reader's guide](start-here.md): audience, entry skills, equipment, costs, readiness and routes through the book. Use [the foundations bridge](foundations.md) to repair a specific gap before a chapter assumes it. The intended reader can already write a small program; this book develops whole-system reasoning rather than teaching programming from the first statement.
 
 The [October 6 publisher-style review](../docs/editorial/2026-10-06-publisher-review.md) assesses the manuscript's strengths, publication gaps and next revision tranche against a fixed source snapshot. Issues continue to own live progress.
 
-## Four connected parts
+## One course, four connected parts
 
-| Part | Questions | Chapters and practice |
+Follow the rows in order for the full course. File prefixes identify stable documents; they are not a second course sequence. Labs revisit earlier concepts as the learner acquires more evidence.
+
+| Part / sequence | Reading | Question or practice |
 |---|---|---|
-| Foundations | Why did these tools and practices emerge? How do we judge a design? | Reading code, history, engineering ideas, whole-system request trace |
-| Build a useful system | How do data, identity, interfaces and integrations cooperate? | Local development, migrations, authentication, streaming, email and usability |
-| Deliver and operate | How does a change reach users and survive failure? | Testing, delivery, hosting, limits, monitoring and recovery |
-| Exercise engineering judgment | What should change, what evidence is sufficient, and what is the business consequence? | Labs, issue-based capstones, tradeoff reviews and incident explanations |
+| I · Origins and ideas · 1 | [Read code as an argument](00-reading-code.md) | What claim does a function make, and where is its evidence? |
+| 2 | [Historical foundations](12-history.md) | Which persistent problems shaped this stack? |
+| 3 | [People and engineering ideas](13-engineering-ideas.md) | Which ideas clarify a design choice? |
+| 4 | [Agile and its community](14-agile-and-community.md) | How do people coordinate feedback and change? |
+| 5 | [REST/HATEOAS and twelve-factor design](15-architecture-and-twelve-factors.md) | Which constraints does the current system actually demonstrate? |
+| II · Build a useful system · 6 | [Trace the whole system](01-system.md) | Read the conceptual journey; return for Lab 02 after setup. |
+| 7 | [Local development](02-local.md) | Reproduce the controlled learning environment and execute the trace. |
+| 8 | [Data and migrations](03-data.md) | Preserve data while software changes; Lab 03. |
+| 9 | [Identity and roles](04-auth.md) | Distinguish identity, current authority and ownership; Labs 01/04. |
+| 10 | [Streaming and adapters](05-streaming.md) | Reason about incremental results, cancellation and failure. |
+| 11 | [Transactional email](11-email.md) | Connect a transaction to an external delivery system. |
+| III · Deliver and operate · 12 | [Testing with purpose](07-testing.md) | Select evidence that addresses a real failure. |
+| 13 | [Build, release and deploy](08-delivery.md) | Trace a tested artifact to a running release. |
+| 14 | [Hosting](09-hosting.md) | Explain DNS, HTTPS, configuration and installation boundaries. |
+| 15 | [Limits and monitoring](06-operations.md) | Connect resource ceilings, symptoms and user consequences. |
+| 16 | [Recovery](10-recovery.md) | Diagnose interruption and recover durable state. |
+| IV · Exercise judgment · 17 | [Human judgment and AI](16-human-judgment-and-ai.md) | Evaluate alternatives and deliver a justified capstone. |
 
-The existing technical chapters are concise foundations, not finished comprehensive chapters. Expansion must add a historical problem, a worked explanation, a concrete alternative, a linked code tour, a lab and a discussion of limits. The new foundation chapters and first lab establish that format. The lab map below identifies authored material separately from planned work; it is not a claim that every lab has been written or classroom-tested.
+This is a developing manuscript. Local development, data and identity provide expanded sample chapters; several later technical chapters remain concise foundations. Each completed chapter needs a motivating problem, historical context, a worked explanation, alternatives, a linked code tour, observable evidence and discussion of limits. Authored pages are distinct from independently validated teaching material. Consult each lab's verification statement rather than infer readiness from its place in this contents list.
+
+For an installation-first route, read [local development](02-local.md) → [whole system](01-system.md) → [identity](04-auth.md), perform Labs 02 and 01, then return to Part I. For an experienced engineer's review route, inspect the [code-reading tour](00-reading-code.md), [data](03-data.md), [identity](04-auth.md), [twelve-factor case analysis](15-architecture-and-twelve-factors.md) and [delivery](08-delivery.md). The [reader's guide](start-here.md) explains what each route assumes.
 
 ## Laboratory map
 
 | Lab | Learn by doing | Canonical lesson | Material |
 |---|---|---|---|
 | 01 | Explain and test JWT validation; distinguish identity from authority | [Identity](04-auth.md) | [Authored pilot](labs/01-token-boundaries.md); second-reader assessment pending |
-| 02 | Reproduce locally and trace a request | [Local](02-local.md), [system](01-system.md) | Planned full lab; existing chapter exercises |
-| 03 | Add a compatible database migration and review SQL | [Data](03-data.md) | Planned full lab |
-| 04 | Register two users and prove ownership/role boundaries | [Identity](04-auth.md) | Planned full lab |
+| 02 | Trace an in-process ASGI request and temporary persisted state | [System](01-system.md), [code reading](00-reading-code.md) | [Request-trace lab](labs/02-request-trace.md); no Docker/browser/proxy proof |
+| 03 | Generate an additive index migration and scoped drift check | [Data](03-data.md) | [Migration lab](labs/03-migration.md); SQLite guided fixture, PostgreSQL transfer pending |
+| 04 | Register two users and prove ownership/role boundaries | [Identity](04-auth.md) | [Ownership lab](labs/04-ownership.md); consult its verification statement |
 | 05 | Fragment a stream, cancel it and diagnose a provider failure | [Streaming](05-streaming.md) | Planned full lab |
 | 06 | Improve keyboard access and diagnose a stale UI result | [Testing](07-testing.md) | Planned full lab; implementation issues #9 and #19 |
 | 07 | Race admission requests and assess coverage evidence | [Testing](07-testing.md), [limits](06-operations.md) | Planned full lab |
@@ -47,3 +64,7 @@ Assess explanation, reproduction, diagnosis, change and evidence. A learner shou
 Historical dates and attributed ideas link primary publications, author accounts or official project histories beside the claim. Separate an author's contribution from our application of it. Avoid claims that one person invented a whole practice, that every team used one earlier approach, or that newer technology eliminates older choices. This book paraphrases and links original work; it does not reproduce copyrighted books.
 
 Durable educational scope lives here and in [REQ-LEARNING](../docs/project/baseline.md#req-learning). [Book/course #26](https://github.com/kaw393939/is373-ai-chat/issues/26) owns expansion acceptance; [teaching-evidence audit #23](https://github.com/kaw393939/is373-ai-chat/issues/23) owns claim corrections and independent reader assessment. Issues own detailed acceptance and live progress; chapters link source and evidence. Commands are reviewed against the current repository and labeled when operational or second-reader verification is still pending.
+
+## Reference and teaching material
+
+Use the [glossary](glossary.md) for vocabulary, [source ledger](references.md) for attribution, [generated code tours](generated/code-tours.md) for small excerpts and the [instructor guide](instructor/README.md) for assessment. [Edition records](edition.md) identify the manuscript/source relationship. [Publication guidance](publication.md) explains the book build, licenses and release checks. A successful site build is a presentation check; it is not independent learner validation.
