@@ -14,7 +14,9 @@ Use this edition's case: **partial provider text followed by unexplained EOF mus
 uv run python book/labs/fixtures.py stream
 ```
 
-Expected: the fixture demonstrates the normalized delta-only EOF gap and the Unicode boundary. Inspect `generate` to explain how the application currently derives its durable terminal state. If a later edition repairs the adapter, use the fixed delta-only fake to exercise the same contract; record the baseline instead of hunting a new live production defect.
+Expected on current `main`: premature EOF is rejected, and the Unicode boundary is demonstrated. Inspect `generate` and the typed provider events to explain the durable terminal state. Issue #12 has been repaired in this development revision.
+
+For the repair exercise, use historical commit [`ece094a2428aa322eeaa5bd81aa1cba17ed4af40`](https://github.com/kaw393939/is373-ai-chat/tree/ece094a2428aa322eeaa5bd81aa1cba17ed4af40), the recorded `book-v0.2.0` baseline, in a clean private learner fork/branch. Preserve existing work first; do not change a deployed checkout. That baseline includes disposable target guards and the original delta-only EOF fault. Compare the historical consumer with the current implementation after defending your own design. Record the exact baseline commit in your evidence instead of seeking a new production defect.
 
 ## Proposal, implementation and evidence
 
@@ -38,4 +40,4 @@ An alternative capstone may improve ownership membership, migration compatibilit
 
 ## Troubleshooting, cleanup and status
 
-If the new assertion passes before the repair, verify that it actually exercises the fault. If unrelated tests fail, classify regression versus unavailable prerequisites before excluding them. Keep private commits/evidence; remove only disposable services created by prior labs. This capstone is an authored assessment design. It is not a claim that the EOF issue is repaired, every learner finishes it, or the textbook has passed an independent human pilot.
+If the new assertion passes before the repair, verify your historical baseline and that the assertion exercises the fault. If unrelated tests fail, classify regression versus unavailable prerequisites before excluding them. Keep private commits/evidence; remove only disposable services created by prior labs. This capstone is an authored assessment design; the current implementation's repair is separately tested. Learner completion and an independent human pilot remain unverified.

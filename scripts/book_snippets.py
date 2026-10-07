@@ -29,7 +29,7 @@ TOURS = [
         "Streaming persistence",
         "app/services.py",
         "generate",
-        "Follow provider events and durable state. EOF without a terminal event remains issue #12, not a demonstrated complete contract.",
+        "Follow typed provider events and durable state. A run defaults to failed until an explicit terminal event supplies its outcome; unexplained EOF preserves partial text and cannot certify completion (issue #12).",
     ),
     (
         "Database lifetime",

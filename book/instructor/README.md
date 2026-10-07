@@ -35,7 +35,7 @@ Each row supplies an observable assessment, not a claim that naming a verb estab
 | 02 Local | Reproduction record and origin/config explanation; apply | Uses owned setup, records source/tools, explains a rejected origin |
 | 03 Data | Generated migration and compatibility matrix; apply/evaluate | Identifies additive change, drift and scoped SQLite evidence |
 | 04 Identity | Caller/action matrix and counterexample; analyze | Separates authentication, role and ownership |
-| 05 Streaming | Terminal-contract table and fragmented frame; analyze/evaluate | Distinguishes bytes, frames, terminal state and current EOF gap |
+| 05 Streaming | Terminal-contract table and fragmented frame; analyze/evaluate | Distinguishes bytes, frames and explicit terminal state; explains the historical EOF defect and its repair |
 | 06 Operations | Limits/usage/reservation comparison; analyze | Distinguishes cap from guaranteed capacity and units from dollars |
 | 07 Testing | Negative assertion plus coverage counterexample; evaluate | Demonstrates why passing coverage can miss a defect |
 | 08 Delivery | SHA→tested artifact→digest→deployment ledger; analyze | Marks each observed/inferred/unavailable link accurately |

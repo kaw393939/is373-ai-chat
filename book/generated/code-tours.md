@@ -29,7 +29,7 @@ def decode_token(token, config):
 
 The lookup includes both resource ID and owner ID. A valid token alone does not grant ownership.
 
-Source: [app/services.py::owned, line 107](../../app/services.py#L107).
+Source: [app/services.py::owned, line 104](../../app/services.py#L104).
 
 ```python
 async def owned(session, conversation_id, user_id):
@@ -37,7 +37,7 @@ async def owned(session, conversation_id, user_id):
     # an unrelated account which conversation identifiers exist.
     item = await session.get(Conversation, conversation_id, with_for_update=True)
     if not item or item.user_id != user_id:
-        raise HTTPException(404, "Conversation not found")
+        raise DomainError(Failure.MISSING, "Conversation not found")
     return item
 ```
 
@@ -45,14 +45,14 @@ async def owned(session, conversation_id, user_id):
 
 Follow the family row lock, used-token detection and replacement commit in time order.
 
-Source: [app/services.py::rotate, line 69](../../app/services.py#L69).
+Source: [app/services.py::rotate, line 57](../../app/services.py#L57).
 
 ```python
 async def rotate(session, value, config):
     # Family lock serializes rotation and reuse detection across workers.
     token = await session.get(Refresh, digest(value))
     if not token:
-        raise HTTPException(401, "Invalid refresh session")
+        raise DomainError(Failure.UNAUTHENTICATED, "Invalid refresh session")
     family = (
         await session.scalars(select(Family).where(Family.id == token.family_id).with_for_update())
     ).one()
@@ -60,7 +60,7 @@ async def rotate(session, value, config):
     if token.used:
         family.revoked = True
         await session.commit()
-        raise HTTPException(401, "Refresh reuse detected; sign in again")
+        raise DomainError(Failure.UNAUTHENTICATED, "Refresh reuse detected; sign in again")
     user = await session.get(User, family.user_id)
     if (
         family.revoked
@@ -68,8 +68,9 @@ async def rotate(session, value, config):
         or not user.active
         or not user.approved
         or not user.email_verified
+        or (requires_mfa(user, config) and not family.mfa_verified)
     ):
-        raise HTTPException(401, "Session revoked or expired")
+        raise DomainError(Failure.UNAUTHENTICATED, "Session revoked or expired")
     token.used = True
     fresh = secret_token()
     session.add(Refresh(digest=digest(fresh), family_id=family.id))
@@ -79,35 +80,44 @@ async def rotate(session, value, config):
 
 ## Streaming persistence
 
-Follow provider events and durable state. EOF without a terminal event remains issue #12, not a demonstrated complete contract.
+Follow typed provider events and durable state. A run defaults to failed until an explicit terminal event supplies its outcome; unexplained EOF preserves partial text and cannot certify completion (issue #12).
 
-Source: [app/services.py::generate, line 209](../../app/services.py#L209).
+Source: [app/services.py::generate, line 223](../../app/services.py#L223).
 
 ```python
 async def generate(factory, provider, run, messages, max_output):
-    content, status, tokens = "", "complete", None
-    yield event("started", {"run_id": run.id, "message_id": run.message_id})
+    content, status, tokens = "", GenerationState.FAILED, None
+    ended = False
+    yield Started(run.id, run.message_id)
     try:
         async with asyncio.timeout(120):
             async for chunk in provider.stream(messages, max_output):
                 async with factory() as session:
                     current = await session.get(Generation, run.id)
                     if current.cancel_requested:
-                        status = "cancelled"
+                        status = GenerationState.CANCELLED
                         break
-                if "text" in chunk:
-                    content += chunk["text"]
+                if ended:
+                    raise RuntimeError("Provider emitted output after completion")
+                if isinstance(chunk, TextDelta):
+                    content += chunk.text
                     if len(content.encode()) > max_output * 16:  # Adapter output safety ceiling.
                         raise RuntimeError("Provider output exceeded safety ceiling")
-                    yield event("delta", {"text": chunk["text"]})
-                if "tokens" in chunk:
-                    tokens = chunk["tokens"]
+                    yield Delta(chunk.text)
+                elif isinstance(chunk, TokenUsage):
+                    tokens = chunk.tokens
+                elif isinstance(chunk, StreamEnd):
+                    status, ended = provider_outcome(chunk.status), True
+                else:
+                    raise RuntimeError("Provider emitted an invalid event")
+            if not ended and status != GenerationState.CANCELLED:
+                raise RuntimeError("Provider stream ended without completion")
     except asyncio.CancelledError:  # pragma: no cover - ASGI disconnect exercised in browser tests
-        status = "cancelled"
+        status = GenerationState.CANCELLED
         raise
     except Exception:
-        status = "failed"
-        yield event("error", {"message": "Provider unavailable. Your conversation was saved."})
+        status = GenerationState.FAILED
+        yield Error("Provider unavailable. Your conversation was saved.")
     finally:
         # Starlette cancels response tasks on disconnect. Shield durable cleanup.
         with anyio.CancelScope(shield=True):
@@ -121,7 +131,7 @@ async def generate(factory, provider, run, messages, max_output):
                     .values(status=status, actual_tokens=tokens)
                 )
                 await session.commit()
-    yield event("completed", {"status": status, "tokens": tokens})
+    yield Completed(status, tokens)
 ```
 
 ## Database lifetime
