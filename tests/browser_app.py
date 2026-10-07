@@ -26,6 +26,8 @@ def create_app():
         jwt_secret="synthetic-browser-lab-secret-with-no-production-authority",
         provider="mock",
         email_provider="disabled",
+        # Public synthetic fixture value; no enrolled production factor uses it.
+        mfa_encryption_key="c3ludGhldGljLWJyb3dzZXItbGFiLWtleS1vbmx5ISE=",
         static_dir=os.environ.get("E2E_STATIC_DIR", "frontend/dist"),
         commit_sha=os.environ.get("E2E_COMMIT_SHA", "browser-lab"),
     )
