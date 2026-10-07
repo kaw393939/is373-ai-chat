@@ -49,6 +49,8 @@ Resolve the time-critical credential dependency and real email access first. In 
 
 The owner's subsequent textbook expansion is tracked in [#26](https://github.com/kaw393939/is373-ai-chat/issues/26), with the canonical [book/lab map](../../book/README.md). The initial ordering above remains historical; GitHub owns its current priority and progress.
 
+The retention/export decision led to a separate [account-erasure follow-up, #27](https://github.com/kaw393939/is373-ai-chat/issues/27). The delivered export path does not imply account erasure; its authority checks, deletion scope and backup exceptions remain explicit work in that issue.
+
 Existing released behavior is recorded in [implementation evidence](../implementation-evidence.md), not recreated as falsely completed issues. Refactoring suggestions remain proposals until tests demonstrate behavior. Advanced attachments/RAG/tools/voice/billing remain discovery scope in the [baseline](baseline.md#scope-boundaries).
 
 This planning setup is tracked by [#1](https://github.com/kaw393939/is373-ai-chat/issues/1). Its completion establishes the backlog, not completion of the application work above.
