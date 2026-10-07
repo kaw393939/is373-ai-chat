@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
     branches: [main]
+    paths: ['app/**', 'frontend/**', 'tests/**', 'deploy/**', 'migrations/**', 'scripts/run-browser-lab.py', 'scripts/install-trivy.sh', 'pyproject.toml', 'uv.lock', 'Dockerfile', '.dockerignore', 'compose.yaml', 'alembic.ini', '.github/workflows/delivery.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -54,7 +55,7 @@ jobs:
           E2E_URL: http://127.0.0.1:9001
         run: |
           export E2E_TARGET_TOKEN=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
-          docker run -d --name browser-app --network host --user 10001:10001 --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 512m --tmpfs /tmp:size=64m -v "$PWD/tests:/lab/tests:ro" -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e TEST_ALLOW_RESET=browser_test -e E2E_TARGET_TOKEN -e E2E_URL -e E2E_STATIC_DIR=/app/frontend/dist -e E2E_COMMIT_SHA="$GITHUB_SHA" chat:ci uvicorn tests.browser_app:create_app --app-dir /lab --factory --host 127.0.0.1 --port 9001
+          docker run -d --name browser-app --network host --user 10001:10001 --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 512m --tmpfs /tmp:size=64m -v "$PWD/tests:/app/tests:ro" -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e TEST_ALLOW_RESET=browser_test -e E2E_TARGET_TOKEN -e E2E_URL -e E2E_STATIC_DIR=/app/frontend/dist -e E2E_COMMIT_SHA="$GITHUB_SHA" chat:ci uvicorn tests.browser_app:create_app --app-dir /app --factory --host 127.0.0.1 --port 9001
           for attempt in $(seq 1 30); do curl -fsS "$E2E_URL/api/health" && break || sleep 2; done
           uv run playwright install --with-deps chromium
           uv run pytest tests/e2e -v
