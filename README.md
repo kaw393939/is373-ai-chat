@@ -24,16 +24,18 @@ docker compose up -d --wait app
 
 Open [localhost:8000](http://localhost:8000). The admin command prompts for a password; no default admin is installed. Registration requires admin approval. The mock provider makes the whole workflow usable without a paid API key.
 
+To exercise authenticator enrollment, generate a separate Fernet key using the command documented in `.env.example`, save it privately as `MFA_ENCRYPTION_KEY`, and restart the app. Use distinct mail/factor keys. Keep `ADMIN_MFA_REQUIRED=false` until the matching UI/migration, owner enrollment and recovery custody are verified; enrolled accounts always require their factor. [Identity and MFA](book/04-auth.md#mfa-adds-an-assurance-boundary) explains the challenge/session boundary. Changing the local PostgreSQL password also requires updating `DATABASE_URL` for source development.
+
 For source development, `uv sync --frozen`, `npm --prefix frontend ci`, `npm --prefix frontend run build`, then `make migrate`, `make seed`, and `make dev`. PostgreSQL runs in Compose; DATABASE_URL in local .env points to its loopback port. Run `npm --prefix frontend run dev` for frontend reload; its proxy keeps API requests on the same browser origin. Set BASE_URL=http://localhost:5173 for that frontend workflow.
 
 ## What is included
 
-- Registration, admin approval, login/logout, short-lived JWT access, rotating refresh sessions with reuse detection, password change/recovery, role checks and session revocation.
-- Owned conversation history, search by title, rename/delete, streamed replies, stop/retry, safe text/code rendering, and interchangeable mock/OpenAI/OpenAI-compatible adapters.
+- Registration, admin approval, login/logout, short-lived JWT access, rotating refresh sessions with cross-tab coordination/reuse detection, password change/recovery, optional authenticator/recovery codes, role checks and session revocation.
+- Owned paginated conversation history/messages, server search by title, rename/delete, bounded JSON export, streamed replies, stop/retry, safe text/code rendering, and interchangeable mock/OpenAI/OpenAI-compatible adapters.
 - Role budgets and user overrides, atomic admission limits, conservative daily reservations, model enable/disable controls and an administrative audit trail.
 - An admin resource dashboard fed by a separate host collector; container CPU/memory/process/log limits; no Docker socket in the app.
 - Reviewed migrations, unit/integration tests, Python Playwright journeys, measured 100% Python `app` line/branch coverage with documented exclusions (frontend and host scripts are outside the metric), image vulnerability gate, SBOM, digest deployment and public release verification.
-- Protected production configuration, a restricted deployment key, pre-deploy/daily PostgreSQL dumps, and explicit recovery rules.
+- Protected runtime configuration, separate environment deployment keys, tested-image dev/QA acceptance and explicit production promotion, encrypted daily/off-host backups, private pre-deploy snapshots, and explicit recovery rules.
 
 ## Read the textbook
 
