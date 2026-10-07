@@ -1,0 +1,340 @@
+{
+  "run_id": "37556269023",
+  "url": "https://github.com/kaw393939/is373-ai-chat/actions/runs/37556269023",
+  "status": "completed",
+  "conclusion": "success",
+  "candidate": {
+    "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+    "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+    "version": "2.0.0",
+    "run_id": "37556269023",
+    "qa_run": "https://github.com/kaw393939/is373-ai-chat/actions/runs/37556269023"
+  },
+  "qa_attestation": {
+    "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+    "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+    "version": "2.0.0",
+    "status": "accepted",
+    "schema": "0003",
+    "run_id": "37556269023",
+    "accepted_at": 1791336511.492973
+  },
+  "public_preview_health": {
+    "dev": {
+      "status": "ok",
+      "version": "2.0.0",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "schema": "0003",
+      "provider": "mock"
+    },
+    "qa": {
+      "status": "ok",
+      "version": "2.0.0",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "schema": "0003",
+      "provider": "mock"
+    }
+  },
+  "qa_checks": [
+    "https",
+    "commit/version/schema",
+    "mock provider",
+    "mail disabled",
+    "ordinary login",
+    "browser stream",
+    "persisted history",
+    "refresh after reload",
+    "logout"
+  ],
+  "book_guard": {
+    "status": "published",
+    "tag": "book-v0.3.0",
+    "release_id": 405271339,
+    "immutable": true,
+    "source_target": "d9439dd4ccadad706d34ec8de5c2f205baec2d05",
+    "assets": [
+      {
+        "name": "book-build.json",
+        "size": 338,
+        "digest": "sha256:8439fba378c2f4cc7f3fef23083d4e19ee74d2636b20e3ba4d38029869d0fffb"
+      },
+      {
+        "name": "from-request-to-release-v0.3.0.zip",
+        "size": 685530,
+        "digest": "sha256:b2cfffe2d52347ccdd9289d772073fe1c8947893d2a01ebf942c4f2301dfe7b0"
+      },
+      {
+        "name": "from-request-to-release-v0.3.0.zip.sha256",
+        "size": 101,
+        "digest": "sha256:647626567c775477beabf2d85b897f5f86c248ced2db751d590ad4518e634a1e"
+      }
+    ]
+  },
+  "process": {
+    "status": "passed",
+    "mode": "exact-image",
+    "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+    "version": "2.0.0",
+    "image": "sha256:9914255ead0b853043e2f76ea877537fe84fe22cddd62905f18b4ffa5e90d948",
+    "checks": [
+      {
+        "case": "global race across two replicas",
+        "accepted": 2,
+        "refused": 1
+      },
+      {
+        "case": "user race across two replicas",
+        "accepted": 1,
+        "refused": 1
+      },
+      {
+        "case": "conversation/replay races",
+        "conversation_refusal": 429,
+        "replay_refusal": 409
+      },
+      {
+        "case": "SIGTERM active stream",
+        "seconds": 10.788,
+        "terminal": "cancelled",
+        "partial_characters": 58,
+        "active_after": 0
+      },
+      {
+        "case": "KILL lease recovery",
+        "lease_seconds": 149.999,
+        "reclaimed_after_expiry_seconds": 0.561,
+        "terminal": "interrupted",
+        "surviving_partial_characters": 0,
+        "prompt_and_reservation_survived": true
+      },
+      {
+        "case": "mail accepted-before-commit KILL/restart",
+        "provider_attempts": 2,
+        "accepted_deliveries": 1,
+        "outbox": "sent",
+        "payload_erased": true
+      }
+    ],
+    "scope": "all",
+    "phase": "mail",
+    "separate_os_processes": true
+  },
+  "test_summaries": [
+    "99 passed in 0.60s",
+    "164 passed in 56.66s",
+    "11 passed in 69.30s (0:01:09)"
+  ],
+  "node_summaries": [
+    "tests 12",
+    "pass 12",
+    "fail 0"
+  ],
+  "coverage": {
+    "line-rate": "1",
+    "branch-rate": "1",
+    "lines-valid": "1289",
+    "branches-valid": "278"
+  },
+  "scan": {
+    "fixable_high_critical_pairs": 0,
+    "unfixed_high_critical_pairs": 44,
+    "unfixed_ids": [
+      "CVE-2025-69720",
+      "CVE-2026-16742",
+      "CVE-2026-54369",
+      "CVE-2026-76642",
+      "CVE-2026-78408",
+      "CVE-2026-78409",
+      "CVE-2026-78410",
+      "CVE-2026-9538"
+    ]
+  },
+  "production": {
+    "run_id": "37557347918",
+    "url": "https://github.com/kaw393939/is373-ai-chat/actions/runs/37557347918",
+    "status": "completed",
+    "conclusion": "success",
+    "deployed": {
+      "status": "deployed",
+      "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "version": "2.0.0",
+      "environment": "production",
+      "run_id": "37556269023",
+      "schema": "0003",
+      "previous_schema": "0002",
+      "backup": "20261007T013002Z.dump",
+      "recovery": "previous image only when schema unchanged; otherwise operator restore",
+      "deployed_at": 1791336652.199291
+    },
+    "public_health": {
+      "status": "ok",
+      "version": "2.0.0",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "schema": "0003",
+      "provider": "openai"
+    },
+    "release": {
+      "id": 405281272,
+      "tag": "v2.0.0",
+      "url": "https://github.com/kaw393939/is373-ai-chat/releases/tag/v2.0.0",
+      "immutable": true,
+      "source_commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "published_at": "2026-10-07T01:30:56Z",
+      "verified_asset_hashes": [
+        {
+          "name": "atomic-commits.json",
+          "size": 21939,
+          "digest": "sha256:ab5974ba1c6dedd825b40a8a34ec46367750c2077aa512c3baca26e95d629e53"
+        },
+        {
+          "name": "candidate.json",
+          "size": 309,
+          "digest": "sha256:187ab75ff9412b9426eac6ad306ab0d6f3490e176b042eb87c53a27137d8966b"
+        },
+        {
+          "name": "coverage.xml",
+          "size": 55861,
+          "digest": "sha256:c714902a8f0b3c0e822c6c254578d40fd4377e5703a0118ad6b12404da0b6d1b"
+        },
+        {
+          "name": "process.json",
+          "size": 1222,
+          "digest": "sha256:cd155727fbe71e1ffb9f7c6014e2988bb2611186c7cbd20a9a713b6659efce36"
+        },
+        {
+          "name": "production-health.json",
+          "size": 121,
+          "digest": "sha256:40eced41afc47462fa7196cd1471d85d053fcbf5ebb6f22b6e4b413ee77a73cc"
+        },
+        {
+          "name": "production.json",
+          "size": 466,
+          "digest": "sha256:03104786686d433841ea3df8c86be754f94f98a664360aa9e5f1827b05d36ccc"
+        },
+        {
+          "name": "qa-attestation.json",
+          "size": 290,
+          "digest": "sha256:8e22e83d8ce49f4afdce6db08a395cef4601c8b9cf319bfd67786d3f0e4fbdde"
+        },
+        {
+          "name": "qa-deployment.json",
+          "size": 450,
+          "digest": "sha256:db5003b2e1645526ff613cd4496d5869e4458baf8fd3afe7a7c76fd724ad7eb0"
+        },
+        {
+          "name": "qa-smoke.json",
+          "size": 416,
+          "digest": "sha256:0c9a6220819cc60554e9861ce72ce72bbe2d7c7d08ef5abc652c7f58deb3bfd9"
+        },
+        {
+          "name": "sbom.json",
+          "size": 214282,
+          "digest": "sha256:b93599c58378abb26e3d347ecad74c6de41eab21db1aa73b5c003e3496778ed6"
+        },
+        {
+          "name": "vulnerabilities.json",
+          "size": 832475,
+          "digest": "sha256:1effaeb5621f2f11a99b86ccf00f3931b7be5786793d200cca2cbffbae9dbf44"
+        }
+      ]
+    },
+    "approval": {
+      "description": "Assistant delegated owner approval under standing deployment authorization; not independent human review",
+      "principal": "kaw393939",
+      "review_history": [
+        {
+          "state": "approved",
+          "user": "kaw393939",
+          "environments": [
+            "production"
+          ]
+        }
+      ],
+      "protections": {
+        "required_reviewer": "kaw393939",
+        "can_admins_bypass": false,
+        "prevent_self_review": false,
+        "deployment_branch": "main"
+      }
+    },
+    "book_release": {
+      "tag": "book-v0.3.0",
+      "url": "https://github.com/kaw393939/is373-ai-chat/releases/tag/book-v0.3.0",
+      "immutable": true,
+      "source_commit": "d9439dd4ccadad706d34ec8de5c2f205baec2d05"
+    },
+    "native_qa": {
+      "observer": "Root assistant using native Chrome, authorized by owner",
+      "observed_at_utc": "2026-10-07T01:29:00Z/2026-10-07T01:31:00Z",
+      "environment": "qa",
+      "checks": [
+        "existing ordinary login",
+        "mock completion",
+        "history after reload",
+        "selected saved response",
+        "logout",
+        "seven footer links"
+      ],
+      "screenshots_retained_privately": true
+    },
+    "limits": [
+      "44 unfixed HIGH package/CVE pairs across eight IDs remain reported",
+      "Coverage applies to the Python app and configured exclusions, not the host/frontend",
+      "Process KILL retained zero partial text; leases reclaim lazily",
+      "Delegated approval is not independent human review",
+      "Native QA uses mock provider; production exercised one brief real provider response. Provider breadth, load and mailbox delivery are not established by these bounded checks"
+    ],
+    "native_production": {
+      "observer": "Root assistant using native Chrome under owner authorization",
+      "observed_after": "v2.0.0 deployment",
+      "environment": "production",
+      "checks": [
+        "existing administrator sign-in",
+        "one brief real gpt-4.1-mini streamed response",
+        "saved response selected after reload",
+        "administrator accounts loaded: 2",
+        "role budgets visible",
+        "CPU/memory/disk and all three app/database resource limits visible",
+        "local and off-host backup freshness both ok",
+        "account export/password/MFA setup controls visible",
+        "logout"
+      ],
+      "not_executed": [
+        "password change",
+        "MFA factor enrollment",
+        "pending-email or mailbox delivery validation"
+      ],
+      "screenshots_retained_privately": true
+    }
+  },
+  "recorded_at_utc": "2026-10-07T01:32:53Z",
+  "preview_deployment_records": {
+    "dev": {
+      "status": "deployed",
+      "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "version": "2.0.0",
+      "environment": "dev",
+      "run_id": null,
+      "schema": "0003",
+      "previous_schema": "0002",
+      "backup": "20261007T012418Z.dump",
+      "recovery": "previous image only when schema unchanged; otherwise operator restore",
+      "deployed_at": 1791336351.5569475
+    },
+    "qa": {
+      "status": "deployed",
+      "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+      "commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+      "version": "2.0.0",
+      "environment": "qa",
+      "run_id": null,
+      "schema": "0003",
+      "previous_schema": "0002",
+      "backup": "20261007T012612Z.dump",
+      "recovery": "previous image only when schema unchanged; otherwise operator restore",
+      "deployed_at": 1791336464.0469077
+    }
+  }
+}
