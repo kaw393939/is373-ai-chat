@@ -29,7 +29,7 @@ Adopt MAJOR.MINOR.PATCH for the supported contracts below: breaking change / com
 
 | Contract | Supported boundary | Compatibility rule |
 |---|---|---|
-| HTTP API | Documented `/api` routes, authorization/status semantics, JSON field meanings, SSE `started`/`delta`/`error`/`done` events | Additive optional fields and opt-in pagination are compatible; mandatory new login challenges, removals or changed meanings require a major version |
+| HTTP API | Documented `/api` routes, authorization/status semantics, JSON field meanings, SSE `started`/`delta`/`error`/`completed` events | Additive optional fields and opt-in pagination are compatible; mandatory new login challenges, removals or changed meanings require a major version |
 | Operator CLI | Documented `python -m app.cli` subcommands/options and exit success/failure | Removing an option, changing a required input or reversing an operation's meaning breaks the contract; human-readable prose is not a parsing API |
 | Runtime configuration | Names, validation and semantics documented in environment examples/runbooks | Existing valid production configuration must remain valid for a compatible release; a required new setting or changed security policy requires explicit migration |
 | Provider extension | The typed provider protocol and documented token/terminal/cancellation semantics | A replacement adapter must honor the contract; adding a required method or changing stream event meaning breaks extension compatibility |
