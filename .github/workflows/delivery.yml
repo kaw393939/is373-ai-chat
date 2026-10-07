@@ -121,6 +121,12 @@ jobs:
           docker push "$image"
           digest=$(docker image inspect "$image" --format '{{index .RepoDigests 0}}' | cut -d@ -f2)
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
+          python3 deploy/ci_release.py candidate "$digest"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+        with:
+          name: published-candidate
+          path: candidate.json
+          retention-days: 90
   development:
     name: Development preview
     needs: publish

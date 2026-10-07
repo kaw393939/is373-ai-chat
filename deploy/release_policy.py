@@ -4,11 +4,15 @@ Values travel as data, never shell programs. GitHub is checked independently of
 the caller's assertions; the root-owned QA record binds that evidence to bytes.
 """
 
+import hashlib
+import io
 import json
 import re
 import urllib.error
 import urllib.request
+import zipfile
 from pathlib import Path
+from urllib.parse import urlsplit
 
 REPOSITORY = "kaw393939/is373-ai-chat"
 IMAGE = "ghcr.io/" + REPOSITORY
@@ -75,6 +79,69 @@ class GitHub:
                 return None
             raise RuntimeError("GitHub authorization/evidence request failed") from None
 
+    def archive(self, identifier):
+        """GitHub's signed HTTPS artifact URL must not receive the bearer header."""
+
+        class NoRedirect(urllib.request.HTTPRedirectHandler):
+            def redirect_request(self, request, file, code, message, headers, newurl):
+                return None
+
+        opener = urllib.request.build_opener(NoRedirect)
+        request = urllib.request.Request(
+            "https://api.github.com/repos/"
+            + REPOSITORY
+            + "/actions/artifacts/"
+            + run_id(identifier)
+            + "/zip",
+            headers={
+                "Authorization": "Bearer " + self.token,
+                "Accept": "application/vnd.github+json",
+            },
+        )
+        try:
+            try:
+                response = opener.open(request, timeout=20)
+            except urllib.error.HTTPError as redirect:
+                if redirect.code != 302:
+                    raise
+                location = redirect.headers["Location"]
+                url = urlsplit(location)
+                if url.scheme != "https" or not url.hostname or url.username or url.password:
+                    raise ValueError("Unsafe artifact redirect")
+                # Fresh request, no Authorization, and no additional redirects.
+                response = opener.open(urllib.request.Request(location), timeout=20)
+            with response:
+                data = response.read(1048577)
+            if len(data) > 1048576:
+                raise ValueError("Candidate archive is unexpectedly large")
+            return data
+        except Exception:
+            raise RuntimeError("Candidate provenance download failed") from None
+
+    def candidate(self, number):
+        records = self.get("/actions/runs/" + run_id(number) + "/artifacts?per_page=100")[
+            "artifacts"
+        ]
+        records = [
+            item
+            for item in records
+            if item["name"] == "published-candidate" and not item["expired"]
+        ]
+        if len(records) != 1:
+            raise ValueError("Published immutable candidate evidence is absent or ambiguous")
+        item = records[0]
+        data = self.archive(item["id"])
+        if (
+            len(data) > 1048576
+            or item.get("digest") != "sha256:" + hashlib.sha256(data).hexdigest()
+        ):
+            raise ValueError("Published candidate archive digest mismatch")
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            entry = archive.getinfo("candidate.json")
+            if entry.file_size > 65536:
+                raise ValueError("Candidate record is unexpectedly large")
+            return json.loads(archive.read(entry))
+
 
 def verify_run(api, number, expected, finished=True):
     """A successful run from this exact main workflow is necessary for promotion."""
@@ -96,6 +163,9 @@ def verify_run(api, number, expected, finished=True):
         or accepted[0]["conclusion"] != "success"
     ):
         raise ValueError("QA migration/browser/smoke job did not succeed")
+    published = api.candidate(number)
+    if not matches(published, expected) or published.get("run_id") != number:
+        raise ValueError("Digest/version did not belong to the tested published candidate")
     return run
 
 

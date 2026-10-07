@@ -1,6 +1,10 @@
 """A runner token or a stale QA result cannot authorize arbitrary production bits."""
 
+import hashlib
+import io
 import json
+import urllib.error
+import zipfile
 
 import pytest
 
@@ -30,6 +34,9 @@ class GitHub:
             "status": "completed",
             "conclusion": self.conclusion,
         }
+
+    def candidate(self, number):
+        return {**IDENTITY, "run_id": number}
 
 
 @pytest.fixture
@@ -75,6 +82,65 @@ def test_stale_qa_digest_and_reused_version_are_refused(qa):
     )
     with pytest.raises(ValueError, match="stale"):
         policy.promotion(GitHub(), "42", IDENTITY, qa, {})
+
+
+def test_spoofed_image_labels_cannot_borrow_a_successful_run(qa):
+    forged = {**IDENTITY, "image": policy.IMAGE + "@sha256:" + "c" * 64}
+    with pytest.raises(ValueError, match="tested published"):
+        policy.verify_run(GitHub(), "42", forged)
+
+
+def test_published_manifest_hash_is_checked_before_use(monkeypatch):
+    output = io.BytesIO()
+    with zipfile.ZipFile(output, "w") as archive:
+        archive.writestr("candidate.json", json.dumps({**IDENTITY, "run_id": "42"}))
+    data = output.getvalue()
+    api = policy.GitHub("synthetic-fixture-token")
+    metadata = {
+        "artifacts": [
+            {
+                "id": 9,
+                "name": "published-candidate",
+                "expired": False,
+                "digest": "sha256:" + hashlib.sha256(data).hexdigest(),
+            }
+        ]
+    }
+    monkeypatch.setattr(api, "get", lambda _: metadata)
+    monkeypatch.setattr(api, "archive", lambda _: data)
+    assert api.candidate("42")["image"] == IDENTITY["image"]
+    metadata["artifacts"][0]["digest"] = "sha256:" + "0" * 64
+    with pytest.raises(ValueError, match="digest mismatch"):
+        api.candidate("42")
+
+
+def test_expired_or_missing_candidate_is_not_acceptance(monkeypatch):
+    api = policy.GitHub("synthetic-fixture-token")
+    monkeypatch.setattr(api, "get", lambda _: {"artifacts": []})
+    with pytest.raises(ValueError, match="absent"):
+        api.candidate("42")
+
+
+def test_signed_artifact_redirect_does_not_forward_bearer(monkeypatch):
+    requests = []
+
+    class Opener:
+        def open(self, request, **kwargs):
+            requests.append(request)
+            if len(requests) == 1:
+                raise urllib.error.HTTPError(
+                    request.full_url,
+                    302,
+                    "Found",
+                    {"Location": "https://storage.example.org/signed-fixture"},
+                    None,
+                )
+            return io.BytesIO(b"synthetic archive")
+
+    monkeypatch.setattr(policy.urllib.request, "build_opener", lambda _: Opener())
+    assert policy.GitHub("synthetic-token").archive("9") == b"synthetic archive"
+    assert requests[0].get_header("Authorization") == "Bearer synthetic-token"
+    assert requests[1].get_header("Authorization") is None
 
 
 @pytest.mark.parametrize("value", ["0", "-1", "42/../secrets", "42\n", "1" * 21])
