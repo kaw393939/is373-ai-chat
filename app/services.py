@@ -22,6 +22,7 @@ from app.models import (
     User,
     now,
 )
+from app.providers import StreamEnd, TextDelta, TokenUsage
 from app.security import access_token, digest, secret_token
 
 
@@ -207,7 +208,8 @@ def event(kind, data):
 
 
 async def generate(factory, provider, run, messages, max_output):
-    content, status, tokens = "", "complete", None
+    content, status, tokens = "", "failed", None
+    ended = False
     yield event("started", {"run_id": run.id, "message_id": run.message_id})
     try:
         async with asyncio.timeout(120):
@@ -217,13 +219,21 @@ async def generate(factory, provider, run, messages, max_output):
                     if current.cancel_requested:
                         status = "cancelled"
                         break
-                if "text" in chunk:
-                    content += chunk["text"]
+                if ended:
+                    raise RuntimeError("Provider emitted output after completion")
+                if isinstance(chunk, TextDelta):
+                    content += chunk.text
                     if len(content.encode()) > max_output * 16:  # Adapter output safety ceiling.
                         raise RuntimeError("Provider output exceeded safety ceiling")
-                    yield event("delta", {"text": chunk["text"]})
-                if "tokens" in chunk:
-                    tokens = chunk["tokens"]
+                    yield event("delta", {"text": chunk.text})
+                elif isinstance(chunk, TokenUsage):
+                    tokens = chunk.tokens
+                elif isinstance(chunk, StreamEnd):
+                    status, ended = chunk.status, True
+                else:
+                    raise RuntimeError("Provider emitted an invalid event")
+            if not ended and status != "cancelled":
+                raise RuntimeError("Provider stream ended without completion")
     except asyncio.CancelledError:  # pragma: no cover - ASGI disconnect exercised in browser tests
         status = "cancelled"
         raise

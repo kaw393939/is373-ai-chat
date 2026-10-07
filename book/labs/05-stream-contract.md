@@ -18,16 +18,16 @@ env -u TEST_DATABASE_URL -u DATABASE_URL uv run pytest -q tests/unit/test_provid
 Expected fixture output:
 
 ```text
-Observed gap: premature EOF produces text without a terminal usage event
+Expected: premature EOF rejected without a terminal event
 Expected: decoding each network chunk independently fails
 Expected: incremental decoder retains the complete Unicode frame
 ```
 
-The selected tests pass for explicit provider failures and normalization. They do not prove a terminal-event contract for unexplained EOF. The fixture deliberately splits the UTF-8 `é` between bytes: decoding each chunk independently fails; the incremental decoder succeeds. This Python decoder demonstration illustrates the byte boundary; it does not execute the TypeScript reader.
+The selected tests pass for explicit provider failures and normalization. [Contract regressions](../../tests/unit/test_stream_contract.py) additionally cover unexplained EOF, optional usage, malformed frames and deliberate terminal reasons. The fixture splits the UTF-8 `é` between bytes: decoding each chunk independently fails; the incremental decoder succeeds. This Python decoder demonstration illustrates the byte boundary; it does not execute the TypeScript reader.
 
 ## Fixed faults and repair boundary
 
-There are two fixed failures. A fragmented character needs decoder state across reads. An incomplete provider response needs an explicit success/failure contract; receiving some text is insufficient. The current EOF gap is tracked in #12/#18. Do not write a reassuring success assertion to hide it or claim the application was repaired by running this fixture.
+There are two fixed failures. A fragmented character needs decoder state across reads. An incomplete provider response needs an explicit success/failure contract; receiving some text is insufficient. The earlier EOF defect in #12 is now rejected by the adapter and domain consumer. Compare that repair with the historical faulty policy “normal iterator end means complete.” Do not write a reassuring success assertion to hide missing completion.
 
 ## Evidence, transfer and reflection
 

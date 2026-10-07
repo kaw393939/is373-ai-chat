@@ -7,7 +7,14 @@ from pydantic import ValidationError
 
 from app.config import Settings
 from app.db import database
-from app.providers import HTTPProvider, MockProvider, make_provider
+from app.providers import (
+    HTTPProvider,
+    MockProvider,
+    StreamEnd,
+    TextDelta,
+    TokenUsage,
+    make_provider,
+)
 from app.security import (
     access_token,
     decode_token,
@@ -85,8 +92,9 @@ def test_production_configuration():
 
 async def test_mock_provider():
     events = [e async for e in MockProvider().stream([{"role": "user", "content": "Hello"}], 512)]
-    assert "Hello" in "".join(e.get("text", "") for e in events)
-    assert events[-1]["tokens"] > 0
+    assert "Hello" in "".join(e.text for e in events if isinstance(e, TextDelta))
+    assert isinstance(events[-2], TokenUsage) and events[-2].tokens > 0
+    assert events[-1] == StreamEnd("complete")
 
 
 async def test_sqlite_foreign_keys():

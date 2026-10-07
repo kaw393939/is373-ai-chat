@@ -5,7 +5,7 @@ import httpx
 import pytest
 
 from app.config import Settings
-from app.providers import HTTPProvider
+from app.providers import HTTPProvider, StreamEnd, TextDelta, TokenUsage
 
 
 @pytest.mark.parametrize(
@@ -42,6 +42,7 @@ async def test_http_stream_normalization(monkeypatch, provider):
             events = [
                 {"choices": [{"delta": {"role": "assistant"}}]},
                 {"choices": [{"delta": {"content": "hello"}}]},
+                {"choices": [{"delta": {}, "finish_reason": "stop"}]},
                 {"usage": {"total_tokens": 12}},
             ]
         stream = (
@@ -61,7 +62,7 @@ async def test_http_stream_normalization(monkeypatch, provider):
             [{"role": "user", "content": "test"}], 64
         )
     ]
-    assert events == [{"text": "hello"}, {"tokens": 12}]
+    assert events == [TextDelta("hello"), TokenUsage(12), StreamEnd("complete")]
 
 
 @pytest.mark.parametrize("kind", ["error", "response.failed", "response.incomplete"])

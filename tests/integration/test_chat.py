@@ -1,7 +1,7 @@
 from sqlalchemy import select
 
 from app.models import Generation, Message, RoleBudget, User, now
-from app.providers import MockProvider
+from app.providers import MockProvider, TextDelta
 from app.schemas import Prompt
 from app.services import generate, prepare_run
 from tests.conftest import login, signup
@@ -115,7 +115,7 @@ async def test_cancel_and_provider_failure_preserve_state(client, application):
 
     class Broken:
         async def stream(self, *args):
-            yield {"text": "x" * 10000}
+            yield TextDelta("x" * 10000)
 
     async with application.state.factory() as db:
         run, history, limit = await prepare_run(

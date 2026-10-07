@@ -123,7 +123,7 @@ async def stream():
     import httpx
 
     from app.config import Settings
-    from app.providers import HTTPProvider
+    from app.providers import HTTPProvider, ProviderStreamError, StreamEnd, TextDelta, TokenUsage
 
     values = {name: field.default for name, field in Settings.model_fields.items()}
     values.update(
@@ -148,10 +148,13 @@ async def stream():
         ):
             return [item async for item in HTTPProvider(settings).stream([], 64)]
 
-    assert await normalized(complete) == [{"text": "hello"}, {"tokens": 2}]
-    truncated = await normalized(complete.split('data: {"type":"response.completed"')[0])
-    assert truncated == [{"text": "hello"}]
-    print("Observed gap: premature EOF produces text without a terminal usage event")
+    assert await normalized(complete) == [TextDelta("hello"), TokenUsage(2), StreamEnd("complete")]
+    try:
+        await normalized(complete.split('data: {"type":"response.completed"')[0])
+    except ProviderStreamError:
+        print("Expected: premature EOF rejected without a terminal event")
+    else:
+        raise AssertionError("Truncated stream was accepted")
     wire = 'event: delta\ndata: {"text":"café"}\n\n'.encode()
     split = wire.index("é".encode()) + 1
     chunks = [wire[:split], wire[split:]]
