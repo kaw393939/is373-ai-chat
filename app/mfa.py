@@ -18,7 +18,7 @@ from sqlalchemy import delete
 from app.errors import DomainError, Failure
 from app.models import Audit, MfaChallenge, MfaRecovery, User, now
 from app.security import digest, secret_token
-from app.services import revoke_all
+from app.services import authorize_password_snapshot, require_family, revoke_all
 
 
 def hotp(secret, counter):
@@ -158,8 +158,9 @@ async def verify_challenge(db, value, code, config):
     return user, codes  # The route's new_session commits factor + session together.
 
 
-async def begin_replacement(db, user, code, config):
-    await db.refresh(user, with_for_update=True)
+async def begin_replacement(db, user, code, config, verified_hash, family_id):
+    await authorize_password_snapshot(db, user, verified_hash)
+    await require_family(db, user, family_id, config)
     if user.mfa_secret and not await consume_factor(db, user, code, config):
         raise DomainError(Failure.UNAUTHENTICATED, "Invalid MFA code")
     _, encrypted, view = setup_secret(config, user)

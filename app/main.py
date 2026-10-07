@@ -19,11 +19,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.accounts import (
+    change_account_password,
     edit_account,
     register_account,
     request_link,
     reset_account_password,
-    set_password,
     verify_address,
 )
 from app.config import Settings
@@ -77,6 +77,7 @@ from app.schemas import (
 )
 from app.security import DUMMY_HASH, decode_token, digest, hash_password, verify_password
 from app.services import (
+    authorize_password_snapshot,
     generate,
     issue_recovery,
     new_session,
@@ -269,11 +270,13 @@ def create_app(config=None, provider=None):
         await throttle(factory, "login:" + request.client.host, 10)
         await throttle(factory, "login-account:" + str(body.email).lower(), 10)
         user = await db.scalar(select(User).where(User.email == str(body.email).lower()))
-        valid = await password_valid(body.password, user.password_hash if user else DUMMY_HASH)
+        checked_hash = user.password_hash if user else DUMMY_HASH
+        valid = await password_valid(body.password, checked_hash)
         if not valid or not user or not user.active or not user.approved or not user.email_verified:
             raise HTTPException(
                 401, "Invalid credentials or account awaiting verification/approval"
             )
+        await authorize_password_snapshot(db, user, checked_hash)
         if requires_mfa(user, config):
             response.delete_cookie("refresh", path="/api/auth")
             return await password_challenge(db, user)
@@ -307,12 +310,18 @@ def create_app(config=None, provider=None):
 
     @app.post("/api/auth/mfa/replace")
     async def mfa_replace(
-        body: MfaReplace, user=Depends(current), db: AsyncSession = Depends(session)
+        body: MfaReplace,
+        request: Request,
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
     ):
         await throttle(factory, "mfa-replace:" + user.id, 5)
-        if not await password_valid(body.current_password, user.password_hash):
+        checked_hash = user.password_hash
+        if not await password_valid(body.current_password, checked_hash):
             raise HTTPException(401, "Current password is incorrect")
-        return await begin_replacement(db, user, body.code, config)
+        return await begin_replacement(
+            db, user, body.code, config, checked_hash, request.state.family_id
+        )
 
     @app.post("/api/auth/mfa/confirm")
     async def mfa_confirm(
@@ -396,12 +405,23 @@ def create_app(config=None, provider=None):
 
     @app.post("/api/auth/password", status_code=204)
     async def change_password(
-        body: ChangePassword, user=Depends(current), db: AsyncSession = Depends(session)
+        body: ChangePassword,
+        request: Request,
+        user=Depends(current),
+        db: AsyncSession = Depends(session),
     ):
         await throttle(factory, "password:" + user.id, 5)
-        if not await password_valid(body.current_password, user.password_hash):
+        checked_hash = user.password_hash
+        if not await password_valid(body.current_password, checked_hash):
             raise HTTPException(400, "Current password is incorrect")
-        await set_password(db, user, await password_hash(body.password), "password.changed")
+        await change_account_password(
+            db,
+            user,
+            await password_hash(body.password),
+            checked_hash,
+            request.state.family_id,
+            config,
+        )
 
     @app.get("/api/models", response_model=list[ModelView])
     async def models(user=Depends(current), db: AsyncSession = Depends(session)):

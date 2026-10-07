@@ -35,7 +35,7 @@ The app signs JWTs using HS256. Their payload is readable; the signature establi
 
 ## Worked lifecycle: login, rotate, revoke
 
-Assume synthetic Alice is active, approved and eligible under the email policy. A correct password creates a `Family` with a seven-day expiry by default and a `Refresh` row containing a digest. The transaction commits before the server returns the access token and sets the refresh cookie.
+Assume synthetic Alice is active, approved and eligible under the email policy. For an account requiring MFA, the second-factor challenge must also succeed before a family is created. A correct password for an ordinary unenrolled account creates a `Family` with a seven-day expiry by default and a `Refresh` row containing a digest. The transaction commits before the server returns the access token and sets the refresh cookie.
 
 ![Login and authorized-request sequence](assets/identity-trace.svg)
 
@@ -53,19 +53,34 @@ In `rotate`, PostgreSQL locks the family and refreshes the token row before deci
 | Password change | Correct current password required; new hash and all-family revocation committed. | Existing access sessions fail; new login required. |
 | Administrative revoke | User's families revoked; active generations flagged for cancellation. | New auth requests fail; streaming cancellation is cooperative. |
 
-The frontend [refresh helper](../frontend/src/api.ts) shares one in-flight refresh promise **within one tab**. Separate tabs have separate JavaScript memory but can share the refresh cookie. Cross-tab rotation/logout coordination remains [issue #10](https://github.com/kaw393939/is373-ai-chat/issues/10). Do not infer browser-wide safety from within-tab serialization. A late refresh response or two tabs rotating one cookie is an explicit review problem.
+The frontend [refresh helper](../frontend/src/api.ts) still shares one in-flight promise within a tab. It also acquires the named Web Lock `373-auth-cookie` around login, factor verification, refresh, logout and factor confirmation. Cooperating tabs of the same origin therefore serialize mutations of their shared refresh cookie. A separate opaque marker in localStorage records the session generation and sign-out intent; BroadcastChannel and storage events invalidate peers. No bearer token or factor secret enters these channels. Web Locks require a supporting secure context; the client reports unsupported or unwritable storage rather than silently using an unsafe fallback. [Web Locks documentation](https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API), [BroadcastChannel documentation](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API).
+
+Consider this deliberately delayed sequence:
+
+| Step | What must happen |
+|---|---|
+| Tab A holds the cookie lock while refreshing. | Tab B's rotation waits; the server's replay defense stays unchanged. |
+| Tab B signs out before A's response arrives. | B changes the marker immediately and clears private UI state before waiting for the lock. |
+| A receives the obsolete response. | Its marker check rejects the result; it cannot install that access token. |
+| B obtains the lock. | Logout revokes the family and clears the cookie. A reload also observes the durable sign-out intent. |
+
+Ownership checks run after response headers **and after JSON decoding**, because the body can finish after logout. [Browser regressions](../tests/e2e/test_regressions.py) exercise two real cookie rotations, logout during a delayed refresh and a different user signing in while an old stream is pending. [Frontend unit tests](../frontend/test/api.test.mjs) independently exercise event ordering, delayed bodies and storage failures. These tests establish specific interleavings in cooperating clients, not protection against malicious same-origin script or every browser failure.
 
 ## MFA adds an assurance boundary
 
 TOTP combines a per-account secret with a time counter using the HMAC construction described in [RFC 4226](https://www.rfc-editor.org/rfc/rfc4226) and the time-step extension in [RFC 6238](https://www.rfc-editor.org/rfc/rfc6238). This app uses six digits, thirty-second steps, a one-step clock-skew window and a durable last-accepted counter. The successful counter cannot be reused. TOTP resists a stolen password; it remains vulnerable to phishing, so a hardware-backed passkey is a defensible later alternative.
 
-Password login for an enrolled account—or an administrator when `ADMIN_MFA_REQUIRED=true`—returns only a five-minute opaque challenge. It creates no authenticated session and grants no admin API access. The challenge can enroll an unenrolled factor and verify a code; it cannot authorize chat or administration. Factor secrets use a dedicated Fernet encryption key. Ten random recovery codes are returned once, stored as digests, and consumed once under the same user lock as TOTP. Replacement requires a fresh password and an existing factor/recovery code, then confirmation of the new secret within five minutes. Replacing or enrolling revokes old sessions. Password reset alone cannot remove the second factor.
+Password login for an enrolled account—or an administrator when `ADMIN_MFA_REQUIRED=true`—returns only a five-minute opaque challenge. It creates no authenticated session and grants no admin API access. The challenge can enroll an unenrolled factor and verify a code; it cannot authorize chat or administration. Factor secrets use a dedicated Fernet encryption key. Ten random recovery codes are returned once, stored as digests, and consumed once under the same user lock as TOTP. Replacement requires a fresh password and an existing factor/recovery code, then confirmation of the new secret within five minutes. Password checking runs outside a database row lock; before minting login/challenge authority or changing a password/factor, the use case locks the account and compares the checked hash with current state. Protected recent-auth mutations also recheck the current session family. Thus a reset or logout that completes during an expensive password check cannot grant stale authority. The [concurrent recent-auth regressions](../tests/integration/test_recent_auth_race.py) pause that check, perform the real reset/logout, then resume it. Replacing or enrolling revokes old sessions. Password reset alone cannot remove the second factor.
+
+That revocation makes confirmation a terminal transition. The [account screen](../frontend/src/Account.tsx) hands its one-time recovery-code receipt to the application's authentication boundary before the account screen disappears. The receipt remains in a signed-out dialog until dismissed; it is not persisted. An expired access token triggers one refresh and retry while already holding the cookie lock. Reacquiring that same exclusive lock from inside confirmation would deadlock. The frontend regression suite covers the controlled 401 retry, a second tab losing its session and the receipt remaining visible. Reloading or dismissing the receipt still discards it; the user must save the codes.
 
 [Migration 0003](../migrations/versions/0003_protected_mfa_and_session_assurance.py) adds encrypted factor/challenge state and a session assurance bit without enrolling any real user. The default flag stays false for a coordinated rollout. Enrolled users always require their factor. Enabling the flag makes every admin’s old password-only session fail immediately; deploy the matching frontend and a protected `MFA_ENCRYPTION_KEY`, verify owner enrollment, and record recovery custody before claiming production enforcement. Automated [MFA integration tests](../tests/integration/test_mfa.py) use disposable synthetic accounts; they do not change production factors.
 
 ## Browser storage and request boundaries
 
 Access tokens stay in tab memory. The refresh cookie is HttpOnly, `SameSite=Strict`, scoped to `/api/auth`, and Secure when `APP_ENV=production`. Local development uses HTTP and therefore cannot demonstrate the Secure-cookie property. Reloading uses refresh to restore access rather than retrieving a token from localStorage.
+
+If storage becomes unwritable after login, logout clears local private state, sends a token-free invalidation notice and still attempts server revocation under the cookie lock. It cannot promise a durable sign-out marker if storage fails; if the network also fails, a later reload needs separate recovery. Treat client coordination as an aid to the server's authority, not its replacement.
 
 HttpOnly prevents JavaScript from reading that cookie. It does not prevent malicious script from issuing actions through an already authenticated browser. Safe rendering, restrictive browser policy and server authorization still matter. Refresh and logout require an Origin matching configured `BASE_URL`; login checks it when supplied. Same-origin deployment avoids a cross-origin CORS configuration, but that topology is not a substitute for these checks.
 
@@ -91,4 +106,4 @@ Run Lab 01's synthetic expiry experiment and Lab 04's two-account scenario in a 
 
 A server-session cookie design could keep identity state behind an opaque identifier and avoid issuing JWT access claims. Our hybrid permits a distinct bearer-access boundary but pays for rotation, replay handling and coordination while still consulting durable state. For a small same-origin application, simplicity is a serious argument for the alternative. The JWT requirement determines this case's chosen exercise, not a universal recommendation.
 
-Submit a request/state trace, sanitized status evidence and one counterexample to “a signature is sufficient.” Then propose how to prove cross-tab correctness or compare session alternatives using explicit criteria. A passing happy-path login is only one part of that argument.
+Submit a request/state trace, sanitized status evidence and one counterexample to “a signature is sufficient.” Then propose an untested cross-tab interleaving or compare session alternatives using explicit criteria. A passing happy-path login is only one part of that argument.

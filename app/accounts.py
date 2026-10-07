@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app.email import MailCapacityExceeded, enqueue, token_email
 from app.errors import DomainError, Failure
 from app.models import Audit, RoleBudget, User
-from app.services import consume_link, revoke_all
+from app.services import authorize_password_snapshot, consume_link, require_family, revoke_all
 
 
 async def edit_account(db, actor, target_id, changes, config):
@@ -129,3 +129,9 @@ async def set_password(db, user, hashed, action):
     await revoke_all(db, user.id)
     db.add(Audit(actor_id=user.id, action=action, target_id=user.id))
     await db.commit()
+
+
+async def change_account_password(db, user, hashed, verified_hash, family_id, config):
+    await authorize_password_snapshot(db, user, verified_hash)
+    await require_family(db, user, family_id, config)
+    await set_password(db, user, hashed, "password.changed")

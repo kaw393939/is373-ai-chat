@@ -42,6 +42,27 @@ def user_view(user):
     }
 
 
+async def authorize_password_snapshot(session, user, verified_hash):
+    # Argon2 runs outside a row lock. Fence the checked hash against current
+    # durable state before minting authority or changing a sensitive factor.
+    await session.refresh(user, with_for_update=True)
+    if not eligible_account(user) or user.password_hash != verified_hash:
+        raise DomainError(Failure.UNAUTHENTICATED, "Authentication changed; sign in again")
+
+
+async def require_family(session, user, family_id, config):
+    family = await session.get(Family, family_id, with_for_update=True, populate_existing=True)
+    if (
+        not family
+        or family.user_id != user.id
+        or family.revoked
+        or family.expires_at <= now()
+        or (requires_mfa(user, config) and not family.mfa_verified)
+    ):
+        raise DomainError(Failure.UNAUTHENTICATED, "Session is no longer active")
+    return family
+
+
 async def new_session(session, user, config, mfa_verified=False):
     family = Family(
         user_id=user.id, expires_at=now() + config.refresh_days * 86400, mfa_verified=mfa_verified
@@ -124,15 +145,7 @@ async def prepare_run(session, user, conversation_id, prompt, config, family_id=
     if not eligible_account(current):
         raise DomainError(Failure.UNAUTHENTICATED, "Account access is no longer active")
     if family_id:
-        family = await session.get(Family, family_id, with_for_update=True, populate_existing=True)
-        if (
-            not family
-            or family.user_id != current.id
-            or family.revoked
-            or family.expires_at <= now()
-            or (requires_mfa(current, config) and not family.mfa_verified)
-        ):
-            raise DomainError(Failure.UNAUTHENTICATED, "Session is no longer active")
+        await require_family(session, current, family_id, config)
     budget = await session.get(RoleBudget, current.role)
     if not budget.model_enabled or prompt.model != "default":
         raise DomainError(Failure.FORBIDDEN, "Model is not available for this role")
