@@ -32,7 +32,7 @@ Follow the rows in order for the full course. File prefixes identify stable docu
 | 16 | [Recovery](10-recovery.md) | Diagnose interruption and recover durable state. |
 | IV · Exercise judgment · 17 | [Human judgment and AI](16-human-judgment-and-ai.md) | Evaluate alternatives and deliver a justified capstone. |
 
-This is a developing manuscript with worked technical lessons and twelve authored labs. The lessons connect motivating problems, history, worked explanations, alternatives, code tours and evidence; continued editorial development and independent reader testing remain necessary. Authored pages are distinct from validated teaching material. Some container exercises are still unexecuted on this workstation, and advanced product capabilities remain open. Consult each lab's verification statement rather than infer readiness from its place in this contents list.
+This is a developing manuscript with worked technical lessons and twelve authored labs. The lessons connect motivating problems, history, worked explanations, alternatives, code tours and evidence; continued editorial development and independent reader testing remain necessary. Authored pages are distinct from validated teaching material. The eight executable fixture modes passed in Linux CI; platform-specific execution and advanced product capabilities have explicit limits. Consult each lab's verification statement rather than infer readiness from its place in this contents list.
 
 For an installation-first route, read [local development](02-local.md) → [whole system](01-system.md) → [identity](04-auth.md), perform Labs 02 and 01, then return to Part I. For an experienced engineer's review route, inspect the [code-reading tour](00-reading-code.md), [data](03-data.md), [identity](04-auth.md), [twelve-factor case analysis](15-architecture-and-twelve-factors.md) and [delivery](08-delivery.md). The [reader's guide](start-here.md) explains what each route assumes.
 
@@ -47,9 +47,9 @@ For an installation-first route, read [local development](02-local.md) → [whol
 | 05 | Decode fragmented Unicode and diagnose missing stream completion | [Streaming](05-streaming.md) | [Stream-contract lab](labs/05-stream-contract.md); contained fake transport |
 | 06 | Exercise browser journeys and evaluate keyboard access | [Testing](07-testing.md) | [Browser/accessibility lab](labs/06-browser-accessibility.md); transfer and human assistive-technology review pending |
 | 07 | Race admission requests and challenge a coverage number | [Testing](07-testing.md), [limits](06-operations.md) | [Admission/coverage lab](labs/07-admission-and-coverage.md); consult PostgreSQL wrapper execution status |
-| 08 | Compare local image identity with the CI release path | [Delivery](08-delivery.md) | [Image-delivery lab](labs/08-image-delivery.md); local Docker activity unverified here; no push/deploy |
+| 08 | Compare local image identity with the CI release path | [Delivery](08-delivery.md) | [Image-delivery lab](labs/08-image-delivery.md); Linux CI fixture passed; no learner push/deploy |
 | 09 | Inspect isolation and model an accepted promotion | [Environment runbook](../docs/environments.md) | [Environment/promotion lab](labs/09-environment-promotion.md); a decision model, actual promotion #24 remains open |
-| 10 | Rehearse disposable restore and diagnose stale metrics | [Operations](06-operations.md), [recovery](10-recovery.md) | [Resource/recovery lab](labs/10-resource-recovery.md); Docker wrapper unverified here; off-host proof pending |
+| 10 | Rehearse disposable restore and diagnose stale metrics | [Operations](06-operations.md), [recovery](10-recovery.md) | [Resource/recovery lab](labs/10-resource-recovery.md); Linux CI wrapper passed; off-host proof pending |
 | 11 | Test mocked outbox retries, retention and verification | [Email](11-email.md) | [Email-outbox lab](labs/11-email-outbox.md); actual sending activation #3 remains open |
 | 12 | Deliver a justified stream-contract improvement and evidence | [Working agreement](../docs/project/working-agreement.md) | [Strategy capstone](labs/12-strategy-capstone.md); private learner repair and defended decision |
 

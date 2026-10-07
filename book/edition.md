@@ -11,8 +11,8 @@ authorship does not imply successful execution on every platform.
 | Item | Identity / interpretation |
 |---|---|
 | Reviewed manuscript | `34c740cfdf8294930beadf60d0b043586cffdf78`; original review findings remain dated |
-| Existing production app source | `d65a19c8d3cd344d31b8f01103fe5e3137a8485d`; later book/test changes are not that deployed source |
-| Existing release image | `ghcr.io/kaw393939/is373-ai-chat@sha256:9bed602fcea38a5cc0a613e8440ce2b4663cbc6838e89c93411112e41edc4997` |
+| Initial case-study app source (historical) | `d65a19c8d3cd344d31b8f01103fe5e3137a8485d`; later book/test changes are not that deployed source |
+| Initial case-study image (historical) | `ghcr.io/kaw393939/is373-ai-chat@sha256:9bed602fcea38a5cc0a613e8440ce2b4663cbc6838e89c93411112e41edc4997` |
 | Manuscript source | `book-v0.2.0` tag, created after revision verification; a build records the actual commit and whether the checkout was dirty |
 | Built content fingerprint | `artifacts/book-build.json` records SHA-256 over the ordered book paths and contents; included in the edition bundle |
 | Python/dependency/build locks | Python 3.14.7; `uv.lock`; `frontend/package-lock.json`; MkDocs 1.6.1 in the optional `book` group |

@@ -34,4 +34,4 @@ Transfer: propose a promotion workflow with a failing QA test, compatible additi
 
 ## Troubleshooting, cleanup and status
 
-Compose parsing failures should name the missing variable/model concern; never supply production `.env` to this lab. The renderer deletes temporary files automatically. The policy model was maintainer-executed during this review. Docker rendering remains authored/unverified here; the recorded public installations are earlier operational evidence. Automated promotion and independent learner assessment remain pending.
+Compose parsing failures should name the missing variable/model concern; never supply production `.env` to this lab. The renderer deletes temporary files automatically. The policy model was maintainer-executed during this review. Docker configuration rendering passed for distinct dev/QA project names in [book CI run 37550661540](https://github.com/kaw393939/is373-ai-chat/actions/runs/37550661540); it created no application deployment. The recorded public installations are separate operational evidence. Automated promotion and independent learner assessment remain pending.

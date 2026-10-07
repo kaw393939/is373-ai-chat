@@ -41,6 +41,16 @@ Observe status, event sequence and saved history before assigning blame to “th
 
 ## How to judge the architecture
 
+In 1972, David Parnas compared decompositions of a keyword-in-context indexing
+system. Organizing modules around likely-to-change design decisions offered a
+different boundary from organizing them around processing steps. This is a
+historical argument for information hiding, not a prescription to split every
+step into a service. In our case, vendor request/event details can change without
+rewriting daily-budget policy; both remain in one deployment. Compare the
+original example with this boundary rather than treating “modular” as a label
+that proves maintainability. [Parnas, original publication and transcription
+caveat](references.md#ref-parnas).
+
 Provider adapters isolate vendor payloads from budget policy. HTTP input schemas differ from mapped database objects. SQLAlchemy already supplies unit-of-work behavior. Adding a generic repository or another service requires a demonstrated change/reliability benefit, not a desire to name another pattern. The [people and ideas chapter](13-engineering-ideas.md) connects those choices to information hiding, substitution and responsibility.
 
 Twelve-factor guidance asks whether config is external, durable state survives worker replacement, dependencies are declared and release identity is traceable. [The architectural chapter](15-architecture-and-twelve-factors.md) and [canonical evidence mapping](../docs/requirements.md) distinguish intent from proof. The app has durable state and bounded resources; replica scaling, crash behavior and QA promotion still need further evidence.
