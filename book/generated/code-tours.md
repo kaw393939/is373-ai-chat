@@ -29,7 +29,7 @@ def decode_token(token, config):
 
 The lookup includes both resource ID and owner ID. A valid token alone does not grant ownership.
 
-Source: [app/services.py::owned, line 104](../../app/services.py#L104).
+Source: [app/services.py::owned, line 125](../../app/services.py#L125).
 
 ```python
 async def owned(session, conversation_id, user_id):
@@ -45,7 +45,7 @@ async def owned(session, conversation_id, user_id):
 
 Follow the family row lock, used-token detection and replacement commit in time order.
 
-Source: [app/services.py::rotate, line 57](../../app/services.py#L57).
+Source: [app/services.py::rotate, line 78](../../app/services.py#L78).
 
 ```python
 async def rotate(session, value, config):
@@ -82,14 +82,17 @@ async def rotate(session, value, config):
 
 Follow typed provider events and durable state. A run defaults to failed until an explicit terminal event supplies its outcome; unexplained EOF preserves partial text and cannot certify completion (issue #12).
 
-Source: [app/services.py::generate, line 223](../../app/services.py#L223).
+Source: [app/services.py::generate, line 236](../../app/services.py#L236).
 
 ```python
-async def generate(factory, provider, run, messages, max_output):
+async def generate(factory, provider, run, messages, max_output, tasks=None):
     content, status, tokens = "", GenerationState.FAILED, None
     ended = False
-    yield Started(run.id, run.message_id)
+    task = asyncio.current_task()
+    if tasks is not None:
+        tasks.add(task)
     try:
+        yield Started(run.id, run.message_id)
         async with asyncio.timeout(120):
             async for chunk in provider.stream(messages, max_output):
                 async with factory() as session:
@@ -112,25 +115,29 @@ async def generate(factory, provider, run, messages, max_output):
                     raise RuntimeError("Provider emitted an invalid event")
             if not ended and status != GenerationState.CANCELLED:
                 raise RuntimeError("Provider stream ended without completion")
-    except asyncio.CancelledError:  # pragma: no cover - ASGI disconnect exercised in browser tests
+    except (asyncio.CancelledError, GeneratorExit):
         status = GenerationState.CANCELLED
         raise
     except Exception:
         status = GenerationState.FAILED
         yield Error("Provider unavailable. Your conversation was saved.")
     finally:
-        # Starlette cancels response tasks on disconnect. Shield durable cleanup.
-        with anyio.CancelScope(shield=True):
-            async with factory() as session:
-                await session.execute(
-                    update(Message).where(Message.id == run.message_id).values(content=content)
-                )
-                await session.execute(
-                    update(Generation)
-                    .where(Generation.id == run.id)
-                    .values(status=status, actual_tokens=tokens)
-                )
-                await session.commit()
+        try:
+            # Starlette cancels response tasks on disconnect. Shield durable cleanup.
+            with anyio.CancelScope(shield=True):
+                async with factory() as session:
+                    await session.execute(
+                        update(Message).where(Message.id == run.message_id).values(content=content)
+                    )
+                    await session.execute(
+                        update(Generation)
+                        .where(Generation.id == run.id)
+                        .values(status=status, actual_tokens=tokens)
+                    )
+                    await session.commit()
+        finally:
+            if tasks is not None:
+                tasks.discard(task)
     yield Completed(status, tokens)
 ```
 
