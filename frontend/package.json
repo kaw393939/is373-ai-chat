@@ -1,12 +1,13 @@
 {
   "name": "is373-chat-ui",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
-    "format:check": "prettier --check src *.ts *.json index.html"
+    "format:check": "prettier --check src test *.ts *.json index.html",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -1,30 +1,11 @@
 """Browser journeys against a migrated, seeded application with a mock provider."""
 
-import os
 from pathlib import Path
 from uuid import uuid4
 
-import pytest
 from playwright.sync_api import expect, sync_playwright
 
-from tests.targets import verify_browser_target
-
-URL = os.environ.get("E2E_URL", "http://localhost:9001")
-ADMIN_EMAIL = os.environ.get("E2E_ADMIN_EMAIL", "admin@example.org")
-ADMIN_PASSWORD = os.environ.get("E2E_ADMIN_PASSWORD", "browser-workshop-admin-1234")
-
-
-@pytest.fixture(scope="module", autouse=True)
-def require_disposable_browser():
-    verify_browser_target(URL, os.environ.get("E2E_TARGET_TOKEN"))
-
-
-def sign_in(page, email=ADMIN_EMAIL, password=ADMIN_PASSWORD):
-    page.goto(URL)
-    page.get_by_label("Email", exact=True).fill(email)
-    page.get_by_label("Password", exact=True).fill(password)
-    page.get_by_role("button", name="Sign in", exact=True).click()
-    expect(page.get_by_role("button", name="＋ New conversation", exact=True)).to_be_visible()
+from tests.e2e.helpers import URL, sign_in
 
 
 def test_registration_approval_chat_and_session_reload():
