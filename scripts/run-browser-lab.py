@@ -22,6 +22,9 @@ from tests.targets import verify_browser_target  # noqa: E402
 
 def main():
     with socket.socket() as port:
+        # A completed prior journey can leave TIME_WAIT sockets on macOS.
+        # Reuse that closed connection state while still rejecting a listener.
+        port.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         port.bind(("127.0.0.1", 9001))  # Refuse a server we did not start.
     with tempfile.TemporaryDirectory(prefix="chat-browser-lab-") as directory:
         env = dict(os.environ)
