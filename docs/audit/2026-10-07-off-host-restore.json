@@ -1,0 +1,26 @@
+{
+  "observed_at": "2026-10-07T00:46:49.045527+00:00",
+  "archive": "daily-20261007T003419Z.tar.age",
+  "database_restore_and_count_seconds": 1.745,
+  "schema": "0002",
+  "counts": {
+    "users": 2,
+    "admins": 1,
+    "conversations": 1,
+    "messages": 2,
+    "generations": 1,
+    "outbox": 0
+  },
+  "scope": "Isolated empty database; measured interval excludes fetch/decryption, host/proxy/config/service recovery",
+  "outbox_pending_evidence": "Source outbox empty; nonempty synthetic restoration remains separate",
+  "secret_values_logged": false,
+  "whole_row_comparison_matches": {
+    "users": true,
+    "conversations": true,
+    "messages": true,
+    "generations": true,
+    "email_outbox": true
+  },
+  "compatible_image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d2a4fa2671d9e0f57ad1f314d03d7aaa15ebdde17df283d5aee4d45a5b66a0b",
+  "matching_image_orm_read": "passed"
+}
