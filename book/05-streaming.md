@@ -22,10 +22,12 @@ The mock adapter yields deterministic text. The OpenAI adapter uses Responses wi
 
 | Symbol | Decision to investigate |
 |---|---|
-| [`consume`](../frontend/src/api.ts) | Why buffer both decoded text and frames? What does EOF establish? |
+| [`consume`, `parseEvent`](../frontend/src/api.ts), [event types](../frontend/src/contracts.ts) | Why buffer bytes/frames and validate runtime payloads despite TypeScript types? What does EOF establish? |
 | [`prepare_run`, `generate`](../app/services.py) | Which state is committed before output, and which failures persist partial text? |
 | [`Provider`, `HTTPProvider.stream`, `make_provider`](../app/providers.py) | Where are vendor payloads translated into the shared boundary? |
-| [`send`, `stop`, Markdown rendering](../frontend/src/main.tsx) | How do browser aborts, server cancellation and safe display cooperate? |
+| [`send`, `stop`, navigation ownership](../frontend/src/useConversations.ts) | Which selected view and session may accept a delta or late history response? How do browser aborts and server cancellation cooperate? |
+| [`Messages`](../frontend/src/Messages.tsx) | Which Markdown features are safe to render, and why are remote images omitted? |
+| [Frontend protocol tests](../frontend/test/api.test.mjs), [browser regressions](../tests/e2e/test_regressions.py) | Which malformed frames, reordered replies, stale views and hostile display inputs are asserted? |
 | [Provider tests](../tests/unit/test_providers.py), [chat tests](../tests/integration/test_chat.py) | Which success, failure and cancellation cases are actually asserted? |
 
 Request keys reject duplicate generations within an account; explicit retry creates another prompt/run and another reservation. Paid streams are not silently restarted after text has appeared. Stop requests database cancellation and aborts the browser stream. Timeout/output bounds and expiring leases limit unfinished work. Cleanup preserves partial text. The normalized contract uses immutable `TextDelta`, `TokenUsage` and `StreamEnd` values: usage is optional; EOF without terminal completion fails. Compatible `stop` means complete, `length` means incomplete, and filtering/refusal means refused. Unsupported tool finishes fail under this text-chat contract. Sources: [Responses streaming events](https://developers.openai.com/api/reference/resources/responses/streaming-events), [Chat Completions streaming events](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events).
@@ -34,7 +36,9 @@ Request keys reject duplicate generations within an account; explicit retry crea
 
 Polling can simplify short jobs at the cost of repeated requests and delay. Native EventSource suits GET subscriptions when its authentication/reconnection model fits. WebSockets support bidirectional interaction, but introduce their own lifecycle responsibilities. Choose using message direction, latency, authentication and recovery requirements.
 
-Model output is untrusted input. React's constrained Markdown renderer disables raw HTML, omits remote images and restricts link protocols. That is a deliberate feature boundary, not a universal guarantee for future renderer changes. Browser state races and cross-tab sessions also remain separate concerns.
+Model output is untrusted input. The constrained Markdown renderer leaves raw HTML inert, omits remote images and restricts link protocols. A controlled browser fixture includes hostile HTML, a script URL and a tracking image; its assertions require no executable elements or image requests and safe attributes on ordinary external links. This is a deliberate feature boundary, not a universal guarantee for future renderer changes.
+
+Transport correctness alone cannot choose the right screen. The conversation hook tracks session ownership and the selected view independently, aborts obsolete fetches and checks ownership before applying results. In the delayed A→B regression, A finishes after B is selected and cannot overwrite B. Another case signs out during a held stream, signs in a different account and then releases the old reply; the old account's text must remain absent. Cancellation reduces wasted work, while ownership checks establish which result the UI may accept. Cross-tab cookie coordination belongs in [identity](04-auth.md), even when the pending request carries a stream.
 
 **Laboratory:** [Lab 05 — stream contracts](labs/05-stream-contract.md); use mock transport and a disposable local environment. **Evaluate:** specify the observation that distinguishes provider success from transport EOF, and reject one unsafe retry policy. For user-interface evidence, continue with [Lab 06 — browser accessibility](labs/06-browser-accessibility.md).
 

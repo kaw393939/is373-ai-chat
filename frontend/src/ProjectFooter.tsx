@@ -4,7 +4,7 @@ const repository = "https://github.com/kaw393939/is373-ai-chat";
 export function ProjectFooter() {
   const links = [
     ["Textbook", `${repository}/blob/main/book/README.md`],
-    ["Download book", `${repository}/releases/tag/book-v0.2.0`],
+    ["Download book", `${repository}/releases/tag/book-v0.3.0`],
     ["Source code", repository],
     ["Issues / roadmap", `${repository}/issues`],
     ["Security report", `${repository}/security/policy`],

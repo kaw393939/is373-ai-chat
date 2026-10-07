@@ -26,7 +26,7 @@ Docker supplies a second layer. Production caps the app at 512 MiB/0.75 CPU and 
 | [`RoleBudget`, `DailyUsage`, `Generation`](../app/models.py) | Which limits and leases survive process replacement? |
 | [Production Compose](../deploy/compose.yaml), [preview Compose](../deploy/compose.preview.yaml) | What are the CPU, memory, PID and log ceilings? |
 | [Host collector](../deploy/host-metrics.py) | Why publish selected aggregates by atomic file replacement? |
-| [`Admin`](../frontend/src/main.tsx) | How are missing samples and samples older than 90 seconds displayed? |
+| [`Admin`](../frontend/src/Admin.tsx), [metrics types](../frontend/src/contracts.ts) | How are missing samples, samples older than 90 seconds and optional backup freshness displayed? |
 
 The host-only collector reads CPU/memory/disk and selected container summaries. A timer publishes a JSON file mounted read-only into the app. Admin authorization controls its API exposure; the app has no Docker socket. Thirty-second sampling retains 60 samples, about 30 minutes of recent history. This avoids granting container control to a web process, at the cost of a host-specific installation dependency.
 
