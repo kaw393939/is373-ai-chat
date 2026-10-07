@@ -37,21 +37,9 @@ The app signs JWTs using HS256. Their payload is readable; the signature establi
 
 Assume synthetic Alice is active, approved and eligible under the email policy. A correct password creates a `Family` with a seven-day expiry by default and a `Refresh` row containing a digest. The transaction commits before the server returns the access token and sets the refresh cookie.
 
-```mermaid
-sequenceDiagram
-  participant B as Alice's browser
-  participant A as API
-  participant D as PostgreSQL
-  B->>A: Login with synthetic credentials
-  A->>D: Commit family and refresh-token digest
-  A-->>B: JWT access + HttpOnly refresh cookie
-  B->>A: Authorized conversation request
-  A->>D: Check user/family and ownership
-  A-->>B: Allowed result
-  B->>A: Refresh with cookie and matching Origin
-  A->>D: Lock family, consume old token, commit new digest
-  A-->>B: New access token + replacement cookie
-```
+![Login and authorized-request sequence](assets/identity-trace.svg)
+
+Figure 2. Login verifies a password, commits a session family and refresh-token digest, and returns access claims plus an HttpOnly cookie. Each later request validates claims, reads the current family/user, then checks ownership. The rotation table below explains the next cookie exchange and its failure states.
 
 `current` decodes the JWT and reads both rows. It rejects missing, expired or revoked families, a family belonging to a different subject, and missing/inactive/unapproved/unverified users. Subsequent authenticated requests consult current state even if the access token has not yet expired. This supports revocation but creates a database availability/latency dependency.
 

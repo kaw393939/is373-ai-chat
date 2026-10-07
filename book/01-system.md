@@ -8,16 +8,9 @@ Read this conceptual trace first. To execute it, set up the environment in [the 
 
 The browser loads a compiled React/TypeScript interface and calls the FastAPI API on the same browser origin. In public deployments, Traefik receives HTTPS and forwards to the app; local Compose exposes the app directly on loopback HTTP. PostgreSQL persists account, conversation and generation state. SQLAlchemy mediates Python/database work. A provider adapter translates an external protocol or supplies deterministic mock output.
 
-```mermaid
-flowchart LR
-  Browser -->|HTTPS| Traefik
-  Traefik --> App[FastAPI + compiled React]
-  App --> DB[(PostgreSQL)]
-  App --> Adapter[LLM adapter]
-  Adapter --> Provider[Hosted model or mock]
-  Collector[Host metrics collector] --> File[Read-only metrics file]
-  File --> App
-```
+![Public application and metrics boundaries](assets/system.svg)
+
+Figure 1. HTTPS enters through Traefik. The app persists state in PostgreSQL and calls a provider through its adapter. A separate collector supplies a read-only metrics file; the application does not control Docker.
 
 The diagram shows the public topology. Host metrics are a separate operator-supplied file, not permission for the app to control Docker. Local labs can run without that collector; missing host metrics are distinct from failed database health.
 

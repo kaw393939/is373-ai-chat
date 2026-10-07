@@ -32,7 +32,7 @@ Follow the rows in order for the full course. File prefixes identify stable docu
 | 16 | [Recovery](10-recovery.md) | Diagnose interruption and recover durable state. |
 | IV · Exercise judgment · 17 | [Human judgment and AI](16-human-judgment-and-ai.md) | Evaluate alternatives and deliver a justified capstone. |
 
-This is a developing manuscript. Local development, data and identity provide expanded sample chapters; several later technical chapters remain concise foundations. Each completed chapter needs a motivating problem, historical context, a worked explanation, alternatives, a linked code tour, observable evidence and discussion of limits. Authored pages are distinct from independently validated teaching material. Consult each lab's verification statement rather than infer readiness from its place in this contents list.
+This is a developing manuscript with worked technical lessons and twelve authored labs. The lessons connect motivating problems, history, worked explanations, alternatives, code tours and evidence; continued editorial development and independent reader testing remain necessary. Authored pages are distinct from validated teaching material. Some container exercises are still unexecuted on this workstation, and advanced product capabilities remain open. Consult each lab's verification statement rather than infer readiness from its place in this contents list.
 
 For an installation-first route, read [local development](02-local.md) → [whole system](01-system.md) → [identity](04-auth.md), perform Labs 02 and 01, then return to Part I. For an experienced engineer's review route, inspect the [code-reading tour](00-reading-code.md), [data](03-data.md), [identity](04-auth.md), [twelve-factor case analysis](15-architecture-and-twelve-factors.md) and [delivery](08-delivery.md). The [reader's guide](start-here.md) explains what each route assumes.
 
@@ -43,17 +43,19 @@ For an installation-first route, read [local development](02-local.md) → [whol
 | 01 | Explain and test JWT validation; distinguish identity from authority | [Identity](04-auth.md) | [Authored pilot](labs/01-token-boundaries.md); second-reader assessment pending |
 | 02 | Trace an in-process ASGI request and temporary persisted state | [System](01-system.md), [code reading](00-reading-code.md) | [Request-trace lab](labs/02-request-trace.md); no Docker/browser/proxy proof |
 | 03 | Generate an additive index migration and scoped drift check | [Data](03-data.md) | [Migration lab](labs/03-migration.md); SQLite guided fixture, PostgreSQL transfer pending |
-| 04 | Register two users and prove ownership/role boundaries | [Identity](04-auth.md) | [Ownership lab](labs/04-ownership.md); consult its verification statement |
-| 05 | Fragment a stream, cancel it and diagnose a provider failure | [Streaming](05-streaming.md) | Planned full lab |
-| 06 | Improve keyboard access and diagnose a stale UI result | [Testing](07-testing.md) | Planned full lab; implementation issues #9 and #19 |
-| 07 | Race admission requests and assess coverage evidence | [Testing](07-testing.md), [limits](06-operations.md) | Planned full lab |
-| 08 | Trace a tested image through registry and deployment | [Delivery](08-delivery.md) | Planned full lab |
-| 09 | Demonstrate environment isolation and candidate promotion | [Environment runbook](../docs/environments.md) | Planned full lab; promotion implementation #24 remains open |
-| 10 | Diagnose resource pressure and restore a disposable database | [Operations](06-operations.md), [recovery](10-recovery.md) | Planned full lab; independent recovery proof pending |
-| 11 | Exercise outbox retries and explain email authentication | [Email](11-email.md) | Planned full lab; real sending activation #3 remains open |
-| 12 | Deliver a justified improvement with issue/commit/test evidence | [Working agreement](../docs/project/working-agreement.md) | Planned capstone; [baseline](../docs/project/baseline.md) defines capabilities |
+| 04 | Prove ownership/roles using temporary synthetic accounts | [Identity](04-auth.md) | [Ownership lab](labs/04-ownership.md); scoped integration checks and a teaching mutant |
+| 05 | Decode fragmented Unicode and diagnose missing stream completion | [Streaming](05-streaming.md) | [Stream-contract lab](labs/05-stream-contract.md); contained fake transport |
+| 06 | Exercise browser journeys and evaluate keyboard access | [Testing](07-testing.md) | [Browser/accessibility lab](labs/06-browser-accessibility.md); transfer and human assistive-technology review pending |
+| 07 | Race admission requests and challenge a coverage number | [Testing](07-testing.md), [limits](06-operations.md) | [Admission/coverage lab](labs/07-admission-and-coverage.md); consult PostgreSQL wrapper execution status |
+| 08 | Compare local image identity with the CI release path | [Delivery](08-delivery.md) | [Image-delivery lab](labs/08-image-delivery.md); local Docker activity unverified here; no push/deploy |
+| 09 | Inspect isolation and model an accepted promotion | [Environment runbook](../docs/environments.md) | [Environment/promotion lab](labs/09-environment-promotion.md); a decision model, actual promotion #24 remains open |
+| 10 | Rehearse disposable restore and diagnose stale metrics | [Operations](06-operations.md), [recovery](10-recovery.md) | [Resource/recovery lab](labs/10-resource-recovery.md); Docker wrapper unverified here; off-host proof pending |
+| 11 | Test mocked outbox retries, retention and verification | [Email](11-email.md) | [Email-outbox lab](labs/11-email-outbox.md); actual sending activation #3 remains open |
+| 12 | Deliver a justified stream-contract improvement and evidence | [Working agreement](../docs/project/working-agreement.md) | [Strategy capstone](labs/12-strategy-capstone.md); private learner repair and defended decision |
 
 Every full lab follows: problem → objectives → prerequisites and environment → guided investigation → controlled failure → smallest justified repair → acceptance evidence → reflection → optional extension. Estimate learner time only after a pilot, rather than inventing reliable completion times.
+
+Begin with the [laboratory preflight](labs/README.md). Labs 01–05 can investigate temporary or in-process examples without Docker; image, PostgreSQL concurrency, Compose and restore activities have distinct container prerequisites and execution limits. An authored laboratory map does not imply that all infrastructure exercises or learner transfer solutions have passed.
 
 Failures and destructive exercises run in a learner-owned disposable local environment. Shared dev/QA are coordinated acceptance environments; production is an observation target only when the exercise explicitly permits a read-only check. Public URLs and public fixture passwords are never interchangeable with private credentials.
 

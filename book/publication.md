@@ -43,6 +43,13 @@ See [edition policy](edition.md). HTML is the supported publication output for
 this development edition. A print/PDF edition requires a separate layout proof;
 browser printing is a convenience, not a publication-ready typesetting claim.
 
+To read the downloaded edition without internet access, start a local static
+server in the bundle directory: `python -m http.server 8765 --bind 127.0.0.1
+--directory book-html`, then open `http://127.0.0.1:8765/`. All reading assets are
+local. Directory-style chapter URLs need this server; double-clicking an HTML
+file is not the supported navigation path. External references need internet
+when followed. Stop the static server with Ctrl+C.
+
 Report an erratum as a GitHub issue with edition, chapter/heading, expected and
 observed behavior and a sanitized reproduction. Link a correction to that issue
 in an atomic commit; publish a new edition rather than silently rewriting an
