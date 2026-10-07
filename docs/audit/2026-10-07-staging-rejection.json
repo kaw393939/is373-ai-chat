@@ -1,0 +1,14 @@
+{
+  "experiment": "real-compose-staging-rejection",
+  "status": "passed",
+  "source": "installed chat-deploy from commit b38e6cc",
+  "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d2a4fa2671d9e0f57ad1f314d03d7aaa15ebdde17df283d5aee4d45a5b66a0b",
+  "scope": "root-owned temporary directory; synthetic protected env missing required variables; no live release root",
+  "phase": "validate",
+  "recovery": "active-release-unchanged",
+  "sentinel_bytes_preserved": true,
+  "database_commands_executed": false,
+  "temporary_directory_removed": true,
+  "limitations": "Proves real Docker extraction and Compose configuration rejection before database work; other failure paths remain independently tested with controlled command fakes.",
+  "observed_on": "2026-10-07 UTC"
+}
