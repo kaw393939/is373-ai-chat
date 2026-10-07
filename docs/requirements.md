@@ -25,17 +25,19 @@ Mapping adapted to this proposed app from [The Twelve-Factor App](https://12fact
 
 | Principle or pattern | Concrete use |
 |---|---|
-| Single responsibility | Primary concerns are grouped in routes/use cases/providers; UI and backend boundary refinement remains #16/#17 |
+| Single responsibility | HTTP routes, account/MFA use cases, throttling, provider events and SSE encoding have focused boundaries; the UI separates session/chat hooks from account/admin/message/dialog views |
 | Open/closed | Add a provider adapter without changing chat orchestration |
-| Liskov substitution | Normalization and selected error tests provide partial evidence; complete shared terminal/cancellation semantics remain #12/#18 |
+| Liskov substitution | Adapters emit typed text/usage/terminal events; tests distinguish complete, incomplete, refused, malformed and missing-terminal streams. This proves the tested contract, not every future vendor behavior |
 | Interface segregation | The current chat port exposes streaming; embeddings/tool/image capabilities and their contracts are not implemented |
-| Dependency inversion | Generation receives a provider; use cases still directly depend on SQLAlchemy models and some FastAPI errors (#17) |
+| Dependency inversion | Generation receives a provider; use cases raise domain failures translated by the HTTP adapter. SQLAlchemy models/sessions remain explicit dependencies rather than a generic repository hierarchy |
 | Adapter and strategy | Normalize provider APIs and select models from validated configuration |
-| Unit of work | Short explicit database transactions; clear commit/rollback ownership |
-| State machine | Generation statuses exist; centralized transition enforcement and complete provider terminal-event contracts remain follow-up work (#12/#17/#18), not a fully proved pattern |
+| Unit of work | Short explicit database transactions; independent attempt throttling cannot commit account mutations, and approval/outbox/revocation/audit roll back together |
+| State machine | Typed generation outcomes validate provider terminals; leases identify interrupted work. There is no database-enforced transition graph, so this is a bounded lifecycle model rather than a claim of universal transition enforcement |
 | Policy | Server-enforced roles, ownership, budgets, and model eligibility |
 
 Avoid one class per trivial operation and unnecessary microservices. The transactional email outbox now provides durable asynchronous delivery; add a separate queue only for a demonstrated additional need. Architecture review should assess actual responsibilities and change costs, not pattern counts.
+
+Source tours: [account transaction ownership](../book/03-data.md#who-owns-each-unit-of-work), [stream boundaries](../book/05-streaming.md#keep-transport-at-its-boundary), [provider contract tests](../tests/unit/test_providers.py), [rollback tests](../tests/integration/test_transaction_boundaries.py), [typed UI contracts](../frontend/src/contracts.ts) and [conversation ownership hook](../frontend/src/useConversations.ts). Runtime candidate/production evidence remains distinct from source implementation in the linked issue and release records.
 
 ## Milestones
 
