@@ -19,9 +19,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
+from app.accounts import edit_account
 from app.config import Settings
 from app.db import database
-from app.email import drain, enqueue, make_mailer, token_email
+from app.email import drain, make_mailer, token_email
 from app.exports import owned_export
 from app.middleware import BodyLimit
 from app.models import (
@@ -569,25 +570,7 @@ def create_app(config=None, provider=None):
     async def edit_user(
         uid: str, body: UserEdit, actor=Depends(admin), db: AsyncSession = Depends(session)
     ):
-        if uid == actor.id:
-            raise HTTPException(400, "Use another administrator to change your access")
-        user = await db.get(User, uid, with_for_update=True)
-        if not user:
-            raise HTTPException(404, "User not found")
-        newly_approved = body.approved and not user.approved
-        for key, value in body.model_dump().items():
-            setattr(user, key, value)
-        await revoke_all(db, uid)
-        if newly_approved and user.email_verified:
-            await enqueue(
-                db,
-                config,
-                user.email,
-                "Your Firehose360 account is approved",
-                "You can now sign in at " + config.base_url + ".",
-            )
-        db.add(Audit(actor_id=actor.id, action="user.updated", target_id=uid))
-        await db.commit()
+        user = await edit_account(db, actor, uid, body, config)
         return user_view(user)
 
     @app.post("/api/admin/users/{uid}/recovery")
