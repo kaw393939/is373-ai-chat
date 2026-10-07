@@ -1,4 +1,4 @@
-FROM node:24-alpine AS frontend
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS frontend
 WORKDIR /ui
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
@@ -13,7 +13,6 @@ RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/pytho
 
 FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS runtime
 RUN python -m pip uninstall -y pip \
-    && apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 appuser \
     && useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin appuser
 WORKDIR /app

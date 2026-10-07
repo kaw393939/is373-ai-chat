@@ -72,3 +72,15 @@ Back up PostgreSQL to storage outside the droplet, encrypt/protect backup access
 ## Completion evidence
 
 The finished install guide must be followed on a clean environment. Record installation commands and verified results; Actions URL, commit, image digest, Alembic revision, public TLS/release result, browser smoke result, and successful backup restoration. A pushed image and successful workflow alone do not prove a healthy deployed app.
+
+## Dependency maintenance decision — October 6, 2026
+
+Official registry metadata resolved Node `24-alpine` to `sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1`, matching the new Dockerfile pin. Python and PostgreSQL already used immutable digests; CI's PostgreSQL service now shares that pin. The mutable `apt-get upgrade` step was removed: OS fixes arrive through a reviewed base-image digest update and the same image test/scan gates. Pinning preserves a reviewable input; it also requires timely updates. Locked Python/npm dependencies and these image digests do not prove bit-for-bit rebuilds across architectures, build engines or changing package indexes.
+
+The official release API and `action.yml` at the pinned commits confirm checkout v7.0.1, upload-artifact v7.0.1 and download-artifact v8.0.1 use Node 24. The download action replaces the deprecated Node 20 revision. GitHub-hosted runners supply the supported runtime; a future self-hosted runner requires a separate compatibility review. Trivy v0.75.0 remains the current official release and its installer verifies platform checksums.
+
+Dependabot checks Actions, Docker, Compose, npm and uv weekly. Review changelogs/advisories, regenerate locks with the repository's pinned uv when needed, and require the complete image, migration, browser and vulnerability gates before promotion. No automatic merge is configured. GitHub currently documents uv support through v0.11 while this project uses v0.12.15; inspect bot lockfile changes and rerun `uv sync --frozen` rather than assuming support for every new lock format. Review scanner/tool pins monthly and promptly for relevant security advisories.
+
+CI retains scan/SBOM/test evidence for 90 days; published release evidence must also be attached to the GitHub Release for durable traceability beyond Actions retention. The historical d65a19c8 scan contained eight unique unfixed HIGH OS advisories. That is historical exposure, not a claim that a future candidate has the same findings. Reassess the full JSON report on every build, keep the fixable HIGH/CRITICAL gate, and record unresolved exposure and available fixes without blanket suppression. The clean-build/scan acceptance for this change is pending the coordinated CI run.
+
+Primary sources: [Docker build input pinning](https://docs.docker.com/build/building/best-practices/#pin-base-image-versions), [download-artifact v8.0.1](https://github.com/actions/download-artifact/releases/tag/v8.0.1), [GitHub supported ecosystems](https://docs.github.com/en/code-security/reference/supply-chain-security/supported-ecosystems-and-repositories), [Trivy releases](https://github.com/aquasecurity/trivy/releases).
