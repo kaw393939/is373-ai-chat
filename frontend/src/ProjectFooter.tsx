@@ -9,6 +9,10 @@ export function ProjectFooter() {
     ["Issues / roadmap", `${repository}/issues`],
     ["Security report", `${repository}/security/policy`],
     ["Licenses", `${repository}/blob/main/NOTICE`],
+    [
+      "Privacy",
+      `${repository}/blob/main/docs/decisions/0002-data-retention-and-export.md`,
+    ],
   ];
   return (
     <footer className="project-footer">
