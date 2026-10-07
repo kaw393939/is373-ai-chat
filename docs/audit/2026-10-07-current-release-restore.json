@@ -1,0 +1,172 @@
+{
+  "successful_rehearsal": {
+    "status": "passed",
+    "scope": "New resource-limited loopback PostgreSQL restoration and current-image ORM reads",
+    "secret_values_or_database_fingerprints_emitted": false,
+    "exclusions": [
+      "Download/decryption, operator response and source backup creation are outside the measured restoration interval.",
+      "Host, OS, DNS, TLS, proxy, configuration, provider and mail-service recovery are not rehearsed.",
+      "Production remains writable; a dump/source snapshot mismatch can reflect intervening writes and must not be called a successful comparison.",
+      "ORM reading does not decrypt MFA/outbox payloads, authenticate users or establish external mail delivery."
+    ],
+    "database_comparison_finished_at_utc": "2026-10-07T01:38:52.820832+00:00",
+    "database_restore_and_comparison_seconds": 9.489,
+    "schema_revision_matches": true,
+    "schema_definitions_match": true,
+    "table_inventory_matches": true,
+    "server_major_version_matches": true,
+    "whole_row_comparison_matches": {
+      "audit_events": true,
+      "conversations": true,
+      "daily_usage": true,
+      "email_outbox": true,
+      "generations": true,
+      "messages": true,
+      "mfa_challenges": true,
+      "mfa_recovery_codes": true,
+      "recovery_tokens": true,
+      "refresh_tokens": true,
+      "role_budgets": true,
+      "sessions": true,
+      "throttles": true,
+      "users": true
+    },
+    "count_matches": {
+      "audit_events": true,
+      "conversations": true,
+      "daily_usage": true,
+      "email_outbox": true,
+      "generations": true,
+      "messages": true,
+      "mfa_challenges": true,
+      "mfa_recovery_codes": true,
+      "recovery_tokens": true,
+      "refresh_tokens": true,
+      "role_budgets": true,
+      "sessions": true,
+      "throttles": true,
+      "users": true
+    },
+    "counts": {
+      "audit_events": 2,
+      "conversations": 2,
+      "daily_usage": 3,
+      "email_outbox": 0,
+      "generations": 2,
+      "messages": 4,
+      "mfa_challenges": 0,
+      "mfa_recovery_codes": 0,
+      "recovery_tokens": 0,
+      "refresh_tokens": 16,
+      "role_budgets": 2,
+      "sessions": 11,
+      "throttles": 3,
+      "users": 2
+    },
+    "eligible_admin_count": 1,
+    "pending_outbox_count": 0,
+    "empty_source_outbox_limits_pending_delivery_evidence": true,
+    "matching_current_image_orm_read": true,
+    "current_image_version_matches": true,
+    "current_image_commit_matches": true,
+    "current_image_selection_unchanged": true,
+    "new_disposable_resources_created": 2,
+    "new_disposable_resources_removed": 2,
+    "new_disposable_container_removed": true,
+    "observed_at_utc": "2026-10-07T01:39:07.602751+00:00",
+    "private_stderr_log_written": false
+  },
+  "prior_attempts": [
+    {
+      "status": "failed",
+      "scope": "New resource-limited loopback PostgreSQL restoration and current-image ORM reads",
+      "secret_values_or_database_fingerprints_emitted": false,
+      "exclusions": [
+        "Download/decryption, operator response and source backup creation are outside the measured restoration interval.",
+        "Host, OS, DNS, TLS, proxy, configuration, provider and mail-service recovery are not rehearsed.",
+        "Production remains writable; a dump/source snapshot mismatch can reflect intervening writes and must not be called a successful comparison.",
+        "ORM reading does not decrypt MFA/outbox payloads, authenticate users or establish external mail delivery."
+      ],
+      "failed_phase": "restore_private_dump",
+      "new_disposable_resources_created": 1,
+      "new_disposable_resources_removed": 1,
+      "new_disposable_container_removed": true,
+      "observed_at_utc": "2026-10-07T01:33:49.646569+00:00"
+    },
+    {
+      "status": "failed",
+      "scope": "New resource-limited loopback PostgreSQL restoration and current-image ORM reads",
+      "secret_values_or_database_fingerprints_emitted": false,
+      "exclusions": [
+        "Download/decryption, operator response and source backup creation are outside the measured restoration interval.",
+        "Host, OS, DNS, TLS, proxy, configuration, provider and mail-service recovery are not rehearsed.",
+        "Production remains writable; a dump/source snapshot mismatch can reflect intervening writes and must not be called a successful comparison.",
+        "ORM reading does not decrypt MFA/outbox payloads, authenticate users or establish external mail delivery."
+      ],
+      "failed_phase": "restore_private_dump",
+      "failure_category": "restore-format-incompatible",
+      "failure_target_health": {
+        "target_oom_killed": false,
+        "target_running": true,
+        "target_exit_code": 0,
+        "target_tmpfs_total_bytes": 134217728,
+        "target_tmpfs_used_bytes": 47804416,
+        "target_tmpfs_available_bytes": 86413312,
+        "target_health_complete": true
+      },
+      "new_disposable_resources_created": 1,
+      "new_disposable_resources_removed": 1,
+      "new_disposable_container_removed": true,
+      "observed_at_utc": "2026-10-07T01:37:20.791552+00:00",
+      "private_stderr_log_written": true
+    }
+  ],
+  "archive": {
+    "archive": "daily-20261007T013252Z.tar.age",
+    "created_at": "2026-10-07T01:32:52.287075+00:00",
+    "schema": "0003",
+    "image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+    "ciphertext_bytes": 41160,
+    "ciphertext_sha256": "c169ccb2a1a89057d32544afca2003789c2d83de93b0cde7b9e8089feb0d1dc3",
+    "off_host_integrity_verified": true,
+    "age_authentication_verified": true,
+    "archive_paths_and_manifest_hashes_verified": true,
+    "backup_age_seconds_at_database_comparison": 360.534
+  },
+  "application_commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+  "application_version": "2.0.0",
+  "schema": "0003",
+  "helper_failure_diagnosis": {
+    "cause": "Buffered header inspection reset the logical reader position but left the inherited file descriptor at byte4096; pg_restore skipped archive header.",
+    "production_runtime_affected": false,
+    "fix": "Use an unbuffered dump reader before header inspection and descriptor inheritance.",
+    "real_child_reproduction": {
+      "observed_at_utc": "2026-10-07T01:38:16.751394+00:00",
+      "scope": "Local synthetic file plus real child stdin; no database or host restore",
+      "results": {
+        "buffered_original": {
+          "logical_position": 0,
+          "descriptor_position": 20005,
+          "child_reads_archive_magic": false
+        },
+        "unbuffered_fixed": {
+          "logical_position": 0,
+          "descriptor_position": 0,
+          "child_reads_archive_magic": true
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "both_new_containers_removed": true,
+    "server_plaintext_dump_helper_and_diagnostic_scratch_removed": true,
+    "local_plaintext_archive_scratch_removed": true,
+    "encrypted_vault_archives_retained": true
+  },
+  "schema_comparison_scope": "Logical columns, types, nullability, defaults, indexes, constraints and inventory; database roles, ownership and ACL restoration excluded.",
+  "metric_collector_after_cleanup": {
+    "service_result": "success",
+    "local_backup": "ok",
+    "off_host_backup": "ok"
+  }
+}

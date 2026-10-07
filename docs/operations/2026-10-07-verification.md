@@ -12,7 +12,19 @@ The owner selected existing storage/host access with no new paid resources. [Bac
 
 Database creation, `pg_restore` and count checks took **1.745 seconds** for this small dataset. That interval excludes backup download/decryption, OS/proxy/configuration/service restoration and operator response. The dump was created at 00:34:19 UTC; the measured restore finished at 00:46:49 UTC, a 12-minute-30-second snapshot age. A real incident could lose writes after the dump. Daily scheduling and these timings establish neither a guaranteed recovery point nor a complete host-loss recovery time.
 
-The source outbox was empty; this record does not establish nonempty pending-mail restoration. The new schema-`0003` candidate requires its own release-compatible rehearsal. A second protected identity copy, an agreed actionable failure-alert channel, cloud-account controls and an independent fresh-host/reader exercise are still unverified. The existing Mac is an economical off-host destination with availability limits; it is not always-on storage.
+The historical source outbox was empty; that record does not establish nonempty pending-mail restoration. A second protected identity copy, an agreed actionable failure-alert channel, cloud-account controls and an independent fresh-host/reader exercise are still unverified. The existing Mac is an economical off-host destination with availability limits; it is not always-on storage.
+
+## Current schema-0003 restoration
+
+After production promotion, `daily-20261007T013252Z.tar.age` reached the same Mac vault. Its 41,160-byte ciphertext passed receipt/hash verification, authenticated decryption, safe archive-path review and every manifest checksum. The manifest identifies schema `0003` and the exact accepted application digest `sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221`.
+
+[Current release restoration evidence](../audit/2026-10-07-current-release-restore.json) records a new empty PostgreSQL target with 192-MiB memory, 128-MiB tmpfs, 0.35 CPU, 128 PIDs and a loopback-only port. Read-only source and restored queries matched complete rows/counts across all 14 application tables, schema revision, table inventory and logical column/default/index/constraint definitions. The target held two users, one eligible administrator, two conversations, four messages and two generation records, plus matching usage, audit and session records. Raw private values and database fingerprints were not retained in the public evidence. Database roles, object ownership and ACL restoration were excluded from this isolated content/schema check.
+
+Database creation/readiness, restore and comparison took **9.489 seconds**. At the comparison, the dump was **360.534 seconds old**. That measures this small database phase and snapshot age, not a full recovery time or guaranteed recovery point; download/decryption, application reading, service/configuration/OS/TLS restoration and operator response are excluded. The matching deployed image subsequently read every mapped row using SQLAlchemy with read-only access and no provider/mail startup. Both newly created test containers and all server/Mac plaintext scratch were removed. Ciphertext stayed in the vault; the metrics collector again reported both backup copies fresh.
+
+The first two attempts exposed a defect in the private rehearsal helper. A buffered Python header read followed by `seek(0)` reset its logical position while the descriptor passed to the child stayed at byte 4096. `pg_restore` therefore missed the valid archive header. A real child-process reproduction demonstrated the error; unbuffered reading corrected it. The failed targets were removed, and the final fresh attempt passed. This was a harness defect, not a production runtime or archive defect. The diagnostic attempt showed no OOM and roughly 86 MiB of free tmpfs.
+
+The current outbox and factor tables were empty. This rehearsal therefore does not prove nonempty pending-mail replay, factor-secret decryption or restored-user authentication. Delivered failure alerts and independent host-loss recovery remain separate acceptance work in [#4](https://github.com/kaw393939/is373-ai-chat/issues/4), [#5](https://github.com/kaw393939/is373-ai-chat/issues/5) and [#7](https://github.com/kaw393939/is373-ai-chat/issues/7).
 
 ## Scoped release access
 
@@ -20,7 +32,7 @@ Reviewed root-owned deployment/SSH/release-policy wrappers were installed. Devel
 
 Production requires the owner reviewer, disables administrator bypass and permits self-review in this sole-owner repository. This is authenticated approval, not independent two-person control. Immutable GitHub releases are enabled for subsequent releases. QA has an approved ordinary synthetic smoke account, separate from administrator access and production data. Credentials were passed privately to its environment secrets.
 
-Installing this configuration is separate from executing the new pipeline. Link the successful candidate's image/process/browser/scan results and accepted dev/QA digest before selecting production. Record the production approval, deployment and immutable release separately in [delivery evidence](../implementation-evidence.md).
+The configured pipeline was then executed: [delivery 37556269023](https://github.com/kaw393939/is373-ai-chat/actions/runs/37556269023) passed exact-image tests, development, QA and host attestation; [promotion 37557347918](https://github.com/kaw393939/is373-ai-chat/actions/runs/37557347918) reused the accepted digest for production/schema `0003`. [Dated delivery evidence](../audit/2026-10-07-delivery.md) records the immutable `v2.0.0` assets and assistant-delegated owner approval under standing deployment authorization. Protection settings remained enforced; this was not independent human review.
 
 ## Rejected staging model
 
