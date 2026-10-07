@@ -56,3 +56,20 @@ class UserEdit(BaseModel):
     daily_requests: int | None = Field(default=None, ge=1, le=10000)
     daily_units: int | None = Field(default=None, ge=100, le=10000000)
     max_concurrent: int | None = Field(default=None, ge=1, le=4)
+
+
+class MfaChallengeInput(BaseModel):
+    challenge: str = Field(min_length=1, max_length=256)
+
+
+class MfaVerify(MfaChallengeInput):
+    code: str = Field(min_length=1, max_length=64)
+
+
+class MfaReplace(BaseModel):
+    current_password: str = Field(min_length=1, max_length=128)
+    code: str = Field(default="", max_length=64)
+
+
+class MfaCode(BaseModel):
+    code: str = Field(min_length=1, max_length=64)

@@ -24,6 +24,13 @@ from app.config import Settings
 from app.db import database
 from app.email import MailCapacityExceeded, drain, make_mailer, token_email
 from app.exports import owned_export
+from app.mfa import (
+    begin_replacement,
+    confirm_replacement,
+    enroll_challenge,
+    password_challenge,
+    verify_challenge,
+)
 from app.middleware import BodyLimit
 from app.models import (
     Audit,
@@ -39,6 +46,7 @@ from app.models import (
     now,
 )
 from app.pagination import page_rows
+from app.policies import requires_mfa
 from app.providers import make_provider
 from app.schemas import (
     BudgetEdit,
@@ -46,6 +54,10 @@ from app.schemas import (
     Credentials,
     EmailAddress,
     Login,
+    MfaChallengeInput,
+    MfaCode,
+    MfaReplace,
+    MfaVerify,
     Prompt,
     ResetPassword,
     Title,
@@ -153,6 +165,7 @@ def create_app(config=None, provider=None):
             or not user.active
             or not user.approved
             or not user.email_verified
+            or (requires_mfa(user, config) and not family.mfa_verified)
         ):
             raise HTTPException(401, "Session is no longer active")
         request.state.family_id = family.id
@@ -213,6 +226,7 @@ def create_app(config=None, provider=None):
         revision = (await db.execute(text("SELECT version_num FROM alembic_version"))).scalar()
         return {
             "status": "ok",
+            "version": config.version,
             "commit": config.commit_sha,
             "schema": revision,
             "provider": config.provider,
@@ -273,9 +287,52 @@ def create_app(config=None, provider=None):
             raise HTTPException(
                 401, "Invalid credentials or account awaiting verification/approval"
             )
+        if requires_mfa(user, config):
+            response.delete_cookie("refresh", path="/api/auth")
+            return await password_challenge(db, user)
         access, refresh = await new_session(db, user, config)
         set_refresh(response, refresh)
         return {"access_token": access, "user": user_view(user)}
+
+    @app.post("/api/auth/mfa/enroll")
+    async def mfa_enroll(
+        body: MfaChallengeInput, request: Request, db: AsyncSession = Depends(session)
+    ):
+        await throttle(db, "mfa-enroll:" + request.client.host, 5)
+        return await enroll_challenge(db, body.challenge, config)
+
+    @app.post("/api/auth/mfa/verify")
+    async def mfa_verify(
+        body: MfaVerify, request: Request, response: Response, db: AsyncSession = Depends(session)
+    ):
+        await throttle(db, "mfa-verify:" + request.client.host, 10)
+        user, codes = await verify_challenge(db, body.challenge, body.code, config)
+        access, refresh = await new_session(db, user, config, mfa_verified=True)
+        set_refresh(response, refresh)
+        result = {"access_token": access, "user": user_view(user)}
+        if codes is not None:
+            result["recovery_codes"] = codes
+        return result
+
+    @app.get("/api/auth/mfa")
+    async def mfa_status(user=Depends(current)):
+        return {"enrolled": bool(user.mfa_secret)}
+
+    @app.post("/api/auth/mfa/replace")
+    async def mfa_replace(
+        body: MfaReplace, user=Depends(current), db: AsyncSession = Depends(session)
+    ):
+        await throttle(db, "mfa-replace:" + user.id, 5)
+        if not await password_valid(body.current_password, user.password_hash):
+            raise HTTPException(401, "Current password is incorrect")
+        return await begin_replacement(db, user, body.code, config)
+
+    @app.post("/api/auth/mfa/confirm")
+    async def mfa_confirm(
+        body: MfaCode, user=Depends(current), db: AsyncSession = Depends(session)
+    ):
+        await throttle(db, "mfa-confirm:" + user.id, 5)
+        return await confirm_replacement(db, user, body.code, config)
 
     @app.post("/api/auth/refresh")
     async def refresh(request: Request, response: Response, db: AsyncSession = Depends(session)):

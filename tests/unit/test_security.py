@@ -59,6 +59,8 @@ def test_passwords_and_tokens():
     [
         {"registration_policy": "anything"},
         {"provider": "invalid"},
+        {"admin_mfa_required": True},
+        {"mfa_encryption_key": "invalid"},
         {"app_env": "production"},
         {"app_env": "production", "jwt_secret": "x" * 64},
         {"app_env": "production", "jwt_secret": "x" * 64, "base_url": "https://example.org"},

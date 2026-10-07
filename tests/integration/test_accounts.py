@@ -10,7 +10,7 @@ from tests.conftest import PASSWORD, login, signup
 async def test_registration_login_logout_and_headers(client):
     assert (await client.get("/api/auth/me")).status_code == 401
     assert (await client.get("/")).status_code == 200
-    assert (await client.get("/api/health")).json()["schema"] == "0002"
+    assert (await client.get("/api/health")).json()["schema"] == "0003"
     assert (await client.get("/api/missing")).status_code == 404
     r = await client.post(
         "/api/auth/login", json={"email": "missing@example.org", "password": PASSWORD}

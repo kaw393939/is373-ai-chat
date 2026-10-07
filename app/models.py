@@ -29,6 +29,10 @@ class User(Base):
     daily_requests: Mapped[int | None] = mapped_column(Integer)
     daily_units: Mapped[int | None] = mapped_column(Integer)
     max_concurrent: Mapped[int | None] = mapped_column(Integer)
+    mfa_secret: Mapped[str | None] = mapped_column(Text)
+    mfa_last_counter: Mapped[int] = mapped_column(default=-1)
+    mfa_pending_secret: Mapped[str | None] = mapped_column(Text)
+    mfa_pending_expires_at: Mapped[float | None]
     created_at: Mapped[float] = mapped_column(default=now)
 
 
@@ -48,6 +52,7 @@ class Family(Base):
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     revoked: Mapped[bool] = mapped_column(default=False)
     expires_at: Mapped[float]
+    mfa_verified: Mapped[bool] = mapped_column(default=False)
 
 
 class Refresh(Base):
@@ -141,3 +146,20 @@ class Audit(Base):
     action: Mapped[str] = mapped_column(String(64))
     target_id: Mapped[str] = mapped_column(String(36))
     created_at: Mapped[float] = mapped_column(default=now)
+
+
+class MfaChallenge(Base):
+    __tablename__ = "mfa_challenges"
+    digest: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    expires_at: Mapped[float]
+    attempts: Mapped[int] = mapped_column(default=0)
+    used: Mapped[bool] = mapped_column(default=False)
+    enrollment_secret: Mapped[str | None] = mapped_column(Text)
+
+
+class MfaRecovery(Base):
+    __tablename__ = "mfa_recovery_codes"
+    digest: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    used: Mapped[bool] = mapped_column(default=False)

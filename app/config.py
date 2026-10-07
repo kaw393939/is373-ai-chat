@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     email_from: str = "accounts@notify.firehose360.com"
     email_reply_to: str = "keith@firehose360.com"
     email_encryption_key: str = ""
+    admin_mfa_required: bool = False
+    mfa_encryption_key: str = ""
 
     @model_validator(mode="after")
     def production_contract(self):
@@ -40,6 +42,10 @@ class Settings(BaseSettings):
             from cryptography.fernet import Fernet
 
             Fernet(self.email_encryption_key.encode())
+        if self.mfa_encryption_key or self.admin_mfa_required:
+            from cryptography.fernet import Fernet
+
+            Fernet(self.mfa_encryption_key.encode())
         if self.email_provider == "resend" and not self.resend_api_key:
             raise ValueError("Resend requires its sending API key")
         if self.app_env == "production":
@@ -62,3 +68,7 @@ class Settings(BaseSettings):
     @property
     def assets(self):
         return Path(self.static_dir)
+
+    @property
+    def version(self):
+        return (Path(__file__).resolve().parent.parent / "VERSION").read_text().strip()

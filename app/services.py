@@ -15,6 +15,7 @@ from app.models import (
     Family,
     Generation,
     Message,
+    MfaChallenge,
     Recovery,
     Refresh,
     RoleBudget,
@@ -22,6 +23,7 @@ from app.models import (
     User,
     now,
 )
+from app.policies import requires_mfa
 from app.providers import StreamEnd, TextDelta, TokenUsage
 from app.security import access_token, digest, secret_token
 
@@ -57,8 +59,10 @@ async def throttle(session, identity, limit=10):
         raise HTTPException(429, "Too many attempts; try again in a minute")
 
 
-async def new_session(session, user, config):
-    family = Family(user_id=user.id, expires_at=now() + config.refresh_days * 86400)
+async def new_session(session, user, config, mfa_verified=False):
+    family = Family(
+        user_id=user.id, expires_at=now() + config.refresh_days * 86400, mfa_verified=mfa_verified
+    )
     session.add(family)
     await session.flush()
     value = secret_token()
@@ -87,6 +91,7 @@ async def rotate(session, value, config):
         or not user.active
         or not user.approved
         or not user.email_verified
+        or (requires_mfa(user, config) and not family.mfa_verified)
     ):
         raise HTTPException(401, "Session revoked or expired")
     token.used = True
@@ -97,6 +102,14 @@ async def rotate(session, value, config):
 
 
 async def revoke_all(session, user_id):
+    await session.execute(
+        update(MfaChallenge).where(MfaChallenge.user_id == user_id).values(used=True)
+    )
+    await session.execute(
+        update(User)
+        .where(User.id == user_id)
+        .values(mfa_pending_secret=None, mfa_pending_expires_at=None)
+    )
     await session.execute(update(Family).where(Family.user_id == user_id).values(revoked=True))
     await session.execute(
         update(Generation)
