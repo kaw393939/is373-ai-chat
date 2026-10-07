@@ -36,4 +36,6 @@ Authorized operators install the root-owned fixed deployment wrappers and policy
 
 A DNS answer, verified HTTPS response, migrated schema, login journey and cross-environment rejection establish different facts. Account-side firewall, alerting and backup settings still require their own proof. Installing the metrics collector and backup timer is also separate from merely starting the app image.
 
+Process behavior needs a separate experiment. The [two-replica fault harness](../tests/process/README.md) runs only on disposable loopback PostgreSQL and fixed test ports. It races admission across real processes, sends SIGTERM during a stream, waits for the actual lease after KILL, and restarts mail after synthetic acceptance before its database commit. A clean exit once concealed an unsaved partial answer; explicit generator closure and finalizer joining repaired it. Read the recorded timings and durable state, and distinguish source debugging from the CI experiment on the exact release image.
+
 **Laboratory:** [Lab 09 — environment promotion](labs/09-environment-promotion.md); shared dev/QA are observation/acceptance environments, not learner failure targets. **Evaluate:** compare the current low-cost topology with separate QA infrastructure using cost, data, failure and recovery criteria. No high-availability or zero-downtime claim is made.

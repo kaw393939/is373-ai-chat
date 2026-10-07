@@ -1,0 +1,54 @@
+{
+  "observed_at_utc": "2026-10-07T01:04:20Z",
+  "runtime_source_commit": "68ba67bc7f6402a9b2065e5e51876ece70f779fa",
+  "runtime_app_tree": "f4360f34b60a82d126433cfd643e5aeae5094c29",
+  "result": {
+    "status": "passed",
+    "mode": "local-source-debug",
+    "commit": "local-working-tree",
+    "version": "2.0.0",
+    "image": null,
+    "checks": [
+      {
+        "case": "global race across two replicas",
+        "accepted": 2,
+        "refused": 1
+      },
+      {
+        "case": "user race across two replicas",
+        "accepted": 1,
+        "refused": 1
+      },
+      {
+        "case": "conversation/replay races",
+        "conversation_refusal": 429,
+        "replay_refusal": 409
+      },
+      {
+        "case": "SIGTERM active stream",
+        "seconds": 10.277,
+        "terminal": "cancelled",
+        "partial_characters": 49,
+        "active_after": 0
+      },
+      {
+        "case": "KILL lease recovery",
+        "lease_seconds": 149.974,
+        "reclaimed_after_expiry_seconds": 1.307,
+        "terminal": "interrupted",
+        "surviving_partial_characters": 0,
+        "prompt_and_reservation_survived": true
+      },
+      {
+        "case": "mail accepted-before-commit KILL/restart",
+        "provider_attempts": 2,
+        "accepted_deliveries": 1,
+        "outbox": "sent",
+        "payload_erased": true
+      }
+    ],
+    "scope": "all",
+    "phase": "mail",
+    "separate_os_processes": true
+  }
+}

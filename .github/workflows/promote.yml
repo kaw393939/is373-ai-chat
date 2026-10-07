@@ -48,6 +48,11 @@ jobs:
           path: evidence
           run-id: ${{ inputs.candidate_run }}
           github-token: ${{ github.token }}
+      - name: Require complete exact-image process evidence
+        env:
+          COMMIT: ${{ steps.candidate.outputs.commit }}
+          RELEASE_VERSION: ${{ steps.candidate.outputs.version }}
+        run: python3 -c 'import json,os; p=json.load(open("evidence/process.json")); assert p["status"] == "passed" and p["mode"] == "exact-image" and p["scope"] == "all" and p["commit"] == os.environ["COMMIT"] and p["version"] == os.environ["RELEASE_VERSION"]'
       - name: Promote same accepted digest
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}

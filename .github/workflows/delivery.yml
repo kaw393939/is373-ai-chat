@@ -41,7 +41,7 @@ jobs:
         run: |
           uv run ruff check app tests deploy
           uv run ruff format --check app tests deploy migrations
-          uv run pytest tests/deployment tests/operations -q
+          uv run pytest tests/deployment tests/operations tests/process/test_safety.py -q
           uv run ruff check scripts/backup-vault.py
           uv run pytest --cov --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml
       - name: Check migration parity
@@ -74,6 +74,13 @@ jobs:
           .tools/trivy/trivy image --format json --output artifacts/vulnerabilities.json chat:ci
           .tools/trivy/trivy image --format cyclonedx --output artifacts/sbom.json chat:ci
           .tools/trivy/trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed chat:ci
+      - name: Exact-image two-replica admission and termination faults
+        env:
+          PROCESS_DATABASE_URL: postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/process_test
+          PROCESS_ALLOW_RESET: process_test
+        run: |
+          docker exec "${{ job.services.postgres.id }}" psql -U chat_test -d chat_test -c 'CREATE DATABASE process_test'
+          uv run python tests/process/experiment.py --image chat:ci
       - name: Save tested artifact
         run: |
           mkdir -p release

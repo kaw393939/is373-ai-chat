@@ -49,6 +49,7 @@ services:
     pids_limit: 128
     restart: unless-stopped
     logging: *logging
+    stop_grace_period: 20s
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=${TRAEFIK_NETWORK:-web}"

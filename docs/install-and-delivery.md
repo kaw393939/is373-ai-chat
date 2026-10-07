@@ -60,7 +60,8 @@ flowchart LR
     Checks --> Image[Build image once with VERSION + commit]
     Image --> Browser[Isolated image browser tests]
     Browser --> Scan[Scan + SBOM]
-    Scan --> Publish[Main only: publish saved image]
+    Scan --> Faults[Two-replica process faults]
+    Faults --> Publish[Main only: publish saved image]
     Publish --> Dev[Deploy digest to development]
     Dev --> QA[Deploy / migrate / browser / smoke QA]
     QA --> Accept[Root-owned QA attestation]
@@ -69,7 +70,7 @@ flowchart LR
     Prod --> Release[Immutable tag / release / durable evidence]
 ```
 
-[Delivery](../.github/workflows/delivery.yml) builds/tests linux/amd64, saves the image, then publishes that saved artifact. PRs have no deployment credentials. Manual delivery runs verify without publishing. Main's successful verification publishes, deploys development, then deploys QA and tests verified HTTPS, version/commit/schema, ordinary login, mock streaming, persistence after reload, refresh and logout. The probe creates and removes only its synthetic conversation; it cannot target production, register users, change roles or invoke paid providers/mail. The destructive classroom browser suite retains its separate loopback/nonce guard.
+[Delivery](../.github/workflows/delivery.yml) builds/tests linux/amd64, runs isolated browser and two-process fault experiments on that image, saves it, then publishes the saved artifact. PRs have no deployment credentials. Manual delivery runs verify without publishing. Main's successful verification publishes, deploys development, then deploys QA and tests verified HTTPS, version/commit/schema, ordinary login, mock streaming, persistence after reload, refresh and logout. The probe creates and removes only its synthetic conversation; it cannot target production, register users, change roles or invoke paid providers/mail. The destructive classroom browser suite retains its separate loopback/nonce guard.
 
 Failed migration, browser or smoke checks prevent an accepted candidate. A later attestation job independently checks GitHub's completed QA job and the current host release/health. [Promotion](../.github/workflows/promote.yml) accepts only a successful main delivery run ID, downloads its candidate and evidence, and checks its commit/workflow/job result and unused version. The server rechecks the completed run and private current QA attestation. A newer QA deployment invalidates an older selection. Both workflows share non-cancelling release concurrency; the root-owned host lock covers all release operations too.
 
@@ -77,9 +78,11 @@ Select a candidate using GitHub Actions → **Promote accepted QA release**, mai
 
 ## Database deployment and recovery
 
-Under the shared host lock, the deployer stages Compose from the selected image, validates required variables/configuration, starts/waits for its own PostgreSQL, records schema and creates a private nonempty custom-format dump. Only then does it replace active Compose, run `alembic upgrade head` once, seed defaults, start/wait for the app, compare health identity and atomically record success. Every setup step is inside recovery handling. The backup is mode 0600; failed/empty backup creation stops promotion. Daily/off-host backup recovery is a separate operation from this pre-migration dump.
+Under the shared host lock, the deployer stages Compose from the selected image, validates required variables/configuration, starts/waits for its own PostgreSQL, records schema and creates a private nonempty custom-format dump. The dump streams into protected staging and is fsynced/renamed after success, avoiding memory proportional to database size. Only then does it replace active Compose, run `alembic upgrade head` once, seed defaults, start/wait for the app, compare health identity and atomically record success. Every setup step is inside recovery handling. The backup is mode 0600; failed/empty backup creation stops promotion. Daily/off-host backup recovery is a separate operation from this pre-migration dump.
 
 Use expand/contract migrations and review compatibility before deployment. Automatic old-image recovery occurs only when schema is unchanged, or before migration started. Changed/unknown schemas stop the app and record `blocked`; an operator chooses a reviewed forward fix or restores the pre-migration dump into a controlled replacement database. No automatic downgrade occurs. Restoring loses writes after the dump unless separately recovered: declare the recovery point and retain evidence. A single app replacement can interrupt service/streams; zero downtime is not claimed.
+
+Uvicorn has a ten-second graceful shutdown deadline and production/preview Compose gives it a 20-second stop margin. The [two-process experiment](../tests/process/README.md) tests SIGTERM partial finalization, actual 150-second KILL lease reclamation and mail accepted-before-commit restart using synthetic receipts. Abrupt loss may lose emitted text not yet finalized. A working database is needed for graceful cleanup, and later admission reclaims expired leases lazily. Exact-image CI and observed timings are required before treating these settings as measured recovery guarantees.
 
 | Private host record | Meaning |
 |---|---|
