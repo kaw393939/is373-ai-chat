@@ -24,6 +24,7 @@ jobs:
         options: --health-cmd "pg_isready -U chat_test" --health-interval 5s --health-timeout 3s --health-retries 20
     env:
       TEST_DATABASE_URL: postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/chat_test
+      TEST_ALLOW_RESET: chat_test
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install locked Python environment
@@ -49,9 +50,12 @@ jobs:
           docker run --rm --network host -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test chat:ci alembic upgrade head
           docker run --rm --network host -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e ADMIN_PASSWORD=browser-workshop-admin-1234 chat:ci python -m app.cli admin
       - name: Browser test the exact release image
+        env:
+          E2E_URL: http://127.0.0.1:9001
         run: |
-          docker run -d --name browser-app --network host --user 10001:10001 --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 512m --tmpfs /tmp:size=64m -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e BASE_URL=http://localhost:9001 chat:ci uvicorn app.main:create_app --factory --host 127.0.0.1 --port 9001
-          for attempt in $(seq 1 30); do curl -fsS http://localhost:9001/api/health && break || sleep 2; done
+          export E2E_TARGET_TOKEN=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+          docker run -d --name browser-app --network host --user 10001:10001 --read-only --cap-drop ALL --security-opt no-new-privileges --pids-limit 128 --memory 512m --tmpfs /tmp:size=64m -v "$PWD/tests:/lab/tests:ro" -e DATABASE_URL=postgresql+asyncpg://chat_test:ci-only-password@127.0.0.1:5432/browser_test -e TEST_ALLOW_RESET=browser_test -e E2E_TARGET_TOKEN -e E2E_URL -e E2E_STATIC_DIR=/app/frontend/dist -e E2E_COMMIT_SHA="$GITHUB_SHA" chat:ci uvicorn tests.browser_app:create_app --app-dir /lab --factory --host 127.0.0.1 --port 9001
+          for attempt in $(seq 1 30); do curl -fsS "$E2E_URL/api/health" && break || sleep 2; done
           uv run playwright install --with-deps chromium
           uv run pytest tests/e2e -v
       - name: Vulnerability gate and SBOM
@@ -75,7 +79,7 @@ jobs:
         with:
           name: test-evidence
           path: artifacts/
-          retention-days: 7
+          retention-days: 90
   publish:
     needs: verify
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

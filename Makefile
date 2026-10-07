@@ -17,7 +17,7 @@ check:
 test:
 	$(UV) run pytest --cov --cov-report=term-missing --cov-report=xml:artifacts/coverage.xml
 test-e2e:
-	$(UV) run pytest tests/e2e -v
+	$(UV) run python scripts/run-browser-lab.py
 build:
 	docker build --build-arg COMMIT_SHA=$$(git rev-parse HEAD) -t is373-chat:local .
 up:

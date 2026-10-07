@@ -10,6 +10,7 @@ from app.config import Settings
 from app.main import create_app
 from app.models import Base, RoleBudget, User
 from app.security import hash_password
+from tests.targets import disposable_database
 
 PASSWORD = "correct-horse-workshop-123"
 
@@ -25,6 +26,7 @@ def isolated_configuration(monkeypatch):
 @pytest.fixture
 async def application(tmp_path):
     url = os.environ.get("TEST_DATABASE_URL", f"sqlite+aiosqlite:///{tmp_path}/test.db")
+    disposable_database(url, tmp_path, os.environ.get("TEST_ALLOW_RESET"))
     env = {**os.environ, "DATABASE_URL": url, "APP_ENV": "development"}
     subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], env=env, check=True)
     assets = tmp_path / "dist"

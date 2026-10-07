@@ -4,11 +4,19 @@ import os
 from pathlib import Path
 from uuid import uuid4
 
+import pytest
 from playwright.sync_api import expect, sync_playwright
+
+from tests.targets import verify_browser_target
 
 URL = os.environ.get("E2E_URL", "http://localhost:9001")
 ADMIN_EMAIL = os.environ.get("E2E_ADMIN_EMAIL", "admin@example.org")
 ADMIN_PASSWORD = os.environ.get("E2E_ADMIN_PASSWORD", "browser-workshop-admin-1234")
+
+
+@pytest.fixture(scope="module", autouse=True)
+def require_disposable_browser():
+    verify_browser_target(URL, os.environ.get("E2E_TARGET_TOKEN"))
 
 
 def sign_in(page, email=ADMIN_EMAIL, password=ADMIN_PASSWORD):
