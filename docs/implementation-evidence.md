@@ -25,13 +25,23 @@ Recorded October 6, 2026. Executed checks are separate from remaining operationa
 
 ## Current deployed release identity
 
-The currently deployed application release passed verification, publication and deployment in [run 37529676892](https://github.com/kaw393939/is373-ai-chat/actions/runs/37529676892). Public HTTPS health independently returned the matching source commit, healthy status and schema `0002`.
+The guarded revision passed verification, publication and deployment in
+[run 37550580435](https://github.com/kaw393939/is373-ai-chat/actions/runs/37550580435).
+It verified 59 PostgreSQL tests, 100% measured Python app coverage, migration
+parity and three nonce-guarded browser journeys against the release image.
+Fixable HIGH/CRITICAL findings and detected secrets were zero. Eight unique
+unfixed HIGH OS advisories remain across 44 records; the full SBOM/report is in
+the development-edition bundle as durable evidence.
 
-- Source: `d65a19c8d3cd344d31b8f01103fe5e3137a8485d`
-- Image: `ghcr.io/kaw393939/is373-ai-chat@sha256:9bed602fcea38a5cc0a613e8440ce2b4663cbc6838e89c93411112e41edc4997`
-- Application: [firehose360.com](https://firehose360.com)
+- Source: `d8d11a71db3779b00463eb36c9cd6d2118d1989c`
+- Image: `ghcr.io/kaw393939/is373-ai-chat@sha256:1d2a4fa2671d9e0f57ad1f314d03d7aaa15ebdde17df283d5aee4d45a5b66a0b`
+- Application: [firehose360.com](https://firehose360.com); public HTTPS health confirmed source and schema `0002`.
 
-Later documentation-only commits do not change this deployed application identity. The first complete deployment is independently recorded in [run 37523682890](https://github.com/kaw393939/is373-ai-chat/actions/runs/37523682890).
+This revision changes test boundaries and teaching/build material; application
+source behavior remains the earlier case-study implementation. Later prose-only
+commits do not change the deployed image identity. The historical foundation is
+recorded in [run 37529676892](https://github.com/kaw393939/is373-ai-chat/actions/runs/37529676892)
+and the first complete deployment in [run 37523682890](https://github.com/kaw393939/is373-ai-chat/actions/runs/37523682890).
 
 ## Remaining operational work
 
