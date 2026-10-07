@@ -1,0 +1,16 @@
+License scope
+=============
+Original software, configuration and code examples: MIT (LICENSE).
+Original educational prose in book/ and docs/: CC BY 4.0 (LICENSE-CONTENT).
+Embedded source excerpts remain MIT even when included in the book.
+Copyright 2026 Keith Williams and credited contributors.
+
+These licenses do not relicense third-party quotations, external publications,
+dependency packages, trademarks, or historical source material. Retain their
+respective notices. See book/publication.md for the third-party material register
+and authorship/AI-assistance disclosure.
+
+Suggested book credit: Keith Williams and contributors, From Request to Release,
+development edition, https://github.com/kaw393939/is373-ai-chat, CC BY 4.0.
+For adaptations, identify changes and retain the license link:
+https://creativecommons.org/licenses/by/4.0/.
