@@ -3,7 +3,7 @@ WORKDIR /ui
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
 COPY frontend ./
-RUN npm run format:check && npm run build
+RUN npm test && npm run format:check && npm run build
 
 FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS dependencies
 WORKDIR /app
@@ -25,8 +25,8 @@ COPY deploy ./deploy
 COPY VERSION ./VERSION
 ENV PATH="/app/.venv/bin:$PATH" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 STATIC_DIR=/app/frontend/dist
 ARG COMMIT_SHA=development
-ARG APP_VERSION
-RUN test -n "$APP_VERSION" && test "$(cat VERSION)" = "$APP_VERSION"
+ARG APP_VERSION=unreleased
+RUN test "$APP_VERSION" = unreleased || test "$(cat VERSION)" = "$APP_VERSION"
 ENV COMMIT_SHA=$COMMIT_SHA
 LABEL org.opencontainers.image.source="https://github.com/kaw393939/is373-ai-chat" org.opencontainers.image.revision=$COMMIT_SHA org.opencontainers.image.version=$APP_VERSION
 USER 10001:10001

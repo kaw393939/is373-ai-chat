@@ -2,6 +2,7 @@
 """Fixed-repository deployer: validate staging before changing the active model."""
 
 import fcntl
+import importlib.util
 import json
 import os
 import re
@@ -14,6 +15,15 @@ from pathlib import Path
 DIGEST = re.compile(r"sha256:[a-f0-9]{64}")
 SHA = re.compile(r"[a-f0-9]{40}")
 REPOSITORY = "ghcr.io/kaw393939/is373-ai-chat"
+
+
+def policy_module():
+    installed = Path("/usr/local/lib/chat-release-policy.py")
+    source = installed if installed.exists() else Path(__file__).with_name("release_policy.py")
+    spec = importlib.util.spec_from_file_location("release_policy", source)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def atomic_write(path, value):
@@ -68,7 +78,7 @@ def health(run, compose):
     )
 
 
-def deploy(root, image, commit, run, environment):
+def deploy(root, image, commit, run, environment, version=None, stage="production", run_id=None):
     """Recover setup failures; never auto-downgrade a schema-changing release."""
     env_file = root / ".env"
     if not env_file.is_file() or env_file.stat().st_mode & 0o077:
@@ -82,7 +92,15 @@ def deploy(root, image, commit, run, environment):
     before, changed, phase = None, False, "extract"
     backup = root / "backups"
     backup.mkdir(mode=0o700, exist_ok=True)
-    attempt = {"status": "failed", "commit": commit, "image": image, "at": time.time()}
+    attempt = {
+        "status": "failed",
+        "commit": commit,
+        "image": image,
+        "version": version,
+        "environment": stage,
+        "run_id": run_id,
+        "at": time.time(),
+    }
     with tempfile.TemporaryDirectory(prefix="candidate-", dir=root) as directory:
         candidate = Path(directory) / "compose.yaml"
         compose = ["docker", "compose", "--project-directory", str(root), "-f", str(candidate)]
@@ -98,7 +116,8 @@ def deploy(root, image, commit, run, environment):
         try:
             probe = run(["docker", "create", image]).decode().strip()
             try:
-                run(["docker", "cp", probe + ":/app/deploy/compose.yaml", str(candidate)])
+                model = "compose.yaml" if stage == "production" else "compose.preview.yaml"
+                run(["docker", "cp", probe + ":/app/deploy/" + model, str(candidate)])
             finally:
                 run(["docker", "rm", probe])
             phase = "validate"
@@ -123,12 +142,22 @@ def deploy(root, image, commit, run, environment):
             observed = health(run, active)
             if observed["commit"] != commit or observed["schema"] != schema(run, active):
                 raise RuntimeError("Running release identity mismatch")
+            if version is not None and observed.get("version") != version:
+                raise RuntimeError("Running release version mismatch")
+            if stage != "production" and observed.get("provider") != "mock":
+                raise RuntimeError("Preview provider must be mock")
             phase = "record"
             record = {
                 "status": "deployed",
                 "image": image,
                 "commit": commit,
+                "version": version,
+                "environment": stage,
+                "run_id": run_id,
                 "schema": observed["schema"],
+                "previous_schema": before,
+                "backup": attempt["backup"],
+                "recovery": "previous image only when schema unchanged; otherwise operator restore",
                 "deployed_at": time.time(),
             }
             atomic_write(root / "current-image", (image + "\n").encode())
@@ -170,6 +199,9 @@ def deploy(root, image, commit, run, environment):
                     attempt["recovery"] = "operator-required-app-stopped"
             except Exception:
                 attempt["recovery"] = "operator-required-recovery-failed"
+                atomic_write(
+                    root / "release.json", json.dumps({**attempt, "status": "blocked"}).encode()
+                )
             atomic_write(root / "last-attempt.json", json.dumps(attempt).encode())
             raise RuntimeError(
                 "Deployment failed during " + phase + "; " + attempt["recovery"]
@@ -178,16 +210,78 @@ def deploy(root, image, commit, run, environment):
 
 def main(arguments=None):
     arguments = sys.argv[1:] if arguments is None else arguments
-    if len(arguments) != 2 or not DIGEST.fullmatch(arguments[0]) or not SHA.fullmatch(arguments[1]):
-        raise SystemExit("Expected image digest and source commit")
-    root = Path("/opt/is373-ai-chat")
+    policy = policy_module()
+    if len(arguments) != 5:
+        raise SystemExit("Expected a scoped release command")
+    operation = arguments[0]
+    if operation == "deploy" and arguments[1] in {"dev", "qa"}:
+        stage = arguments[1]
+        expected = policy.identity(*arguments[2:])
+        number = None
+    elif operation in {"attest", "promote"}:
+        stage = "qa" if operation == "attest" else "production"
+        expected = policy.identity(*arguments[1:4])
+        number = policy.run_id(arguments[4])
+    else:
+        raise SystemExit("Unsupported release operation or environment")
+    root = policy.ROOTS[stage]
     root.mkdir(mode=0o700, exist_ok=True)
-    with open(root / "deploy.lock", "w") as lock:
+    # One shared host has one release critical section, including QA attestation.
+    state = Path("/var/lib/chat-release")
+    state.mkdir(mode=0o700, exist_ok=True)
+    if state.stat().st_uid != 0 or state.stat().st_mode & 0o077:
+        raise SystemExit("Release lock directory must be root-owned mode 0700")
+    with open(state / "deploy.lock", "w") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
+        os.chmod(lock.name, 0o600)
         credential = sys.stdin.readline().strip()
         if not credential:
             raise SystemExit("Registry pull credential required")
         environment = os.environ.copy()
+        environment["DEPLOY_ENV"] = stage
+        environment["APP_IMAGE"] = expected["image"]
+        api = policy.GitHub(credential)
+        if operation == "attest":
+            policy.verify_run(api, number, expected, finished=False)
+            current = json.loads((root / "release.json").read_text())
+            if current.get("status") != "deployed" or not policy.matches(current, expected):
+                raise SystemExit("QA release identity mismatch")
+            observed = health(
+                Runner(environment),
+                [
+                    "docker",
+                    "compose",
+                    "--project-directory",
+                    str(root),
+                    "-f",
+                    str(root / "compose.yaml"),
+                ],
+            )
+            if (
+                any(
+                    observed.get(key) != current.get(key) for key in ("commit", "version", "schema")
+                )
+                or observed.get("provider") != "mock"
+            ):
+                raise SystemExit("QA health identity mismatch")
+            record = {
+                **expected,
+                "status": "accepted",
+                "schema": current["schema"],
+                "run_id": number,
+                "accepted_at": time.time(),
+            }
+            atomic_write(root / "qa-attestation.json", json.dumps(record).encode())
+            print(json.dumps(record))
+            return
+        history_path = root / "version-history.json"
+        history = json.loads(history_path.read_text()) if history_path.exists() else {}
+        if operation == "promote":
+            if (root / "release.json").exists():
+                previous = json.loads((root / "release.json").read_text())
+                if previous.get("status") == "deployed" and previous.get("version"):
+                    history.setdefault(previous["version"], previous)
+            policy.promotion(api, number, expected, policy.ROOTS["qa"], history)
         with tempfile.TemporaryDirectory(prefix="chat-registry-") as auth:
             environment["DOCKER_CONFIG"] = auth
             run = Runner(environment)
@@ -195,7 +289,7 @@ def main(arguments=None):
                 ["docker", "login", "ghcr.io", "-u", "kaw393939", "--password-stdin"],
                 input=credential.encode(),
             )
-            image = REPOSITORY + "@" + arguments[0]
+            image = expected["image"]
             run(["docker", "pull", image])
             label = (
                 run(
@@ -211,9 +305,55 @@ def main(arguments=None):
                 .decode()
                 .strip()
             )
-            if label != arguments[1]:
+            if label != expected["commit"]:
                 raise SystemExit("Image source commit mismatch")
-            print(json.dumps(deploy(root, image, arguments[1], run, environment)))
+            label_version = (
+                run(
+                    [
+                        "docker",
+                        "image",
+                        "inspect",
+                        image,
+                        "--format",
+                        '{{index .Config.Labels "org.opencontainers.image.version"}}',
+                    ]
+                )
+                .decode()
+                .strip()
+            )
+            embedded = (
+                run(
+                    [
+                        "docker",
+                        "run",
+                        "--rm",
+                        "--network",
+                        "none",
+                        "--entrypoint",
+                        "cat",
+                        image,
+                        "/app/VERSION",
+                    ]
+                )
+                .decode()
+                .strip()
+            )
+            if label_version != expected["version"] or embedded != expected["version"]:
+                raise SystemExit("Image version mismatch")
+            record = deploy(
+                root,
+                image,
+                expected["commit"],
+                run,
+                environment,
+                expected["version"],
+                stage,
+                number,
+            )
+            if operation == "promote":
+                history[expected["version"]] = record
+                atomic_write(history_path, json.dumps(history).encode())
+            print(json.dumps(record))
 
 
 if __name__ == "__main__":

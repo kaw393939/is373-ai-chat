@@ -55,7 +55,14 @@ class Docker:
         if "pg_dump" in args:
             return b"synthetic custom-format dump"
         if "python" in args and "-c" in args:
-            return json.dumps({"commit": "candidate", "schema": self.revision}).encode()
+            return json.dumps(
+                {
+                    "commit": "candidate",
+                    "schema": self.revision,
+                    "version": "2.0.0",
+                    "provider": "mock",
+                }
+            ).encode()
         return b""
 
 
@@ -111,3 +118,36 @@ def test_empty_backup_does_not_migrate_or_promote(installed):
     assert not any("alembic" in args for args in docker.commands)
     assert (installed / "compose.yaml").read_bytes() == b"old compose"
     assert not list((installed / "backups").glob("*.dump"))
+
+
+def test_preview_extracts_its_own_model_and_records_schema_boundary(installed):
+    docker = Docker()
+    record = module.deploy(installed, "candidate image", "candidate", docker, {}, "2.0.0", "qa")
+    assert any(
+        args[2] == "probe:/app/deploy/compose.preview.yaml"
+        for args in docker.commands
+        if args[:2] == ["docker", "cp"]
+    )
+    assert record["environment"] == "qa" and record["version"] == "2.0.0"
+    assert record["schema"] == record["previous_schema"] == "0002"
+
+
+def test_required_protected_configuration_precedes_any_docker_operation(installed):
+    (installed / ".env").chmod(0o644)
+    docker = Docker()
+    with pytest.raises(ValueError, match="0600"):
+        module.deploy(installed, "image", "commit", docker, {})
+    assert docker.commands == []
+
+
+def test_failed_recovery_cannot_leave_a_deployed_status(installed):
+    docker = Docker("backup")
+
+    def failure(args, **kwargs):
+        if args[-2:] == ["db", "app"]:
+            raise RuntimeError("recovery startup failed")
+        return docker(args, **kwargs)
+
+    with pytest.raises(RuntimeError, match="recovery-failed"):
+        module.deploy(installed, "candidate image", "candidate", failure, {})
+    assert json.loads((installed / "release.json").read_text())["status"] == "blocked"

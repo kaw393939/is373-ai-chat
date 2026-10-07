@@ -1,11 +1,37 @@
 #!/usr/bin/env python3
-"""Authorized-key forced command: no shell, forwarding, or arbitrary commands."""
+"""Each authorized key has one fixed environment; all arguments remain data."""
 
 import os
 import re
+import sys
 
-original = os.environ.get("SSH_ORIGINAL_COMMAND", "")
-match = re.fullmatch(r"deploy (sha256:[a-f0-9]{64}) ([a-f0-9]{40})", original)
-if not match:
-    raise SystemExit("Only a verified chat deployment is permitted")
-os.execv("/usr/bin/sudo", ["sudo", "-n", "/usr/local/sbin/chat-deploy", match[1], match[2]])
+
+def command(scope, original):
+    digest, sha, version, number = (
+        r"sha256:[a-f0-9]{64}",
+        r"[a-f0-9]{40}",
+        r"[0-9A-Za-z.-]{5,100}",
+        r"[1-9][0-9]{0,19}",
+    )
+    if scope in {"dev", "qa"} and re.fullmatch(
+        f"deploy {scope} {digest} {sha} {version}", original
+    ):
+        return original.split(" ")
+    operation = "attest" if scope == "qa" else "promote" if scope == "production" else None
+    if operation and re.fullmatch(f"{operation} {digest} {sha} {version} {number}", original):
+        return original.split(" ")
+    raise ValueError("Key scope does not permit this release command")
+
+
+def main():
+    if len(sys.argv) != 2:
+        raise SystemExit("Authorized key must declare its environment")
+    try:
+        arguments = command(sys.argv[1], os.environ.get("SSH_ORIGINAL_COMMAND", ""))
+    except ValueError as error:
+        raise SystemExit(str(error)) from None
+    os.execv("/usr/bin/sudo", ["sudo", "-n", "/usr/local/sbin/chat-deploy", *arguments])
+
+
+if __name__ == "__main__":
+    main()

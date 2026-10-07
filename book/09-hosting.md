@@ -22,7 +22,7 @@ For a fresh Ubuntu 24.04 droplet, [observed-host recreation](../docs/recreate-ob
 
 On the existing classroom host, the app reuses `/opt/webserver` and Docker network `web` while owning a separate project. It publishes no app/database host ports. Priority-100 Host rules select the chat; the old Apache teaching content and unrelated calculator remain separately routed. This overlap must be inspected when adapting another host, not assumed from the sample IP.
 
-Authorized operators install the root-owned fixed deployment wrappers, validate the limited sudoers entry and configure a restricted SSH public key. Host fingerprints must be confirmed through a trusted channel; disabling SSH verification would weaken the boundary. Protected `.env` files provide private credentials, and admin bootstrap prompts for a private password rather than installing a default.
+Authorized operators install the root-owned fixed deployment wrappers and policy module, validate the limited sudoers entry and configure three distinct SSH public keys scoped to dev, QA and production. Host fingerprints must be confirmed through a trusted channel; disabling SSH verification would weaken the boundary. Protected `.env` files provide private credentials, and admin bootstrap prompts for a private password rather than installing a default. The privileged wrapper fixes directory/image scope, uses a private shared host lock, and rechecks QA evidence before production promotion. Install policy and wrappers together before enabling the workflow. Collector setup also installs its sanitized backup-status companion; follow the [backup runbook](../docs/operations/backups.md) to verify recovery and off-host freshness separately.
 
 ## Read and verify each layer
 

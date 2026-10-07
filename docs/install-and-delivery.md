@@ -1,77 +1,99 @@
-# Installation and CI/CD plan
+# Install, verify and promote
 
-This is the sequence the finished guide and automation must implement. Commands, scripts, Dockerfiles, and application workflows are pending. No production deployment is enabled by this repository yet.
+The source implements a build-once pipeline with dev/QA acceptance and explicit production promotion. Installation and CI evidence are separate: check the dated [implementation evidence](implementation-evidence.md) and [environment evidence](environments.md) before claiming the new workflow is active on a host. The first formal version is 2.0.0; the earlier 1.0.0 implementation was untagged. [ADR 0001](decisions/0001-environments-and-releases.md) owns the supported contracts/version decision.
 
-## Two installation paths
+## Choose the host installation path
 
-1. **Fresh DigitalOcean droplet:** choose an adequately sized supported Ubuntu LTS host; SSH keys and a dedicated operator; OS patches; DigitalOcean cloud firewall plus host firewall; Docker official repository and Compose; DNS; a single Traefik stack; persistent certificate storage; monitoring; and backups. Provisioning may be manual in the first lab, with infrastructure-as-code considered separately.
-2. **Existing classroom host:** inspect running services with authorized privileged access, reuse `/opt/webserver` and network `web`, create a separate app directory/project and database volume, add a unique router, and leave the existing calculator available. Do not repeat fresh-server proxy setup.
+For a fresh DigitalOcean droplet, follow [observed-host recreation](recreate-observed-host.md): supported Ubuntu, key-based operator access, OS maintenance, cloud/host firewall, Docker's official repository, DNS, one Traefik ingress and protected certificate storage. Its historical audit is not proof of a clean independent installation; record that rehearsal separately. On the existing classroom host, reuse `/opt/webserver` and external Docker network `web`; each chat environment owns its own directory/project/database. Inspect existing routers and preserve unrelated applications.
 
-For both paths, verify DNS, TLS, port exposure, health, and a restart after reboot. Confirm IPv6 records/firewall behavior if IPv6 is used. Expose only required proxy/SSH ports; PostgreSQL must not publish a public host port. Restrict SSH at the cloud firewall when feasible. Docker port publishing can bypass some UFW expectations; inspect actual bindings. Sources: [Docker Ubuntu installation](https://docs.docker.com/engine/install/ubuntu/), [DigitalOcean cloud firewalls](https://docs.digitalocean.com/products/networking/firewalls/).
+Verify the DNS → verified TLS → router → app → database path. Expose required SSH/HTTP/HTTPS ports; never publish production PostgreSQL or the app's internal port. Inspect actual Docker bindings because published ports can bypass some UFW assumptions. Verify IPv6 records/firewall rules if used, health after a reboot, memory/disk and recovery access. Primary sources: [Docker Ubuntu installation](https://docs.docker.com/engine/install/ubuntu/), [DigitalOcean cloud firewalls](https://docs.digitalocean.com/products/networking/firewalls/).
 
-## Intended local workflow
+Local installation remains the [README quick start](../README.md#start-locally). Copy the ignored `.env` example, start its loopback database, build, migrate, seed, prompt for an admin password and start the app. Mock chat requires no paid credential. Locally built images have the OCI version label `unreleased` unless a matching `APP_VERSION` is supplied; CI release builds supply the authoritative [`VERSION`](../VERSION). The privileged wrapper accepts only validated release metadata.
 
-The finished repository will include `.env.example`, `.dockerignore`, a locked backend environment, a locked frontend build when relevant, a multistage Dockerfile, base Compose, and explicit development/production overlays. Local setup copies `.env.example` to ignored `.env`, generates local secrets, starts PostgreSQL, runs Alembic, and starts the API/UI. A mock LLM mode lets students exercise chat before configuring a paid provider.
+## Bootstrap fixed host access
 
-Production pulls a tested image by digest, with no source bind mounts or development reload. Use non-root application containers, dropped capabilities, a read-only root where compatible, bounded temporary storage, health checks, resource/log limits, restart policies, and persistent database storage. Apply [Compose production configuration](https://docs.docker.com/compose/how-tos/production/).
+Run [operator bootstrap](../deploy/README.md) from a reviewed source commit. Install root-owned files before enabling the new workflow:
 
-## Configuration and secret ownership
+| Repository file | Installed path |
+|---|---|
+| `deploy/chat-deploy` | `/usr/local/sbin/chat-deploy` |
+| `deploy/chat-ssh` | `/usr/local/lib/chat-ssh` |
+| `deploy/release_policy.py` | `/usr/local/lib/chat-release-policy.py` |
+| `deploy/host-metrics.py` | `/usr/local/lib/chat-host-metrics.py` |
+| `deploy/backup_status.py` | `/usr/local/lib/backup_status.py` (sanitized backup freshness input) |
 
-| Setting | Location | Notes |
+The wrapper fixes the registry namespace and roots `/opt/is373-ai-chat-dev`, `/opt/is373-ai-chat-qa`, `/opt/is373-ai-chat`. Each protected `.env` is mode 0600 with independent JWT/database secrets; never clone production secrets or data into previews. Public preview security uses `APP_ENV=production`, while preview Compose explicitly forces mock LLM, disabled email, empty provider keys and bounded resources. Host state/lock lives in root-owned mode-0700 `/var/lib/chat-release`.
+
+Generate three dedicated Ed25519 deployment keypairs locally inside ignored mode-0700 `.state/deploy-keys`. Keep each private key off the host. Install only its public half in the operator's `authorized_keys` with `restrict,command="/usr/local/lib/chat-ssh dev"`, `qa`, or `production`. Preserve personal operator access. Verify the server's host fingerprint independently, store it privately and retain strict SSH checking. The validated sudoers entry allows the root-owned deployer; the forced command/parser limits what each CI key may request. Docker access itself is host administrative power, so file ownership and the wrapper are part of the boundary.
+
+| Key scope | Accepted command | Fixed effect |
 |---|---|---|
-| APP_ENV, APP_HOST, JWT_ISSUER, JWT_AUDIENCE, allowed origins | Environment configuration | Validate at startup; no baked production values |
-| DATABASE_URL / database credentials | Ignored local .env; protected host configuration | Separate development, test, staging, production |
-| JWT signing key | Local generated key; protected production secret | Document rotation and key IDs; never image build arguments |
-| Provider API keys | Local .env for development; protected host secrets | Server-side only; never frontend build variables |
-| DEPLOY_SSH_KEY | GitHub production environment secret | Dedicated key, not an operator's personal SSH private key |
-| DEPLOY_KNOWN_HOSTS | GitHub protected configuration | Independently verify host fingerprint; do not blindly trust live ssh-keyscan |
-| DEPLOY_HOST, DEPLOY_USER, DEPLOY_PATH, APP_URL | GitHub environment variables | Non-secret deployment coordinates |
-| GITHUB_TOKEN | Automatically issued to Actions jobs | GHCR publishing with narrowly scoped packages:write |
-| GHCR read credential | Host only, if images are private | Separate least-privilege credential; workflow token is short-lived |
-| DOCKER_API_KEY | Alternative Actions secret if Docker Hub chosen | Existing repo secret does not automatically transfer to this repo |
-| SMTP/API mail credential | Host runtime secret | Needed for verification/reset messages |
-| Backup destination credential | Backup process secret | Separate from application/provider credentials |
+| dev | `deploy dev DIGEST SHA VERSION` | Development root only |
+| qa | `deploy qa DIGEST SHA VERSION` | QA root only |
+| qa | `attest DIGEST SHA VERSION RUN_ID` | Root-owned acceptance record after the QA job succeeds |
+| production | `promote DIGEST SHA VERSION QA_RUN_ID` | Same current accepted QA artifact after completed successful main CI |
 
-A local .env is developer convenience; the production process consumes validated environment/configuration without depending on a source checkout. `.env` must be excluded from Git and Docker build context. Docker Compose file secrets provide explicit service access but are not a general encrypted secret vault. Support `_FILE` settings if using mounted secrets and document this alongside twelve-factor configuration. See [Compose secret handling](https://docs.docker.com/compose/how-tos/use-secrets/).
+No scope accepts an arbitrary command, filesystem path or image repository. The short-lived Actions token arrives on SSH stdin, supplies registry read/API evidence access and stays in a temporary Docker auth directory. It is not persisted in the release record. Never print full Compose/Docker inspection output: runtime secrets are present there.
 
-Default proposal: provision runtime secrets on the server once, with restricted permissions, so routine CI deployment needs only deployment access. If secret delivery from GitHub is selected, store individual environment secrets and transfer them through a protected channel without logging them. Do not store a whole production .env blob as one secret. Existing secrets cannot be copied by reading their values through GitHub APIs.
+## GitHub configuration
 
-## Intended GitHub Actions release sequence
+Use public-repository environments `development`, `qa`, `production` with deployment branches restricted to main. October 6 configuration sets production's required owner reviewer, disabled administrator bypass and allowed self-review because this is a sole-owner project. This is authenticated review, not independent two-person approval. Manual dispatch selects a candidate; environment approval authorizes the deployment. Keep immutable GitHub releases enabled; `/immutable-releases` reports `enabled=true`. Repository admins can change protections, so administrative access remains trusted.
+
+| Configuration | Environment | Ownership |
+|---|---|---|
+| `DEPLOY_SSH_KEY` | Each of development/qa/production | Its distinct scoped private key |
+| `DEPLOY_KNOWN_HOSTS` | Each | Independently verified server host key |
+| `DEPLOY_HOST` variable | Each | Approved host address; user/path/repository are fixed in code |
+| `QA_SMOKE_EMAIL`, `QA_SMOKE_PASSWORD` | qa | Approved active ordinary synthetic account (`role=user`) |
+| `GITHUB_TOKEN` | Automatically issued per job | Minimal contents/packages/actions permissions declared in workflows |
+| Database/JWT/provider/mail settings | Protected host `.env` | Runtime configuration, separate from deployment credentials |
+
+Provision the ordinary QA account through registration and administrator approval before enabling acceptance. Give it only synthetic data; do not use an administrator for the CI browser probe. Plan administrator MFA enrollment for the 2.0.0 login contract before enforcing the production policy. Install metric/backup timers independently and verify their output; starting the app does not establish monitoring or recoverability. Follow [encrypted backup/off-host retrieval](operations/backups.md), including the collector's `backup_status.py` companion. No new paid storage/host is required by the chosen topology.
+
+Sources: [GitHub environments and protection availability](https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments), [Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use), [GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry), [immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases).
+
+## Delivery and production selection
 
 ```mermaid
 flowchart LR
-    PR[Pull request] --> Checks[Lint + types + unit/API + migrations]
-    Checks --> Image[Build release image once]
-    Image --> Browser[Container browser + streaming + auth tests]
-    Browser --> Scan[Image scan + SBOM evidence]
-    Scan --> Publish[Main: publish tested artifact to registry]
-    Publish --> Deploy[Serialized deploy: digest + configuration]
-    Deploy --> Migrate[Run Alembic once]
-    Migrate --> Start[Start application + readiness]
-    Start --> Verify[Public HTTPS + commit + login/stream smoke]
+    PR[PR: read-only verification] --> Checks[Lint / tests / migration parity]
+    Checks --> Image[Build image once with VERSION + commit]
+    Image --> Browser[Isolated image browser tests]
+    Browser --> Scan[Scan + SBOM]
+    Scan --> Publish[Main only: publish saved image]
+    Publish --> Dev[Deploy digest to development]
+    Dev --> QA[Deploy / migrate / browser / smoke QA]
+    QA --> Accept[Root-owned QA attestation]
+    Accept --> Select[Authenticated manual selection + production approval]
+    Select --> Prod[Promote same digest]
+    Prod --> Release[Immutable tag / release / durable evidence]
 ```
 
-Use GitHub-hosted runners, SHA-pinned actions, read-only default permissions, isolated pull request checks without production credentials, and deployment concurrency that does not cancel an in-progress migration. Do not execute untrusted PR code with privileged triggers. Proposal: GHCR avoids a separate publishing token; Docker Hub remains valid for course continuity. Verify plan support for private repository environment protections before configuring them. Sources: [Actions secure use](https://docs.github.com/en/actions/reference/security/secure-use), [deployment environments](https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments), [GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+[Delivery](../.github/workflows/delivery.yml) builds/tests linux/amd64, saves the image, then publishes that saved artifact. PRs have no deployment credentials. Manual delivery runs verify without publishing. Main's successful verification publishes, deploys development, then deploys QA and tests verified HTTPS, version/commit/schema, ordinary login, mock streaming, persistence after reload, refresh and logout. The probe creates and removes only its synthetic conversation; it cannot target production, register users, change roles or invoke paid providers/mail. The destructive classroom browser suite retains its separate loopback/nonce guard.
 
-Test at least linux/amd64 for this server; add native arm64 testing if multi-platform releases are a teaching requirement. Never publish an untested architecture as if verified. Use mock provider fixtures for CI; real-provider smoke tests are opt-in with limits. Tests must cover registration/login, refresh rotation/reuse, roles, conversation isolation, stream parsing/cancellation/error handling, and database upgrades.
+Failed migration, browser or smoke checks prevent an accepted candidate. A later attestation job independently checks GitHub's completed QA job and the current host release/health. [Promotion](../.github/workflows/promote.yml) accepts only a successful main delivery run ID, downloads its candidate and evidence, and checks its commit/workflow/job result and unused version. The server rechecks the completed run and private current QA attestation. A newer QA deployment invalidates an older selection. Both workflows share non-cancelling release concurrency; the root-owned host lock covers all release operations too.
 
-Use the exact tested image artifact for publication; identify the release by Git commit and registry digest. Publish before deployment, then deploy that digest, not an unqualified moving tag. Include release configuration and schema compatibility metadata. Keep image scanning thresholds explicit; a green report-only scan does not mean a clean image.
-
-Dedicated deployment access needs a documented bootstrap step. Adding a user to the docker group effectively grants host administrative power. Prefer a narrowly controlled deployment wrapper when practical; otherwise clearly document the authority of a dedicated operator account. No self-hosted Actions runner on the public production droplet by default.
+Select a candidate using GitHub Actions → **Promote accepted QA release**, main branch, accepted delivery run ID. Review/approve its production environment. Promotion pulls the exact accepted digest, without rebuilding, then verifies public production commit/version/schema. Its immutable GitHub Release attaches QA/production records, SBOM, vulnerability report, coverage and atomic commit links. A tag or version already used is refused; changing RC metadata to stable requires another build and QA acceptance. Never force-move a released tag. CI artifacts expire; the release's attached evidence remains the archive.
 
 ## Database deployment and recovery
 
-Only one deployment/migration process may operate at a time; serialize workflow and host operations, including manual runs. Snapshot/backup as needed before a risky migration. Run `alembic upgrade head` from the selected release image as a one-off process. Never run migrations independently in every web worker. Failed migrations stop promotion; examine schema state before retrying.
+Under the shared host lock, the deployer stages Compose from the selected image, validates required variables/configuration, starts/waits for its own PostgreSQL, records schema and creates a private nonempty custom-format dump. Only then does it replace active Compose, run `alembic upgrade head` once, seed defaults, start/wait for the app, compare health identity and atomically record success. Every setup step is inside recovery handling. The backup is mode 0600; failed/empty backup creation stops promotion. Daily/off-host backup recovery is a separate operation from this pre-migration dump.
 
-Use expand/contract migrations so both the previous and new app versions can run against the upgraded schema. A failed application readiness check can restore the previous digest only if schema compatibility permits. Destructive schema downgrade is not an automatic rollback strategy. Document recovery choices, including point-in-time restore where the database service supports it.
+Use expand/contract migrations and review compatibility before deployment. Automatic old-image recovery occurs only when schema is unchanged, or before migration started. Changed/unknown schemas stop the app and record `blocked`; an operator chooses a reviewed forward fix or restores the pre-migration dump into a controlled replacement database. No automatic downgrade occurs. Restoring loses writes after the dump unless separately recovered: declare the recovery point and retain evidence. A single app replacement can interrupt service/streams; zero downtime is not claimed.
 
-Single-container replacement can interrupt service and streams. Do not claim zero downtime. Blue/green routing and graceful stream draining are optional later work and require additional memory and compatibility tests.
+| Private host record | Meaning |
+|---|---|
+| `release.json` | Active deployed/blocked identity, version, commit, image, schema/previous schema, backup and recovery boundary |
+| `current-image` | Last successfully selected image; inspect release status before treating it as healthy |
+| `last-attempt.json` | Sanitized failure phase, before/after schema and recovery result |
+| QA `qa-attestation.json` | Accepted artifact, schema and successful QA run |
+| Production `version-history.json` | Versions previously deployed; deleting a Git tag does not authorize reuse |
 
-Back up PostgreSQL to storage outside the droplet, encrypt/protect backup access, define retention and recovery objectives, and test a restoration. DigitalOcean droplet backups complement database-specific backups rather than establishing tested database recovery by themselves. Monitor memory, disk, uptime, readiness, failures, and request/LLM usage; avoid logging JWTs, keys, passwords, or full prompts by default. Sources: [DigitalOcean backups](https://docs.digitalocean.com/products/backups/details/features/), [Monitoring](https://docs.digitalocean.com/products/monitoring/).
+Failed recovery cannot report the candidate as deployed. Failed release publication *after successful production deployment* is a different boundary: inspect the matching production record and finalize the matching immutable release/evidence explicitly. Do not delete history, rerun migrations under the same version or reuse that version for different bytes. A new application fix receives its own version/candidate. Local fault-injection tests cover setup, empty backup, changed schema, failed recovery and release/key policy; controlled non-production rehearsal and full CI are required operational evidence.
 
 ## Completion evidence
 
-The finished install guide must be followed on a clean environment. Record installation commands and verified results; Actions URL, commit, image digest, Alembic revision, public TLS/release result, browser smoke result, and successful backup restoration. A pushed image and successful workflow alone do not prove a healthy deployed app.
+Record the Actions URL, source commit, VERSION, image digest, before/after Alembic revisions, private backup identity, verified HTTPS, QA/browser results, production approval and archived GitHub Release. Separately verify cross-environment rejection, resource behavior and a successful backup restore/off-host retrieval. No production failure injection or paid-provider testing belongs in these probes. Link actual evidence to [#13](https://github.com/kaw393939/is373-ai-chat/issues/13), [#22](https://github.com/kaw393939/is373-ai-chat/issues/22), [#24](https://github.com/kaw393939/is373-ai-chat/issues/24), [#25](https://github.com/kaw393939/is373-ai-chat/issues/25) before closing them.
 
 ## Dependency maintenance decision — October 6, 2026
 
