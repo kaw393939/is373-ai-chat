@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { api, consume, refresh, request, setToken } from "./api";
+import { ProjectFooter } from "./ProjectFooter";
 import "./style.css";
 
 type User = {
@@ -1058,4 +1059,9 @@ function Admin({ actor, fail }: { actor: User; fail: (e: unknown) => void }) {
     </section>
   );
 }
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <>
+    <App />
+    <ProjectFooter />
+  </>,
+);
