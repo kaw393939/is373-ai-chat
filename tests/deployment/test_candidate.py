@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import sys
 from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
@@ -53,7 +54,8 @@ class Docker:
         if args[-1] == "SELECT version_num FROM alembic_version":
             return self.revision.encode()
         if "pg_dump" in args:
-            return b"synthetic custom-format dump"
+            kwargs["stdout"].write(b"synthetic custom-format dump")
+            return None
         if "python" in args and "-c" in args:
             return json.dumps(
                 {
@@ -111,7 +113,9 @@ def test_empty_backup_does_not_migrate_or_promote(installed):
 
     def empty(args, **kwargs):
         value = docker(args, **kwargs)
-        return b"" if "pg_dump" in args else value
+        if "pg_dump" in args:
+            kwargs["stdout"].truncate(0)
+        return value
 
     with pytest.raises(RuntimeError, match="backup"):
         module.deploy(installed, "candidate image", "candidate", empty, {})
@@ -151,3 +155,28 @@ def test_failed_recovery_cannot_leave_a_deployed_status(installed):
     with pytest.raises(RuntimeError, match="recovery-failed"):
         module.deploy(installed, "candidate image", "candidate", failure, {})
     assert json.loads((installed / "release.json").read_text())["status"] == "blocked"
+
+
+def test_runner_streams_a_large_private_dump_without_returning_its_bytes(tmp_path):
+    destination = tmp_path / "backup.dump"
+    module.dump_backup(
+        destination,
+        module.Runner({}),
+        [sys.executable, "-c", "import sys; sys.stdout.buffer.write(b'x' * 4194304)"],
+    )
+    assert destination.stat().st_size == 4194304
+    assert destination.stat().st_mode & 0o777 == 0o600
+    assert list(tmp_path.iterdir()) == [destination]
+
+
+def test_failed_partial_dump_preserves_previous_backup_and_removes_staging(tmp_path):
+    destination = tmp_path / "backup.dump"
+    destination.write_bytes(b"previous complete dump")
+    with pytest.raises(RuntimeError, match="Command failed"):
+        module.dump_backup(
+            destination,
+            module.Runner({}),
+            [sys.executable, "-c", "import sys; sys.stdout.buffer.write(b'partial'); sys.exit(1)"],
+        )
+    assert destination.read_bytes() == b"previous complete dump"
+    assert list(tmp_path.iterdir()) == [destination]

@@ -46,12 +46,33 @@ class Runner:
 
     def __call__(self, args, timeout=180, **kwargs):
         result = subprocess.run(
-            args, env=self.environment, capture_output=True, timeout=timeout, **kwargs
+            args,
+            env=self.environment,
+            stdout=kwargs.pop("stdout", subprocess.PIPE),
+            stderr=subprocess.PIPE,
+            timeout=timeout,
+            **kwargs,
         )
         if result.returncode:
             # Never expose provider/config/registry output through workflow logs.
             raise RuntimeError("Command failed: " + " ".join(args[:2]))
         return result.stdout
+
+
+def dump_backup(path, run, arguments):
+    """Stream large dumps to private storage; publish only complete nonempty bytes."""
+    with tempfile.NamedTemporaryFile(dir=path.parent, delete=False) as stream:
+        temporary = Path(stream.name)
+        try:
+            os.chmod(temporary, 0o600)
+            run(arguments, stdout=stream)
+            stream.flush()
+            os.fsync(stream.fileno())
+            if not temporary.stat().st_size:
+                raise RuntimeError("Empty database backup")
+            temporary.replace(path)
+        finally:
+            temporary.unlink(missing_ok=True)
 
 
 def schema(run, compose):
@@ -127,11 +148,12 @@ def deploy(root, image, commit, run, environment, version=None, stage="productio
             run(compose + ["up", "-d", "--wait", "--wait-timeout", "90", "db"])
             before = schema(run, compose)
             phase = "backup"
-            dump = run(compose + ["exec", "-T", "db", "pg_dump", "-U", "chat", "-d", "chat", "-Fc"])
-            if not dump:
-                raise RuntimeError("Empty database backup")
             path = backup / (time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + ".dump")
-            atomic_write(path, dump)
+            dump_backup(
+                path,
+                run,
+                compose + ["exec", "-T", "db", "pg_dump", "-U", "chat", "-d", "chat", "-Fc"],
+            )
             attempt["backup"] = path.name
             phase = "migration"
             atomic_write(root / "compose.yaml", candidate.read_bytes())
