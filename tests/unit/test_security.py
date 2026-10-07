@@ -106,3 +106,10 @@ async def test_sqlite_foreign_keys():
     async with engine.connect() as connection:
         assert (await connection.execute(text("PRAGMA foreign_keys"))).scalar() == 1
     await engine.dispose()
+
+
+def test_configuration_validation_does_not_echo_credentials():
+    with pytest.raises(ValidationError) as rejected:
+        Settings(app_env="production", mfa_encryption_key="synthetic-sensitive-key")
+    assert "input_value" not in str(rejected.value)
+    assert "synthetic-sensitive-key" not in str(rejected.value)
