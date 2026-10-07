@@ -194,7 +194,8 @@ function App() {
         } else setUser(result.user);
       }
     } catch (e) {
-      if (current()) fail(e);
+      if (current() || (operation === authVersion.current && attempt === null))
+        fail(e);
     } finally {
       if (operation === authVersion.current) setAuthBusy(false);
     }

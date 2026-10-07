@@ -11,6 +11,7 @@ const markerKey = "373-session-generation";
 const listeners = new Set<() => void>();
 let token = "";
 let rotation: Promise<boolean> | null = null;
+let storageUnavailable = false;
 function readMarker() {
   try {
     return localStorage.getItem(markerKey) ?? "";
@@ -25,10 +26,10 @@ const channel =
     : new BroadcastChannel("373-session-events");
 
 export function sessionStamp() {
-  return readMarker();
+  return storageUnavailable ? null : readMarker();
 }
 export function ownsSession(stamp: string | null) {
-  return stamp !== null && readMarker() === stamp;
+  return stamp !== null && sessionStamp() === stamp;
 }
 export function isAbort(error: unknown) {
   return error instanceof DOMException && error.name === "AbortError";
@@ -46,42 +47,63 @@ function notify() {
   token = "";
   for (const listener of listeners) listener();
 }
-function observe() {
+function observe(event?: Event) {
+  const message: unknown = event instanceof MessageEvent ? event.data : null;
+  if (
+    message &&
+    typeof message === "object" &&
+    "kind" in message &&
+    message.kind === "session-unavailable" &&
+    "marker" in message &&
+    message.marker === readMarker()
+  ) {
+    storageUnavailable = true;
+    notify();
+    return;
+  }
   const marker = readMarker();
   // Read the durable marker rather than trust event ordering between tabs.
   if (marker !== observedMarker) {
     observedMarker = marker;
+    storageUnavailable = marker === null;
     notify();
   }
 }
 channel?.addEventListener("message", observe);
 window.addEventListener("storage", (event) => {
-  if (event.key === markerKey) observe();
+  if (event.key === markerKey || event.key === null) observe();
 });
 function invalidate(signedOut = true) {
   // The durable sign-out intent also survives an immediate reload before the
   // server's logout receipt arrives; startup must not redeem that old cookie.
   const marker = `${signedOut ? "out" : "in"}:${crypto.randomUUID()}`;
-  localStorage.setItem(markerKey, marker);
+  try {
+    localStorage.setItem(markerKey, marker);
+  } catch {
+    // Storage can become unwritable after login. Fail closed locally and tell
+    // peers without a bearer secret, but still revoke through the cookie lock.
+    storageUnavailable = true;
+    notify();
+    channel?.postMessage({ kind: "session-unavailable", marker: readMarker() });
+    return null;
+  }
+  storageUnavailable = false;
   observedMarker = marker;
   notify();
   channel?.postMessage("session-changed");
   return marker;
 }
-function coordinator() {
-  if (!navigator.locks || readMarker() === null)
+function coordinator(requireStorage = true) {
+  if (!navigator.locks || (requireStorage && readMarker() === null))
     throw new Error(
       "Sign-in needs a current browser with Web Locks and local site storage. Use HTTPS or localhost.",
     );
   return navigator.locks;
 }
-export function setToken(value: string) {
-  if (!value) invalidate();
-  else token = value;
-}
-async function checked(response: Response) {
+async function checked(response: Response, decoded?: unknown) {
   if (!response.ok) {
-    const body: unknown = await response.json().catch(() => null);
+    const body: unknown =
+      decoded === undefined ? await response.json().catch(() => null) : decoded;
     throw new Error(
       body &&
         typeof body === "object" &&
@@ -126,6 +148,10 @@ export async function signIn(
 ): Promise<LoginResult> {
   const locks = coordinator();
   const stamp = invalidate(false);
+  if (stamp === null)
+    throw new Error(
+      "Sign-in needs writable local site storage. Enable it and try again.",
+    );
   return locks.request("373-auth-cookie", async () => {
     if (!ownsSession(stamp)) throw obsolete();
     const { result: value } = await authFetch("/auth/login", {
@@ -156,7 +182,7 @@ export async function verifyMfa(
   });
 }
 export async function signOut() {
-  const locks = coordinator();
+  const locks = coordinator(false);
   invalidate(); // Invalidate pending work before waiting for another tab's refresh.
   await locks.request("373-auth-cookie", async () => {
     await authFetch("/auth/logout");
@@ -170,13 +196,23 @@ export async function confirmMfa(
   const stamp = sessionStamp();
   return coordinator().request("373-auth-cookie", async () => {
     if (!ownsSession(stamp)) throw obsolete();
-    const { result } = await authFetch(
+    let { response, result } = await authFetch(
       "/auth/mfa/confirm",
       { code },
-      false,
+      true,
       true,
     );
     if (!ownsSession(stamp)) throw obsolete();
+    if (response.status === 401 && (await rotateLocked(stamp))) {
+      ({ response, result } = await authFetch(
+        "/auth/mfa/confirm",
+        { code },
+        true,
+        true,
+      ));
+    }
+    if (!ownsSession(stamp)) throw obsolete();
+    await checked(response, result);
     if (
       !result ||
       typeof result !== "object" ||
@@ -189,35 +225,42 @@ export async function confirmMfa(
     // The backend has already revoked every session. Clearing the cookie is
     // best effort; a network error must not hide newly issued recovery codes.
     await authFetch("/auth/logout").catch(() => {});
-    if (!ownsSession(signedOut)) throw obsolete();
+    if (signedOut === null ? sessionStamp() !== null : !ownsSession(signedOut))
+      throw obsolete();
     return { recovery_codes: result.recovery_codes };
   });
+}
+// Caller already owns the cookie lock. Keeping rotation here avoids acquiring
+// the same non-reentrant Web Lock from a terminal MFA confirmation.
+async function rotateLocked(stamp: string | null): Promise<boolean> {
+  if (!ownsSession(stamp)) return false;
+  const { response, result } = await authFetch(
+    "/auth/refresh",
+    undefined,
+    true,
+  );
+  if (!ownsSession(stamp)) return false;
+  if (
+    !response.ok ||
+    !result ||
+    typeof result !== "object" ||
+    !("access_token" in result) ||
+    typeof result.access_token !== "string"
+  ) {
+    invalidate();
+    return false;
+  }
+  token = result.access_token;
+  return true;
 }
 export async function refresh(): Promise<boolean> {
   if (rotation) return rotation;
   const stamp = sessionStamp();
+  if (stamp === null) return false;
   if (stamp?.startsWith("out:")) return false;
   const task = (async () =>
     await coordinator().request("373-auth-cookie", async () => {
-      if (!ownsSession(stamp)) return false;
-      const { response, result } = await authFetch(
-        "/auth/refresh",
-        undefined,
-        true,
-      );
-      if (!ownsSession(stamp)) return false;
-      if (
-        !response.ok ||
-        !result ||
-        typeof result !== "object" ||
-        !("access_token" in result) ||
-        typeof result.access_token !== "string"
-      ) {
-        invalidate();
-        return false;
-      }
-      token = result.access_token;
-      return true;
+      return rotateLocked(stamp);
     }))();
   rotation = task;
   try {

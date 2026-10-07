@@ -53,7 +53,7 @@ function environment(fetcher = async () => Response.json({})) {
       },
     },
   });
-  return { storage, broadcasts };
+  return { storage, broadcasts, channels };
 }
 async function client() {
   return import(
@@ -279,4 +279,151 @@ await test("MFA replacement preserves its recovery receipt while queued refresh 
       (value) => !value.includes("one-use-synthetic"),
     ),
   );
+});
+
+await test("MFA confirmation rotates an expired access token inside its existing cookie lock", async () => {
+  const calls = [];
+  environment(async (path, options) => {
+    const bearer = new Headers(options.headers).get("Authorization");
+    calls.push([path, bearer]);
+    if (path.endsWith("/login"))
+      return Response.json({
+        access_token: "private-expired",
+        user: { id: "owner" },
+      });
+    if (path.endsWith("/refresh"))
+      return Response.json({ access_token: "private-fresh" });
+    if (path.endsWith("/logout")) return new Response(null, { status: 204 });
+    return bearer === "Bearer private-expired"
+      ? Response.json({ detail: "Invalid or expired session" }, { status: 401 })
+      : Response.json({ recovery_codes: ["synthetic-recovery"] });
+  });
+  const api = await client();
+  await api.signIn("synthetic@example.org", "synthetic-password");
+  assert.deepEqual(await api.confirmMfa("123456"), {
+    recovery_codes: ["synthetic-recovery"],
+  });
+  assert.deepEqual(
+    calls.map(([path]) => path),
+    [
+      "/api/auth/login",
+      "/api/auth/mfa/confirm",
+      "/api/auth/refresh",
+      "/api/auth/mfa/confirm",
+      "/api/auth/logout",
+    ],
+  );
+});
+
+await test("storage write failure still revokes logout and invalidates peer work", async () => {
+  const calls = [];
+  environment(async (path, options) => {
+    calls.push([path, new Headers(options?.headers).get("Authorization")]);
+    if (path.endsWith("/login"))
+      return Response.json({
+        access_token: "private-original",
+        user: { id: "owner" },
+      });
+    if (path.endsWith("/refresh"))
+      return Response.json({ access_token: "private-peer" });
+    return path.endsWith("/logout")
+      ? new Response(null, { status: 204 })
+      : Response.json({});
+  });
+  const owner = await client();
+  const peer = await client();
+  await owner.signIn("synthetic@example.org", "synthetic-password");
+  await peer.refresh();
+  globalThis.localStorage.setItem = () => {
+    throw new DOMException("Storage full", "QuotaExceededError");
+  };
+  await owner.signOut();
+  assert.equal(await peer.refresh(), false);
+  await assert.rejects(
+    owner.api("/data"),
+    (error) => error.name === "AbortError",
+  );
+  await assert.rejects(
+    peer.api("/data"),
+    (error) => error.name === "AbortError",
+  );
+  assert.ok(calls.some(([path]) => path.endsWith("/logout")));
+  assert.deepEqual(
+    calls
+      .filter(([path]) => path.endsWith("/data"))
+      .map(([, bearer]) => bearer),
+    [null, null],
+  );
+});
+
+await test("storage failure cannot hide a successfully issued MFA recovery receipt", async () => {
+  environment(async (path) => {
+    if (path.endsWith("/login"))
+      return Response.json({
+        access_token: "private-mfa",
+        user: { id: "owner" },
+      });
+    if (path.endsWith("/mfa/confirm")) {
+      localStorage.setItem = () => {
+        throw new DOMException("Storage full", "QuotaExceededError");
+      };
+      return Response.json({ recovery_codes: ["synthetic-new-recovery"] });
+    }
+    return new Response(null, { status: 204 });
+  });
+  const api = await client();
+  await api.signIn("synthetic@example.org", "synthetic-password");
+  assert.deepEqual(await api.confirmMfa("123456"), {
+    recovery_codes: ["synthetic-new-recovery"],
+  });
+  assert.equal(api.sessionStamp(), null);
+});
+
+await test("an old storage-failure notice cannot invalidate a later sign-in", async () => {
+  const { storage, channels } = environment(async (path) => {
+    if (path.endsWith("/login"))
+      return Response.json({
+        access_token: "private-later",
+        user: { id: "owner" },
+      });
+    return new Response(null, { status: 204 });
+  });
+  const api = await client();
+  await api.signIn("synthetic@example.org", "synthetic-password");
+  const obsoleteMarker = api.sessionStamp();
+  await api.signOut();
+  await api.signIn("synthetic@example.org", "synthetic-password");
+  const currentMarker = api.sessionStamp();
+  assert.notEqual(currentMarker, obsoleteMarker);
+  channels[0].dispatchEvent(
+    new MessageEvent("message", {
+      data: { kind: "session-unavailable", marker: obsoleteMarker },
+    }),
+  );
+  assert.equal(api.sessionStamp(), currentMarker);
+  assert.equal(api.ownsSession(currentMarker), true);
+  assert.ok(
+    [...storage.values()].every((value) => !value.includes("private-later")),
+  );
+});
+
+await test("sign-in cannot create a session without writable invalidation storage", async () => {
+  const calls = [];
+  environment(async (path) => {
+    calls.push(path);
+    return Response.json({
+      access_token: "private-unexpected",
+      user: { id: "owner" },
+    });
+  });
+  const api = await client();
+  localStorage.setItem = () => {
+    throw new DOMException("Storage full", "QuotaExceededError");
+  };
+  await assert.rejects(
+    api.signIn("synthetic@example.org", "synthetic-password"),
+    /writable local site storage/,
+  );
+  assert.deepEqual(calls, []);
+  assert.equal(api.sessionStamp(), null);
 });
