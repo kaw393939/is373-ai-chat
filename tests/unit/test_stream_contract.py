@@ -42,7 +42,11 @@ async def test_eof_is_never_success(monkeypatch, provider, prefix):
 @pytest.mark.parametrize(
     "provider,events,status",
     [
-        ("openai", [{"type": "response.completed", "response": {"incomplete_details": None}}], "complete"),
+        (
+            "openai",
+            [{"type": "response.completed", "response": {"incomplete_details": None}}],
+            "complete",
+        ),
         (
             "openai",
             [
