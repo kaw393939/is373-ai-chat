@@ -1,6 +1,6 @@
 # Durable data: preserve meaning while software changes
 
-The list API supports opt-in `page=true&limit=50&cursor=...&q=...`, returning `items` and `next_cursor`. Legacy list calls retain arrays. Cursor selection uses `(created_at,id)` descending so equal timestamps remain deterministic; signed cursors bind the account and search filter. Search is a literal substring in owned conversation titles or administrator account emails. History initially returns the most recent fifty messages/runs, with separate older-page cursors and owned `/messages` and `/runs` endpoints. Each message batch is chronological for display. New writes can appear before an existing cursor; unchanged datasets have no duplicates/skips. No index was added without representative PostgreSQL query-plan evidence; existing ownership indexes and bounded page sizes support the teaching workload.
+The list API supports opt-in `page=true&limit=50&cursor=...&q=...`, returning `items` and `next_cursor`. Legacy list calls retain arrays. Cursor selection uses `(created_at,id)` descending so equal timestamps remain deterministic; signed cursors bind the account and search filter. Search is a literal substring in owned conversation titles or administrator account emails. History initially returns the most recent fifty messages/runs, with separate older-page cursors and owned `/messages` and `/runs` endpoints. Each message batch is chronological for display. New writes can appear before an existing cursor; unchanged datasets have no duplicates/skips. The [executed PostgreSQL plan review](../docs/audit/2026-10-06-pagination-plans.md) retains existing indexes for the current release and records the growth limits.
 
 A new enrollment feature needs verified email addresses. The application already has approved users, and a deployment must not silently turn them into locked-out students. This is a data-design problem before it is a migration command.
 
@@ -20,6 +20,14 @@ Read the [models](../app/models.py) as promises about durable state:
 | Unique generation `(user_id, request_key)` | An account/key pair cannot create two persisted generations. | Whether a provider billed an interrupted attempt. |
 
 Constraints protect relationships even when an application path is wrong. Server authorization protects which actor may request an operation. They are complementary boundaries.
+
+## A small page can require a large scan
+
+Returning fifty messages bounds the response, not the work needed to find those messages. In the synthetic review, the first owner conversation page reads 2,000 matching rows, sorts them and returns a 51-row probe. The long-conversation message page scans 20,000 table rows, retains 5,000 matching messages and orders the newest probe. The missing email substring examines all 5,000 synthetic accounts and returns none. Rare output is not necessarily cheap input.
+
+Read the plan from its scan toward its parent sort and limit. `Actual Rows` describes rows emitted by a node; `Rows Removed by Filter` helps explain rejected candidates. Do not add every parent's count together as if each represented another table read. An ownership index can narrow candidates without supplying `(created_at,id)` order. A sequential scan can be the cheaper plan for a large matching fraction. PostgreSQL's [EXPLAIN guide](https://www.postgresql.org/docs/17/using-explain.html) explains these distinctions.
+
+All fifteen observed probes returned at most 51 rows; their single-run query times were below 39 ms on temporary relations. Those observations support a modest teaching workload, not a production latency or concurrency promise. The [guarded helper](../tests/integration/pagination_plans.py) reproduces plans with synthetic data and no public-table writes. At larger histories, compare ordered composite indexes and actual cursor conditions; substring search needs its own evaluation. An index is a measured storage/write/read tradeoff, rather than a decoration added to every filter.
 
 <a id="migration-0002"></a>
 
