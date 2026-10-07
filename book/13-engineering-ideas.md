@@ -2,11 +2,13 @@
 
 Software engineering develops through research, shared practice and criticism. The people here provide vocabulary for reasoning about change. They are not authorities whose names settle a design question. The application examples below are our interpretations of their ideas, not claims that they endorsed this project.
 
+**Learning outcomes:** explain a principle through a concrete change; compare competing design pressures; distinguish a demonstrated invariant from an attractive pattern name; justify the smallest useful refactoring. Publication metadata and original readings live in the [bibliography](references.md).
+
 ## Martin Fowler: improve a working design in small steps
 
-Fowler's *Refactoring* appeared first in 1999, with a second edition in 2018. Its central technique is restructuring code through small transformations that preserve observable behavior. Tests support that work; adding a feature or changing a policy is a separate change, even if performed nearby. [Author's account](https://martinfowler.com/books/refactoring.html).
+Fowler's *Refactoring* appeared first in 1999, with a second edition in 2018. Its central technique is restructuring code through small transformations that preserve observable behavior. Tests support that work; adding a feature or changing a policy is a separate change, even if performed nearby. [Author's account](references.md#ref-fowler-refactoring).
 
-His *Patterns of Enterprise Application Architecture* records recurring approaches to domain logic, relational persistence, presentation and concurrency. Frameworks can implement such patterns while leaving important choices to their users. [Author's account and contributors](https://martinfowler.com/books/eaa.html).
+His *Patterns of Enterprise Application Architecture* records recurring approaches to domain logic, relational persistence, presentation and concurrency. Frameworks can implement such patterns while leaving important choices to their users. [Author's account and contributors](references.md#ref-fowler-eaa).
 
 **In this app:** SQLAlchemy already provides session/unit-of-work behavior. Adding a generic repository solely to mention a pattern would need a demonstrated benefit. A useful refactoring instead separates provider transport details from conversation policy and proves behavior remains consistent.
 
@@ -14,7 +16,9 @@ His *Patterns of Enterprise Application Architecture* records recurring approach
 
 ## David Parnas: hide decisions likely to change
 
-Parnas's 1972 paper compares ways to decompose a system and argues for modules organized around hidden design decisions, rather than merely successive processing steps. [Original paper hosted by Lafayette College](https://www.cs.lafayette.edu/~gexia/cs301/resources/parnas.html).
+Parnas's 1972 paper compares ways to decompose a system and argues for modules organized around hidden design decisions, rather than merely successive processing steps. [Publication DOI and accessible transcription](references.md#ref-parnas).
+
+His paper's worked example takes lines of text, rotates their words and sorts the results: a keyword-in-context index. One decomposition follows processing stages; another hides representation choices behind modules. The lesson is not that every pipeline is bad. It is that an input/storage decision can force changes across stages unless a useful boundary hides it. This small example gives students something to inspect rather than only the phrase “information hiding.” The linked transcription warns about accuracy; the original citation is *Communications of the ACM* 15(12), 1053–1058, DOI `10.1145/361598.361623`.
 
 **In this app:** provider payloads and event formats change independently of account budgets. Putting vendor HTTP details behind an adapter protects that change boundary. A directory name does not provide information hiding if callers still depend on vendor-specific fields.
 
@@ -22,7 +26,7 @@ Parnas's 1972 paper compares ways to decompose a system and argues for modules o
 
 ## Barbara Liskov and Jeannette Wing: substitution is about behavior
 
-Liskov's work includes programming methodology and data abstraction. [MIT profile](https://www.csail.mit.edu/person/barbara-liskov). Liskov and Wing's 1994 work formalizes behavioral subtyping: a compatible interface must preserve the expectations clients rely on, not merely accept similar method names. [Original paper](https://www.cs.cmu.edu/~wing/publications/LiskovWing94.pdf).
+Liskov's work includes programming methodology and data abstraction. [MIT profile](references.md#ref-liskov-wing). Liskov and Wing's 1994 work formalizes behavioral subtyping: a compatible interface must preserve the expectations clients rely on, not merely accept similar method names. [Original paper](references.md#ref-liskov-wing).
 
 **In this app:** two adapters exposing `stream` are not equivalent if one silently treats an interrupted response as success. The current terminal-event contract needs further work in issues #12 and #18. This is a teaching example of a requirement that has not yet been fully proved.
 
@@ -30,7 +34,7 @@ Liskov's work includes programming methodology and data abstraction. [MIT profil
 
 ## Kent Beck: use executable examples to guide small changes
 
-Beck's *Test Driven Development: By Example* teaches development through a sequence of executable examples and small steps. [Publisher's record](https://www.informit.com/store/test-driven-development-by-example-9780321146533). A test should communicate the desired behavior and help choose the next change; its value is not the number of assertions or mock calls.
+Beck's *Test Driven Development: By Example* (published 2002; copyright 2003) teaches development through a sequence of executable examples and small steps. [Publisher's record](references.md#ref-beck). A test should communicate the desired behavior and help choose the next change; its value is not the number of assertions or mock calls.
 
 **In this app:** a cross-account request should fail regardless of how a service is refactored. A test that asserts ownership rejection protects that promise. A test that merely repeats an internal function's current branching can miss the user's real problem.
 
@@ -38,7 +42,7 @@ Beck's *Test Driven Development: By Example* teaches development through a seque
 
 ## Ward Cunningham: understand the debt metaphor
 
-Cunningham's 1992 WyCash experience report describes incremental growth, broad familiarity with the product and the cost of leaving immature code unconsolidated. His debt analogy explains why shipping an initial understanding can accelerate learning and why failing to revise it makes future work harder. [Original report](https://c2.com/doc/oopsla92.html).
+Cunningham's 1992 WyCash experience report describes incremental growth, broad familiarity with the product and the cost of leaving immature code unconsolidated. His debt analogy explains why shipping an initial understanding can accelerate learning and why failing to revise it makes future work harder. [Original report](references.md#ref-cunningham).
 
 **In this app:** direct main-to-production deployment helped establish a working system, but leaves delivery-policy work once QA exists. Record the consequence and repayment evidence in issue #24. Calling every bug or disliked style “debt” hides the actual failure and cost.
 
@@ -46,7 +50,7 @@ Cunningham's 1992 WyCash experience report describes incremental growth, broad f
 
 ## Robert C. Martin: responsibilities follow reasons for change
 
-Martin's explanation of the single-responsibility principle connects responsibility to reasons for change and the people served by that behavior. It does not demand one method per class. [Author's explanation](https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html).
+Martin's explanation of the single-responsibility principle connects responsibility to reasons for change and the people served by that behavior. It does not demand one method per class. [Author's explanation](references.md#ref-martin).
 
 **In this app:** browser lifecycle coordination, administrative screens and transport parsing have different reasons to change. Separating them can make UI races easier to reason about. Splitting every line into a helper without clarifying ownership would not achieve that goal.
 
@@ -54,7 +58,7 @@ Martin's explanation of the single-responsibility principle connects responsibil
 
 ## Alistair Cockburn: separate the application from its surroundings
 
-Cockburn's ports-and-adapters explanation separates application behavior from external interactions so the application can run with different surrounding technologies, including tests. [Original account](https://alistair.cockburn.us/hexagonal-architecture).
+Cockburn's ports-and-adapters explanation separates application behavior from external interactions so the application can run with different surrounding technologies, including tests. [Original account](references.md#ref-cockburn).
 
 **In this app:** the mock provider lets students investigate chat without an external model or paid credential. We use selected adapter boundaries in a modular monolith; we do not claim every route and persistence concern implements a complete hexagonal architecture.
 
@@ -62,7 +66,7 @@ Cockburn's ports-and-adapters explanation separates application behavior from ex
 
 ## Eric Evans: model the problem with shared language
 
-Evans's domain-driven design work provides a framework and vocabulary for reasoning about complex business domains. [Author's resources](https://www.domainlanguage.com/ddd/).
+Evans's domain-driven design work provides a framework and vocabulary for reasoning about complex business domains. [Author's resources](references.md#ref-evans).
 
 **In this app:** “approved account,” “session family,” “reservation” and “completed generation” should mean the same thing in discussion, code and tests. A reservation unit is not a billed dollar or necessarily a provider token. Clear language prevents an administrator from interpreting a limit as a financial guarantee.
 
@@ -70,7 +74,7 @@ Evans's domain-driven design work provides a framework and vocabulary for reason
 
 ## Jez Humble and David Farley: treat delivery as part of the system
 
-Their 2010 *Continuous Delivery* describes automated build/test/deployment pipelines and the surrounding configuration, collaboration and operating practices. [Publisher's record](https://www.informit.com/store/continuous-delivery-reliable-software-releases-through-9780321601919).
+Their 2010 *Continuous Delivery* describes automated build/test/deployment pipelines and the surrounding configuration, collaboration and operating practices. [Publisher's record](references.md#ref-delivery).
 
 **In this app:** a commit, tested image digest, schema and running health response form a release's identity. A successful registry upload is not deployment proof. QA-to-production promotion must preserve the accepted digest; migration and recovery compatibility are separate questions.
 

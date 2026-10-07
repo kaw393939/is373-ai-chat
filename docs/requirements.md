@@ -25,11 +25,11 @@ Mapping adapted to this proposed app from [The Twelve-Factor App](https://12fact
 
 | Principle or pattern | Concrete use |
 |---|---|
-| Single responsibility | Routes handle HTTP; services handle use cases; adapters handle providers/storage |
+| Single responsibility | Primary concerns are grouped in routes/use cases/providers; UI and backend boundary refinement remains #16/#17 |
 | Open/closed | Add a provider adapter without changing chat orchestration |
-| Liskov substitution | Adapter contract tests verify consistent streaming/cancellation/error semantics |
-| Interface segregation | Separate chat streaming capabilities from embeddings/tool/image capabilities |
-| Dependency inversion | Services receive provider and persistence boundaries through injection |
+| Liskov substitution | Normalization and selected error tests provide partial evidence; complete shared terminal/cancellation semantics remain #12/#18 |
+| Interface segregation | The current chat port exposes streaming; embeddings/tool/image capabilities and their contracts are not implemented |
+| Dependency inversion | Generation receives a provider; use cases still directly depend on SQLAlchemy models and some FastAPI errors (#17) |
 | Adapter and strategy | Normalize provider APIs and select models from validated configuration |
 | Unit of work | Short explicit database transactions; clear commit/rollback ownership |
 | State machine | Generation statuses exist; centralized transition enforcement and complete provider terminal-event contracts remain follow-up work (#12/#17/#18), not a fully proved pattern |

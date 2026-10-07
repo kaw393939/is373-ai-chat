@@ -32,41 +32,29 @@ For source development, `uv sync --frozen`, `npm --prefix frontend ci`, `npm --p
 - Owned conversation history, search by title, rename/delete, streamed replies, stop/retry, safe text/code rendering, and interchangeable mock/OpenAI/OpenAI-compatible adapters.
 - Role budgets and user overrides, atomic admission limits, conservative daily reservations, model enable/disable controls and an administrative audit trail.
 - An admin resource dashboard fed by a separate host collector; container CPU/memory/process/log limits; no Docker socket in the app.
-- Reviewed migrations, unit/integration tests, Python Playwright journeys, measured 100% line/branch coverage, image vulnerability gate, SBOM, digest deployment and public release verification.
+- Reviewed migrations, unit/integration tests, Python Playwright journeys, measured 100% Python `app` line/branch coverage with documented exclusions (frontend and host scripts are outside the metric), image vulnerability gate, SBOM, digest deployment and public release verification.
 - Protected production configuration, a restricted deployment key, pre-deploy/daily PostgreSQL dumps, and explicit recovery rules.
 
 ## Read the textbook
 
-Start with [From Request to Release](book/README.md): historical context, engineering contributors, code-reading guidance, laboratory map and assessment. The technical chapters below are the working-system spine; comprehensive chapter/lab expansion is ongoing.
+Start with [From Request to Release](book/README.md): historical context, engineering contributors, code-reading guidance, laboratory map and assessment. The [glossary](book/glossary.md) and [bibliography](book/references.md) clarify terminology and original sources. The technical chapters below are the working-system spine; comprehensive chapter/lab expansion is ongoing.
 
-| Lesson | Follow the working code |
-|---|---|
-| [1. The whole system](book/01-system.md) | Browser → proxy → app → database/provider |
-| [2. Local development](book/02-local.md) | Compose, .env, dependencies, same-origin requests |
-| [3. Data and migrations](book/03-data.md) | ORM, transactions, schema evolution |
-| [4. Identity and roles](book/04-auth.md) | JWT, refresh rotation, authorization, recovery |
-| [5. Streaming and adapters](book/05-streaming.md) | SSE, cancellation, provider independence |
-| [6. Limits and monitoring](book/06-operations.md) | Admission control, resource ceilings, dashboard |
-| [7. Testing with purpose](book/07-testing.md) | pytest, PostgreSQL, Playwright, coverage exclusions |
-| [8. Build, release, deploy](book/08-delivery.md) | Exact tested image, registry, restricted SSH |
-| [9. Install on DigitalOcean](book/09-hosting.md) | Fresh host and existing Traefik integration |
-| [10. Recovery and exercises](book/10-recovery.md) | Backups, failed migrations, verification |
-| [11. Transactional email](book/11-email.md) | Verification, recovery, encrypted outbox and retries |
+The [book/course map](book/README.md) owns the reading sequence, prerequisites, chapter references and laboratory progression. Follow its links to the system, data, identity, streaming, testing, delivery, hosting, operations, recovery and email material.
 
 ## Verify
 
 ```sh
 make setup
 make check
-TEST_DATABASE_URL=postgresql+asyncpg://USER:PASSWORD@localhost:5432/DEDICATED_TEST_DB make test
+TEST_DATABASE_URL=postgresql+asyncpg://USER:PASSWORD@localhost:5432/dedicated_test TEST_ALLOW_RESET=dedicated_test make test
 make migrate
 uv run alembic check
 uv run playwright install chromium
-# Start a mock-provider server with a dedicated browser DB/admin; see Lesson 7.
+# The browser harness creates and verifies its own disposable local mock server.
 make test-e2e
 ```
 
-Tests clear application tables in TEST_DATABASE_URL. Use a dedicated disposable database, never production. Without it, fast tests use isolated temporary SQLite databases; the PostgreSQL concurrency test runs in CI and with the PostgreSQL test URL.
+Tests clear application tables only after the target guard accepts a loopback PostgreSQL database ending in `_test` and `TEST_ALLOW_RESET` equal to its exact name. Use a dedicated disposable database. Without TEST_DATABASE_URL, fast tests use isolated temporary SQLite databases; the PostgreSQL concurrency test runs in CI and with an accepted PostgreSQL test URL. Browser tests require the local disposable harness identity and reject public targets before connecting.
 
 [Delivery workflow](.github/workflows/delivery.yml) verifies amd64 only. [Deployment evidence](docs/implementation-evidence.md) records actual checks and remaining operational limits. Production host installation is authorized for this project; deployments are separate from the existing calculator.
 

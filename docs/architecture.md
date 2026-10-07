@@ -1,6 +1,8 @@
-# Proposed architecture
+# Historical architecture proposal
 
-All choices in this document are proposals until discussed. Select exact supported dependency versions and lock them during implementation; do not copy version numbers from the old projects blindly.
+**Status: initial design discussion, retained as historical context. This is not the current implementation specification.** The app subsequently selected React/TypeScript, direct HTTP provider adapters, PostgreSQL/async SQLAlchemy and a modular monolith. Consult the [working-system chapter](../book/01-system.md), [book](../book/README.md), [implementation evidence](implementation-evidence.md) and [environment runbook](environments.md) for implemented behavior and remaining limits. LiteLLM, separate module names and additional capabilities below were options, not assertions that they shipped.
+
+The following text preserves the initial proposal. Exact installed versions now come from dependency locks; older project versions are not authoritative.
 
 ## Application structure
 
@@ -21,7 +23,7 @@ flowchart LR
 
 Suggested modules: `auth`, `users`, `chat`, `providers`, `admin`, `audit`, `config`, and `db`. HTTP schemas remain separate from ORM models. Use dependency injection at the composition root. Application services depend on narrow interfaces for provider access, mail, and storage. SQLAlchemy handles the database unit of work; add repositories only where they express useful domain queries, avoiding generic wrappers around every ORM operation.
 
-Use PostgreSQL locally, in integration tests, and in production. Use async SQLAlchemy with an async driver; one session per task and bounded connection pools. Persist the prompt and close its transaction before waiting on the LLM. Persist completion or failure through a separate short transaction; do not hold a database connection throughout a long stream. Alembic revisions are reviewed code. Autogeneration cannot reliably infer all changes, including renames. Run schema drift checks and test both fresh installation and upgrades. Sources: [SQLAlchemy async sessions](https://docs.sqlalchemy.org/en/21/orm/extensions/asyncio.html), [Alembic autogeneration](https://alembic.sqlalchemy.org/en/latest/autogenerate.html).
+Use PostgreSQL locally, in integration tests, and in production. Use async SQLAlchemy with an async driver; one session per task and bounded connection pools. Persist the prompt and close its transaction before waiting on the LLM. Persist completion or failure through a separate short transaction; do not hold a database connection throughout a long stream. Alembic revisions are reviewed code. Autogeneration cannot reliably infer all changes, including renames. Run schema drift checks and test both fresh installation and upgrades. Sources: [SQLAlchemy async sessions](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html), [Alembic autogeneration](https://alembic.sqlalchemy.org/en/latest/autogenerate.html).
 
 Initial entities: users, roles/user-role assignments, refresh sessions, email verification/password reset tokens, conversations, messages, generation runs, model configurations, usage records, and audit events. Message and run state should distinguish pending, streaming, complete, cancelled, and failed. Conversation ownership is checked server-side on every relevant operation.
 
