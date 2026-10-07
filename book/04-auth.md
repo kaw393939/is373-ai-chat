@@ -79,6 +79,12 @@ Administrator routes check current role. A user cannot acquire that role through
 
 Recovery/verification links have thirty-minute expiry and stored digests. Their consumption locks the user and invalidates sibling links for the same purpose. Browser links carry the token in a URL fragment, keeping it out of ordinary request URLs; the frontend later submits it to the relevant API. Delivery, encryption and retry semantics belong in [email](11-email.md), and real sending activation requires separate proof.
 
+## Identity also bounds data export
+
+`GET /api/account/export` returns one bounded, owned section of `firehose360-owned-v1`: conversations, messages or runs, plus the public account profile and a signed next-page cursor. The browser gathers these sections for a JSON download. Each page checks current identity and binds its cursor to that owner and section; a different user cannot reuse it. An allowlist excludes password hashes, sessions, recovery/factor secrets and pending outbox payloads. Pagination does not claim an atomic snapshot while writes continue.
+
+Conversation deletion cascades through live messages/runs. Account deletion is a separate follow-up; backups and audit metadata have different aging semantics. The [retention/export decision](../docs/decisions/0002-data-retention-and-export.md) owns policy, and [export integration tests](../tests/integration/test_owned_export.py) prove data ownership and exclusion boundaries. These controls are specific engineering claims, without an unsupported legal-compliance label.
+
 ## Observe failures and evaluate alternatives
 
 Run Lab 01's synthetic expiry experiment and Lab 04's two-account scenario in a disposable local environment. The [account tests](../tests/integration/test_accounts.py) demonstrate refresh/reuse and revocation expectations; [chat tests](../tests/integration/test_chat.py) cover cross-account reads/deletes; [web-security tests](../tests/integration/test_web_security.py) exercise unauthorized writes and administrative methods. Tests clear application data: use dedicated test targets only.
