@@ -1,0 +1,105 @@
+{
+  "status": "passed",
+  "evidence_kind": "AI/operator executed local recovery rehearsal",
+  "requirement": "REQ-OPERATIONS",
+  "issue": "https://github.com/kaw393939/is373-ai-chat/issues/4",
+  "issue_disposition": "Refs #4; acceptance remains open",
+  "started_at_utc": "2026-10-27T00:54:11.910451+00:00",
+  "finished_at_utc": "2026-10-27T00:55:31.379167+00:00",
+  "archive": {
+    "name": "daily-20261026T070006Z.tar.age",
+    "created_at_utc": "2026-10-26T07:00:06.093797+00:00",
+    "ciphertext_bytes": 41160,
+    "receipt_and_ciphertext_match": true,
+    "age_authentication_verified": true,
+    "strict_paths_regular_members_and_size_bounds_verified": true,
+    "all_manifest_hashes_verified": true,
+    "schema": "0003",
+    "application_image": "ghcr.io/kaw393939/is373-ai-chat@sha256:1d05c83616e855e6172d85000e058c1c5383b112eff26f806c416fc687933221",
+    "protected_configuration_files_extracted_separately": false
+  },
+  "negative_archive_checks": {
+    "absolute_path_rejected": true,
+    "traversal_rejected": true,
+    "symlink_rejected": true,
+    "hardlink_rejected": true,
+    "device_rejected": true,
+    "unexpected_file_rejected": true,
+    "duplicate_member_rejected": true,
+    "oversized_member_rejected": true
+  },
+  "local_target": {
+    "postgres_major": 17,
+    "postgres_image": "postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24",
+    "network_none": true,
+    "published_ports": false,
+    "host_bind_mounts": false,
+    "read_only_root": true,
+    "database_storage": "new ephemeral tmpfs",
+    "memory_mib": 384,
+    "cpu_limit": 0.5,
+    "pids_limit": 128,
+    "restore_completed": true,
+    "schema_revision_matches_manifest": true,
+    "expected_application_table_count": 14,
+    "table_inventory_matches_source_models": true,
+    "all_restored_constraints_validated": true,
+    "verification_queries_read_only": true
+  },
+  "release_image": {
+    "source": "Operator-verified existing server image, Docker save export, age-encrypted off-host transfer and authenticated decryption into local Docker load",
+    "initial_public_registry_pull": "unauthorized",
+    "registry_authentication_changed": false,
+    "revision_and_version_labels_match": true,
+    "application_version": "2.0.0",
+    "application_commit": "ea95a452e3884afb7b729bd27444f89cb95e7271",
+    "read_only_orm_read_all_fourteen_models": true,
+    "orm_counts_match_restored_database": true,
+    "provider_mock": true,
+    "mail_disabled": true,
+    "no_network_egress": true,
+    "normal_application_server_started": false,
+    "backup_environment_loaded": false
+  },
+  "measurements": {
+    "database_phase_seconds": 1.929,
+    "pg_restore_seconds": 0.054,
+    "database_checks_finished_at_utc": "2026-10-27T00:54:13.849773+00:00",
+    "backup_age_seconds_at_database_checks": 64447.756,
+    "overall_harness_seconds_including_image_wait_application_read_and_cleanup": 79.469
+  },
+  "initial_attempt": {
+    "status": "failed",
+    "failed_phase": "restore_database",
+    "readiness_probe": "Unix socket",
+    "correction": "Wait for final TCP listener instead of accepting the image initialization server",
+    "fresh_target_retry_passed": true,
+    "raw_stderr_retained": false,
+    "more_specific_failure_diagnosis_claimed": false,
+    "failed_target_and_plaintext_scratch_removed": true
+  },
+  "cleanup": {
+    "successful_rehearsal_created_container_count": 2,
+    "successful_rehearsal_containers_removed": true,
+    "plaintext_scratch_removed": true,
+    "original_ciphertext_retained": true,
+    "existing_local_containers_changed": false
+  },
+  "evidence_limits": {
+    "live_source_database_queried": false,
+    "live_sql_write_or_restore_performed": false,
+    "live_source_row_parity_claimed": false,
+    "manifest_contains_row_counts_or_fingerprints": false,
+    "secret_values_rows_or_database_fingerprints_published": false,
+    "outbox_and_factor_tables_empty": true,
+    "excluded": [
+      "Recovery of writes newer than the selected backup",
+      "Nonempty pending-mail reconciliation, factor-secret decryption and restored-user authentication",
+      "Database roles, object ownership and ACL recovery",
+      "Real provider or mail delivery",
+      "Full host, OS, proxy, public DNS or TLS recovery",
+      "Recovery of workspace or other applications",
+      "Second protected identity custody and delivered failure alerts"
+    ]
+  }
+}

@@ -2,6 +2,11 @@
 
 Canonical requirement: [REQ-OPERATIONS](../project/baseline.md#req-operations). Acceptance and current status: [#4](https://github.com/kaw393939/is373-ai-chat/issues/4). This runbook uses the existing application host and the owner's recovery computer; it adds no paid storage service. See the [retention decision](../decisions/0002-data-retention-and-export.md) before handling a dump.
 
+The [October 26 current-release rehearsal](2026-10-26-verification.md) records
+fresh off-host integrity checks, a real isolated PostgreSQL restoration and
+matching-image read-only ORM checks. Its recovery point, measurements and limits
+remain separate from complete host recovery and the open issue acceptance.
+
 ## Trust and retention
 
 The server has an **age public recipient**; the recovery computer holds the separate **age identity** needed to decrypt. A restricted SSH export key permits only `list`, `fetch` of recognized encrypted archives and a checksum receipt. It cannot open a shell or download `.env`/plaintext dumps. Pinned SSH host keys protect the transport; SHA-256 detects incomplete/corrupt transfers; age authenticates decrypted contents. Obtain a host pin through an already authenticated connection or independently confirmed fingerprint, never by trusting an unverified `ssh-keyscan` result.
@@ -31,7 +36,7 @@ The vault directory must be 0700 and key 0600. The command exits unsuccessfully 
 
 1. Select a specific archive/receipt and verify its ciphertext hash. Decrypt **on the recovery computer** into a new 0700 scratch directory (`age -d -i /private/recovery.age -o archive.tar BACKUP.tar.age`). Review tar paths before extraction; reject absolute paths, symlinks and traversal. Verify every extracted file against `manifest.json`.
 2. Create an isolated PostgreSQL container/database with no public ports. For a content/schema rehearsal, restore the explicit file with `pg_restore --exit-on-error --single-transaction --no-owner --no-privileges --dbname EXPLICIT_TEST_DB database.dump`. These flags exclude owner/ACL recovery; a real service restoration must separately restore and review its database roles/grants. Do not point destructive tests at production; the repository's target guard requires an explicit loopback `*_test` database/reset acknowledgement.
-3. Compare schema and aggregate counts against the backup manifest/source snapshot; check sampled ownership/roles, messages, generations and encrypted pending outbox without publishing personal values. Email stays disabled and the provider stays mock. Do not replay live mail or credentials.
+3. Check the restored schema against the manifest, record aggregate counts and use the matching release image for read-only application checks. The manifest records file hashes, creation time and schema/image identity, not row counts or fingerprints. Claim source/restored parity only after an actual source-snapshot comparison; later live writes can legitimately differ from the backup. Check sampled application ownership/roles, messages, generations and encrypted pending outbox without publishing personal values. Email stays disabled and the provider stays mock. Do not replay live mail or credentials.
 4. Before reopening a restored real service, revoke sessions/recovery links, reconcile deletions since the selected backup and review factor/outbox keys. Record elapsed restore time and backup age/data-loss window. A small rehearsal is not a capacity guarantee.
 5. Destroy only the isolated rehearsal container/data and remove plaintext scratch. Keep sanitized evidence linked to #4 and the precise release identity.
 
