@@ -54,6 +54,11 @@ jobs:
         env:
           RELEASE_VERSION: ${{ steps.identity.outputs.version }}
         run: docker build --build-arg COMMIT_SHA="$GITHUB_SHA" --build-arg APP_VERSION="$RELEASE_VERSION" -t chat:ci .
+      - name: Verify the exact image's CA bundle and TLS rejection behavior
+        run: |
+          mkdir -p artifacts
+          docker run --rm --network none --read-only --no-healthcheck --cap-drop ALL --security-opt no-new-privileges --pids-limit 64 --memory 128m --cpus 1 --tmpfs /tmp:size=16m -v "$PWD/tests/process/check_tls_trust.py:/app/check_tls_trust.py:ro" chat:ci python /app/check_tls_trust.py > artifacts/tls-trust.json
+          python3 -c 'import json,os,pathlib; p=json.load(open("artifacts/tls-trust.json")); assert p["status"] == "passed" and p["commit"] == os.environ["GITHUB_SHA"] and p["application_version"] == pathlib.Path("VERSION").read_text().strip()'
       - name: Migrate and seed an isolated browser database
         run: |
           docker exec "${{ job.services.postgres.id }}" psql -U chat_test -d chat_test -c 'CREATE DATABASE browser_test'
