@@ -63,3 +63,20 @@ Source tours: [account transaction ownership](../book/03-data.md#who-owns-each-u
 - ACC-10: No committed runtime secrets or secret-bearing images/logs; database and admin operational interfaces have intended exposure.
 - ACC-11: Backup restoration is exercised; restarts preserve state; observed memory/concurrency limits are documented.
 - ACC-12: Fresh-server installation and the existing-Traefik integration are independently verified and understandable to students.
+
+## Dependency security maintenance
+
+REQ-OPERATIONS / REQ-DELIVERY, [issue #44](https://github.com/kaw393939/is373-ai-chat/issues/44):
+the image must consume the reviewed patched `certifi` lock without disabling
+certificate or hostname verification. Rebuild and run the existing quality,
+browser, vulnerability, SBOM, and process checks on the candidate image. The
+additional [TLS probe](../tests/process/check_tls_trust.py) checks the actual
+bundle and positive/negative TLS cases inside that image, without external
+services. Keep these evidence levels separate from live deployment.
+
+Assign an unused patch version before building. Development and QA must accept
+the same published digest before an explicitly selected production promotion
+passes the existing owner-reviewer gate. Record commit, digest, version, schema,
+checks, and any remaining incident scope in the
+[dependency change record](audit/2026-10-26-certifi.md). A source update or green
+scan alone does not establish that a running container is patched.
