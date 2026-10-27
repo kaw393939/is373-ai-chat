@@ -30,7 +30,7 @@ jobs:
         run: |
           uv run ruff check scripts/book_hooks.py scripts/book_snippets.py scripts/check-book.py
           make book-check
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: teaching-edition-${{ github.sha }}
           path: |

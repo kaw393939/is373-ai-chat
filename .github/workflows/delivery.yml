@@ -90,13 +90,13 @@ jobs:
         run: |
           mkdir -p release
           docker save chat:ci -o release/image.tar
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: tested-image
           path: release/image.tar
           compression-level: 0
           retention-days: 2
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         if: always()
         with:
           name: test-evidence
@@ -134,7 +134,7 @@ jobs:
           digest=$(docker image inspect "$image" --format '{{index .RepoDigests 0}}' | cut -d@ -f2)
           echo "digest=$digest" >> "$GITHUB_OUTPUT"
           python3 deploy/ci_release.py candidate "$digest"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.1, Node 24
         with:
           name: published-candidate
           path: candidate.json
@@ -170,7 +170,7 @@ jobs:
           python3 -m pip install uv==0.12.15
           uv sync --frozen --python 3.14.7
           uv run python deploy/check_preview.py dev "$COMMIT" "$RELEASE_VERSION"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.1, Node 24
         with:
           name: development-evidence
           path: dev-*.json
@@ -206,7 +206,7 @@ jobs:
           uv sync --frozen --python 3.14.7
           uv run playwright install --with-deps chromium
           uv run python deploy/check_preview.py qa "$COMMIT" "$RELEASE_VERSION" --browser
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.1, Node 24
         with:
           name: qa-evidence
           path: qa-*.json
@@ -237,7 +237,7 @@ jobs:
         run: |
           python3 deploy/ssh_release.py attest qa > qa-attestation.json
           python3 deploy/ci_release.py candidate "$DIGEST"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.1, Node 24
         with:
           name: accepted-candidate
           path: |
