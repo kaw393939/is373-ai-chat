@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install locked Python environment
         run: |
-          python3 -m pip install uv==0.12.15
+          python3 -m pip install uv==0.13.8
           uv sync --frozen --python 3.14.10
       - name: Validate authoritative application version
         id: identity
@@ -167,7 +167,7 @@ jobs:
         run: python3 deploy/ssh_release.py deploy dev > dev-deployment.json
       - name: Verify public HTTPS identity
         run: |
-          python3 -m pip install uv==0.12.15
+          python3 -m pip install uv==0.13.8
           uv sync --frozen --python 3.14.10
           uv run python deploy/check_preview.py dev "$COMMIT" "$RELEASE_VERSION"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1, Node 24
@@ -202,7 +202,7 @@ jobs:
           QA_SMOKE_EMAIL: ${{ secrets.QA_SMOKE_EMAIL }}
           QA_SMOKE_PASSWORD: ${{ secrets.QA_SMOKE_PASSWORD }}
         run: |
-          python3 -m pip install uv==0.12.15
+          python3 -m pip install uv==0.13.8
           uv sync --frozen --python 3.14.10
           uv run playwright install --with-deps chromium
           uv run python deploy/check_preview.py qa "$COMMIT" "$RELEASE_VERSION" --browser

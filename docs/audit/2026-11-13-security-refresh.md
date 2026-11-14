@@ -12,3 +12,5 @@ gate, browser tests, QA smoke tests and immutable promotion process remain in us
 
 Local deployment/operations/safety checks: 97 passed, two integration-only cases
 skipped. Full CI, exact-image scan and live deployment evidence remain required.
+
+The first PR CI run exposed uv 0.12.15's frozen Python download list, which did not include the new patch release. Pin uv 0.13.8 in the Docker builder and both workflows, and align the book workflow with Python 3.14.10. [uv documents the frozen download list](https://docs.astral.sh/uv/concepts/python-versions/#installing-a-python-version).

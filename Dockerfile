@@ -7,7 +7,7 @@ RUN npm test && npm run format:check && npm run build
 
 FROM python:3.14.10-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS dependencies
 WORKDIR /app
-RUN pip install --no-cache-dir uv==0.12.15
+RUN pip install --no-cache-dir uv==0.13.8
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/python
 
