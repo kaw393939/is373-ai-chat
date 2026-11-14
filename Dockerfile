@@ -5,22 +5,19 @@ RUN npm ci
 COPY frontend ./
 RUN npm test && npm run format:check && npm run build
 
-FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS dependencies
+FROM python:3.14.10-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS dependencies
 WORKDIR /app
-RUN pip install --no-cache-dir uv==0.12.15
+RUN pip install --no-cache-dir uv==0.13.8
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/python
 
-FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS runtime
-# Vendor fixes not yet included in this pinned 3.14.7 base. No floating upgrade.
+FROM python:3.14.10-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS runtime
+# Security fix published after the pinned base build; keep the version explicit.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        libpcre2-8-0=10.46-1~deb13u3 \
-        libssl3t64=3.5.7-1~deb13u3 \
-        openssl=3.5.7-1~deb13u3 \
-        openssl-provider-legacy=3.5.7-1~deb13u3 \
+    && apt-get install -y --no-install-recommends zlib1g=1:1.3.dfsg+really1.3.1-1+deb13u1 \
     && rm -rf /var/lib/apt/lists/* \
-    && python -m pip uninstall -y pip \
+    && python -m pip uninstall -y pip setuptools \
+    && rm -rf /usr/local/lib/python3.14/ensurepip \
     && groupadd --gid 10001 appuser \
     && useradd --uid 10001 --gid 10001 --no-create-home --shell /usr/sbin/nologin appuser
 WORKDIR /app

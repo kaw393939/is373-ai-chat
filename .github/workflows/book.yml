@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - name: Install locked book tools
         run: |
-          python3 -m pip install uv==0.12.15
-          uv sync --frozen --group book --python 3.14.7
+          python3 -m pip install uv==0.13.8
+          uv sync --frozen --group book --python 3.14.10
           uv run playwright install --with-deps chromium
       - name: Execute bounded laboratory experiments
         run: |

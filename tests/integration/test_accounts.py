@@ -130,7 +130,7 @@ async def test_expired_recovery_and_auth_throttling(client, application, monkeyp
         await client.post("/api/auth/reset", json={"token": token, "password": PASSWORD})
     ).status_code == 400
     instant = now()
-    monkeypatch.setattr("app.services.now", lambda: instant)
+    monkeypatch.setattr("app.throttling.now", lambda: instant)
     for _ in range(11):
         response = await client.post(
             "/api/auth/login", json={"email": "missing@example.org", "password": "bad"}
