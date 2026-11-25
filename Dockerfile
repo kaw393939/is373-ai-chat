@@ -5,13 +5,13 @@ RUN npm ci
 COPY frontend ./
 RUN npm test && npm run format:check && npm run build
 
-FROM python:3.14.10-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS dependencies
+FROM python:3.15.1-slim-trixie@sha256:533b0b2f9b5d46fd097091cf826f27902f1d6c3bca714b6dc74551356aa97a51 AS dependencies
 WORKDIR /app
 RUN pip install --no-cache-dir uv==0.13.8
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-install-project --python /usr/local/bin/python
 
-FROM python:3.14.10-slim-trixie@sha256:9aaa474097d094040649f2162a627c0049b408f52138d980916788d80f04802f AS runtime
+FROM python:3.15.1-slim-trixie@sha256:533b0b2f9b5d46fd097091cf826f27902f1d6c3bca714b6dc74551356aa97a51 AS runtime
 # Security fix published after the pinned base build; keep the version explicit.
 RUN apt-get update \
     && apt-get install -y --no-install-recommends zlib1g=1:1.3.dfsg+really1.3.1-1+deb13u1 \
